@@ -73,7 +73,7 @@ def import_sim(directory, name):
     #--------------------------------------------------------------------------
     
     # create data file path 
-    path = os.path.join(directory, name + ".text")
+    path = os.path.join(directory, name + ".txt")
     
     # load data from text file
     q, ints = np.loadtxt(path, unpack=True, dtype=float)
