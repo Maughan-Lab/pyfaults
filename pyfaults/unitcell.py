@@ -4,11 +4,15 @@ Defines Unitcell class
 
 import copy as cp
 
+
+#------------------------------------------------------------------------------
+''' Unitcell class initialization '''
+
 class Unitcell(list):
     def __init__(self, layers):
-        ''' 
-        layers (list of Layer instances)
-        '''
+        #----------------------------------------------------------------------
+        # layers -- list of Layer instances
+        #----------------------------------------------------------------------
         
         # create and assign lattice variable based on parent layer lattice
         self.lattice = layers[0].lattice
@@ -26,17 +30,25 @@ class Unitcell(list):
         return
 
 #------------------------------------------------------------------------------ 
-    ''' Unitcell methods '''
+# Unitcell methods
     
-    # prints atom labels and [x,y,z] coordinates
+    #--------------------------------------------------------------------------
+    ''' prints atom labels and [x,y,z] of all atoms in unit cell'''
+    
     def show_atoms(self):
         for l in self:
             for a in l:
                 print(a.label, a.xyz)
     
-    # prints layer names
+    
+    #--------------------------------------------------------------------------
+    '''' prints name of all layers in unit cell'''
+    
     def show_layers(self):
         layer = self.layers
         for i in layer:
             i.layer_name
-
+        
+        
+        
+        

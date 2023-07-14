@@ -4,12 +4,16 @@ Defines UF_supercell class
 
 import copy as cp
 
+
+#------------------------------------------------------------------------------
+''' UF_supercell class initialization '''
+
 class UF_supercell(list):
     def __init__(self, unitcell, n_stacks):
-        '''
-        unitcell (UF_unitcell)
-        n_stacks (int)
-        '''
+        #----------------------------------------------------------------------
+        # unitcell -- Unitcell object
+        # n_stacks (int) -- number of stacks in supercell
+        #----------------------------------------------------------------------
         
         # assign n_stacks variable
         self.n_stacks = n_stacks
@@ -48,15 +52,19 @@ class UF_supercell(list):
         return
 
 #------------------------------------------------------------------------------ 
-    ''' UF_supercell methods '''
+# UF_supercell methods
     
-    # prints atom labels and [x,y,z] coordinates
+    #--------------------------------------------------------------------------
+    ''' prints atom labels and [x,y,z] of all atoms in supercell'''
+    
     def show_atoms(self):
         for l in self:
             for a in l:
                 print(a.label, a.xyz)
     
-    # prints layer names
+    #--------------------------------------------------------------------------
+    '''' prints name of all layers in supercell'''
+    
     def show_layers(self):
         layer = self.layers
         for i in layer:

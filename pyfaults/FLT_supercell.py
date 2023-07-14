@@ -6,15 +6,19 @@ import copy as cp
 import numpy as np
 import random as r
 
+
+#------------------------------------------------------------------------------
+''' FLT_supercell class initialization '''
+
 class FLT_supercell(list):
     def __init__(self, unitcell, n_stacks, flt_layer, shift, p):
-        '''
-        unitcell (UF_unitcell)
-        n_stacks (int)
-        flt_layer (str)
-        shift (nparray)
-        p (float)
-        '''
+        #----------------------------------------------------------------------
+        # unitcell -- Unitcell object
+        # n_stacks (int) -- number of stacks in supercell
+        # flt_layer (str) -- name of faulted layer
+        # shift (nparray) -- stacking vector [x, y, 0]
+        # p (float) -- stacking probability
+        #----------------------------------------------------------------------
         
         # assign n_stacks, shift, and p variables
         self.n_stacks = n_stacks
@@ -109,15 +113,19 @@ class FLT_supercell(list):
         return
  
 #------------------------------------------------------------------------------ 
-    ''' FLT_supercell methods '''
+#FLT_supercell methods
     
-    # prints atom labels and [x,y,z] coordinates
+    #--------------------------------------------------------------------------
+    ''' prints atom labels and [x,y,z] of all atoms in supercell'''
+    
     def show_atoms(self):
         for l in self:
             for a in l:
                 print(a.label, a.xyz)
     
-    # prints layer names
+    #--------------------------------------------------------------------------
+    '''' prints name of all layers in supercell'''
+    
     def show_layers(self):
         layer = self.layers
         for i in layer:
