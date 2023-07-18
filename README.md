@@ -1,4 +1,4 @@
-# pyfaults
+# PyFaults
 
 To install using pip from Windows command line:
 
