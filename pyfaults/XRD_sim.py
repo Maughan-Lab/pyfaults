@@ -154,4 +154,52 @@ def norm(ints):
     return norm_ints
 
 
+#-----------------------------------------------------------------------------
+''' generate (hkl) values '''
 
+def hkl_sim(cif_dir, cif_name, wavelength, tt_max):
+    #--------------------------------------------------------------------------
+    # cif_dir (str) - file path to load cif from
+    # cif_name (str) -- name of cif file
+    # wavelength (float) -- instrument wavelength
+    # tt_max (float) -- maximum 2theta value
+    
+    # returns (hkl), 2theta, and intensity as text
+    #--------------------------------------------------------------------------
+    
+    # load cif file as structure
+    path = os.path.join(cif_dir, cif_name + ".cif")
+    struct = df.Crystal(path)
+    
+    # setup diffraction parameters
+    e_kev = df.fc.wave2energy(wavelength)
+    struct.Scatter.setup_scatter(scattering_type="xray", 
+                                 energy_kev=e_kev, 
+                                 min_twotheta=0, max_twotheta=tt_max)
+    
+    # generate (hkl) reflections
+    reflections = struct.Scatter.print_all_reflections(min_intensity=0.1)
+    
+    return reflections
+
+
+#-----------------------------------------------------------------------------
+''' save (hkl) values as text file '''
+
+def save_hkl(directory, name, data):
+    #--------------------------------------------------------------------------
+    # directory (str) -- file path to save data to
+    # name (str) -- file name 
+    # data (str) -- (hkl) information
+    #--------------------------------------------------------------------------
+    
+    # create file path
+    path = os.path.join(directory, name + "_hkl.txt")
+    
+    # create new file
+    new_file = open(path, "w")
+    
+    # write (hkl) data to new text file
+    with new_file as f:
+        f.write(data)
+    new_file.close()
