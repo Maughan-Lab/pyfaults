@@ -1,19 +1,31 @@
 '''
-Defines Unitcell class
+Unitcell class -- collection of Layer objects constructing a unit cell
 '''
 
 import copy as cp
 
-
 #------------------------------------------------------------------------------
-''' Unitcell class initialization '''
+#------------------------------------------------------------------------------
+''' UNITCELL CLASS '''
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 class Unitcell(list):
     def __init__(self, layers):
-        #----------------------------------------------------------------------
-        # layers -- list of Layer instances
-        #----------------------------------------------------------------------
-        
+        '''
+        Unitcell class initialization
+
+        Parameters
+        ----------
+        layers : list (Layer)
+            List of layer to include in unit cell
+
+        Returns
+        -------
+        None
+
+        '''
+
         # create and assign lattice variable based on parent layer lattice
         self.lattice = layers[0].lattice
         
@@ -28,23 +40,36 @@ class Unitcell(list):
             self.append(l)
         
         return
-
-#------------------------------------------------------------------------------ 
-# Unitcell methods
     
     #--------------------------------------------------------------------------
-    ''' prints atom labels and [x,y,z] of all atoms in unit cell'''
-    
+    #--------------------------------------------------------------------------
+    ''' UNITCELL CLASS METHODS '''
+    #--------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
+
     def show_atoms(self):
+        '''
+        Prints atom labels and [x,y,z] of all atoms in layer
+
+        Returns
+        -------
+        None
+
+        '''
         for l in self:
             for a in l:
                 print(a.label, a.xyz)
     
-    
     #--------------------------------------------------------------------------
-    '''' prints name of all layers in unit cell'''
-    
     def show_layers(self):
+        '''
+        Prints labels all layers in unit cell
+
+        Returns
+        -------
+        None
+
+        '''
         layer = self.layers
         for i in layer:
             i.layer_name

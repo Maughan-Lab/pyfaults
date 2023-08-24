@@ -1,5 +1,11 @@
 '''
-Defines Layer and Child_Layer classes
+Layer class -- single layer of atoms within unit cell lattice
+Child_Layer class -- copy of Layer shifted by a translation vector
+
+Layer construction functions:
+    - import_CSV
+    - get_layer
+    - gen_child
 '''
 
 import os
@@ -8,17 +14,31 @@ from diffpy.structure.structure import Atom
 import copy as cp
 import numpy as np
 
-
 #------------------------------------------------------------------------------
-''' Layer class initialization '''
+#------------------------------------------------------------------------------
+''' LAYER CLASS '''
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 class Layer(list):
     def __init__(self, atoms, lattice, layer_name):
-        #----------------------------------------------------------------------
-        # atoms -- list of Atom objects
-        # lattice -- Lattice object
-        # layer_name (str) -- unique layer name
-        #----------------------------------------------------------------------
+        '''
+        Layer class initialization
+
+        Parameters
+        ----------
+        atoms : list (Atom)
+            Atoms in layer, uses Atom object from diffpy
+        lattice : Lattice
+            Unit cell lattice parameters, uses Lattice object from diffpy
+        layer_name : str
+            Unique layer name
+
+        Returns
+        -------
+        None
+
+        '''
         
         # assign lattice and layer_name variables
         self.lattice = lattice
@@ -37,28 +57,51 @@ class Layer(list):
 
         return
     
-#------------------------------------------------------------------------------ 
-# Layer methods
-    
     #--------------------------------------------------------------------------
-    ''' prints atom labels and [x,y,z] of all atoms in layer'''
+    #--------------------------------------------------------------------------
+    ''' LAYER CLASS METHODS '''
+    #--------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     
     def show_labels(self):
+        '''
+        Prints atom labels and [x,y,z] of all atoms in layer
+
+        Returns
+        -------
+        None
+
+        '''
         atoms = self.atoms
         for i in atoms:
             print(i.label, i.xyz) 
 
 
 #------------------------------------------------------------------------------
-''' Child_Layer class initialization '''
+#------------------------------------------------------------------------------
+''' CHILD_LAYER CLASS '''
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 class Child_Layer(list):
     def __init__(self, layer_name, parent, shift):
-        #----------------------------------------------------------------------
-        # layer_name (str) -- unique layer name
-        # parent -- parent Layer object
-        # shift (nparray) -- translation vector [x, y, z]
-        #----------------------------------------------------------------------
+        '''
+        Child_Layer class initialization
+
+        Parameters
+        ----------
+        layer_name : str
+            Unique layer name
+        parent : Layer
+            Parent layer to inheret atoms and lattice from to generate child
+        shift : array
+            Translation vector [x, y, z]
+
+        Returns
+        -------
+        None
+
+        '''
         
         # create and assign lattice variable based on parent layer lattice
         self.lattice = parent.lattice
@@ -86,13 +129,21 @@ class Child_Layer(list):
 
         return
     
-#------------------------------------------------------------------------------ 
-# Child_Layer methods
-
     #--------------------------------------------------------------------------
-    ''' prints atom labels and [x,y,z] of all atoms in layer'''
+    #--------------------------------------------------------------------------
+    ''' LAYER CLASS METHODS '''
+    #--------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
     
     def show_labels(self):
+        '''
+        Prints atom labels and [x,y,z] of all atoms in layer
+
+        Returns
+        -------
+        None
+
+        '''
         atoms = self.atoms
         for i in atoms:
             print(i.label, i.xyz)
@@ -100,41 +151,54 @@ class Child_Layer(list):
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
-''' Functions for generating layers from unit cell csv files ''' 
-    
-
+''' LAYER CONSTRUCTION FUNCTIONS ''' 
 #------------------------------------------------------------------------------
-''' import dataframe from csv file '''
+#------------------------------------------------------------------------------
+    
+def import_csv(path, fn):
+    '''
+    Imports dataframe from csv file
 
-def import_csv(directory, filename):
-    #--------------------------------------------------------------------------
-    # directory (str) -- file path to read csv file from
-    # name (str) -- file name
-    
-    # returns dataframe of unit cell information
-    #--------------------------------------------------------------------------
-    
-    # create .csv file path
-    path = os.path.join(directory, filename + ".csv")
-    
-    # retrieve data from file
-    df = pd.read_csv(path)
-    
+    Parameters
+    ----------
+    path : str
+        File directory
+    fn : str
+        File name
+
+    Returns
+    -------
+    df : dataframe
+        Data from csv file
+
+    '''
+
+    csv_path = os.path.join(path, fn + ".csv")
+    df = pd.read_csv(csv_path)
     return df
 
-
 #------------------------------------------------------------------------------
-''' generate layer from csv data '''
-    
 def get_layer(df, layer_name, latt):
-    #--------------------------------------------------------------------------
-    # df -- dataframe containing unit cell information
-    # layer_name (str) -- unique layer tag in csv data
-    # latt -- Lattice object for unit cell
-    
-    # returns Layer object
-    #--------------------------------------------------------------------------
-    
+    '''
+    Generates layer from unit cell data
+    Assumes each atom entry has parameters Layer, Atom, Element, x, y, z, Occupancy
+
+    Parameters
+    ----------
+    df : dataframe
+        Unit cell information
+    layer_name : str
+        Unique tag to identify layer
+    latt : Lattice
+        Unit cell lattice parameters, uses Lattice object from diffpy
+
+    Returns
+    -------
+    new_layer : Layer
+        New layer object
+
+    '''
+
     # retrieve atoms corresponding to given layer name
     l = df[df["Layer"] == layer_name]
     
@@ -161,19 +225,27 @@ def get_layer(df, layer_name, latt):
 
 
 #------------------------------------------------------------------------------
-''' generate child layer from parent layer (basically creates new Child_layer
-instance) '''
-
 def gen_child(name, parent, t_vect):
-    #--------------------------------------------------------------------------
-    # name (str) -- name of child layer
-    #parent = parent Layer object
-    # t_vect (nparray) -- translation vector [x, y, z]
-    
-    # returns Child_Layer object
-    #--------------------------------------------------------------------------
+    '''
+    Generates child layer from a parent
+
+    Parameters
+    ----------
+    name : str
+        Unique layer name
+    parent : Layer
+        Parent layer
+    t_vect : array
+        Translation vector [x, y, z]
+
+    Returns
+    -------
+    child_layer : Child_Layer
+        New Child_Layer object
+
+    '''
+
     child_layer = Child_Layer(layer_name=name, parent=parent, shift=t_vect)
-    
     return child_layer
     
   
