@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
    name='pyfaults',
-   version='0.1.3',
-   description='A useful module',
+   version='1.0',
+   description='Software for examining non-layered structures with stacking faults',
    author='Sinclair Combs',
    author_email='sinclaircombs@mines.edu',
    packages=['pyfaults']
