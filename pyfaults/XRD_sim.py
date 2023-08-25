@@ -391,7 +391,7 @@ def gradient_gen_2D(top_lf, top_rt, bott_lf, bott_rt, rows, cols):
 
 #------------------------------------------------------------------------------
 def sim_stack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
-                    labels=None, label_offsets=None, start_hex=None, end_hex=None):
+                    start_hex, end_hex, labels=None, label_offsets=None):
     '''
     Generates stacked plot of simulated vs. experimental data
 
@@ -413,15 +413,15 @@ def sim_stack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
         Tuple with y-axis minimum and maximum
     wl : float
         Instrument wavelength (A)
+    start_hex : str
+        Hex code for initial gradient color, format "#000000"
+    end_hex : str
+        Hex code for final gradient color, format "#000000"
     labels : list (str), optional
         Labels for each dataset. The default is None.
     label_offsets : list (float), optional
         Tuple with offsets from x-axis maximum and vertical spacing from data
         for text labels. The default is None.
-    start_hex : str, optional
-        Hex code for initial gradient color, format "#000000". The default is False.
-    end_hex : str, optional
-        Hex code for final gradient color, format "#000000". The default is False.
 
     Returns
     -------
@@ -475,8 +475,8 @@ def sim_stack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
     return(p)
 
 #------------------------------------------------------------------------------
-def diff_stack(num, q_list, ints_list, x_lim, y_lim, wl, labels=None, 
-               label_offsets=None, start_hex=None, end_hex=None):
+def diff_stack(num, q_list, ints_list, x_lim, y_lim, wl, start_hex, end_hex, 
+               labels=None, label_offsets=None):
     '''
     Generates stacked plot of sim vs. expt difference curves
 
@@ -485,24 +485,24 @@ def diff_stack(num, q_list, ints_list, x_lim, y_lim, wl, labels=None,
     num : int
         Total number of datasets
     q_list : list (array)
-        Arrays of simulated Q datasets
+        Arrays of difference curve Q datasets
     ints_list : list (array)
-        Arrays of simulated intensity datasets (normalized)
+        Arrays of difference curve intensity datasets (normalized)
     x_lim : list (float)
         Tuple with x-axis minimum and maximum
     y_lim : list (float)
         Tuple with y-axis minimum and maximum
     wl : float
         Instrument wavelength (A)
+    start_hex : str
+        Hex code for initial gradient color, format "#000000"
+    end_hex : str
+        Hex code for final gradient color, format "#000000"
     labels : list (str), optional
         Labels for each dataset. The default is None.
     label_offsets : list (float), optional
         Tuple with offsets from x-axis maximum and vertical spacing from data
         for text labels. The default is None.
-    start_hex : str, optional
-        Hex code for initial gradient color, format "#000000". The default is False.
-    end_hex : str, optional
-        Hex code for final gradient color, format "#000000". The default is False.
 
     Returns
     -------
@@ -619,7 +619,7 @@ def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim, y_l
     p[0].set_ylabel(y_label, fontsize=16)
     
     for i in range(2):
-        p[i].legend(handlelength=1, fontsize="14")
+        p[i].legend(handlelength=1, fontsize="14", ncols=3)
     
     plt.subplots_adjust(wspace=0.05)
     
