@@ -775,32 +775,32 @@ def fit_compare(rows, cols, diff_q, diff_ints, x_lims, y_lim, wl, row_labels,
 
     Parameters
     ----------
-    rows : TYPE
-        DESCRIPTION.
-    cols : TYPE
-        DESCRIPTION.
-    q_list : TYPE
-        DESCRIPTION.
-    ints_list : TYPE
-        DESCRIPTION.
-    x_lims : TYPE
-        DESCRIPTION.
-    y_lim : TYPE
-        DESCRIPTION.
-    wl : TYPE
-        DESCRIPTION.
-    row_labels : TYPE
-        DESCRIPTION.
-    col_labels : TYPE
-        DESCRIPTION.
-    row_label_adj : TYPE
-        DESCRIPTION.
-    col_label_adj : TYPE
-        DESCRIPTION.
+    rows : int
+        Number of rows
+    cols : int
+        Number of columns
+    diff_q : list (float)
+        List of Q datasets of difference of difference curves
+    diff_ints : list (float)
+        List of intensity datasets of difference of difference curves
+    x_lims : list (float)
+        List of tuples with x-axis minimums and maximums for each column
+    y_lim : list (float)
+        Tuple with y-axis minimum and maximum
+    wl : float
+        Instrument wavelength (A)
+    row_labels : list (str)
+        Text labels for rows
+    col_labels : list (str)
+        Text labels for columns
+    row_label_adj : float
+        Value to shift row labels along x-axis
+    col_label_adj : float
+        Value to shift column labels along y-axis
 
     Returns
     -------
-    None.
+    None
 
     '''
     
@@ -849,7 +849,7 @@ def fit_compare(rows, cols, diff_q, diff_ints, x_lims, y_lim, wl, row_labels,
         
     for col in range(cols):
         x_mid = ((x_lims[col][1] - x_lims[col][0]) / 2) + x_lims[col][0]
-        p[0][col].text(x_mid, y_lim[1], col_labels[col], color=g[0][col].hex, 
+        p[0][col].text(x_mid, y_lim[1] + col_label_adj, col_labels[col], color=g[0][col].hex, 
                        fontsize="16", ha="center", va="bottom")
         
     plt.subplots_adjust(hspace=0.1, wspace=0.1)
