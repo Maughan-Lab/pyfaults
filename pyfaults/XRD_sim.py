@@ -845,7 +845,7 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
     
     # set plot labels
     y_mid = ((y_lim[1] - y_lim[0]) / 2) + y_lim[0]
-    x_end = x_lims[cols][1]
+    x_end = x_lims[-1][1]
     
     for row in range(rows):
         p[row][-1].text(x_end + row_label_adj, y_mid, row_labels[row],
