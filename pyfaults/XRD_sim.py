@@ -768,8 +768,8 @@ def add_peak_labels(plot, hkl, x_pos, y_pos, color=None, size="14"):
                   va="center", fontsize=size)
 
 #------------------------------------------------------------------------------
-def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims, 
-                y_lim, wl, row_labels, col_labels, row_label_adj, col_label_adj):
+def fit_compare(rows, cols, diff_q, diff_ints, x_lims, y_lim, wl, row_labels, 
+                col_labels, row_label_adj, col_label_adj):
     '''
     Compare goodness of fit between datasets with a difference of difference curve
 
@@ -809,11 +809,9 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
     g = gradient_gen_2D("#00C6BF", "#009AE1", "#5D7AD3", "#B430C2", rows, cols)
     
     for row in range(rows):
-        diff_q, diff_ints = diff_curve(uf_q, flt_q_list[row], 
-                                       uf_ints, flt_ints_list[row])
         for col in range(cols):
             # plot data
-            p[row][col].plot(diff_q, diff_ints, color=g[row][col].hex)
+            p[row][col].plot(diff_q[row], diff_ints[row], color=g[row][col].hex)
             
     # set axis limits
     for row in range(rows):
