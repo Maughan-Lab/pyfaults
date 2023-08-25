@@ -287,6 +287,11 @@ def save_diff_curve(q, ints, path, fn):
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 
+def tt_to_q(twotheta, wavelength):
+    Q = 4 * np.pi * np.sin((twotheta * np.pi)/360) / wavelength
+    return Q
+
+#------------------------------------------------------------------------------
 def save_fig(plot, path, fn):
     '''
     Save figure as a .png file
@@ -424,7 +429,7 @@ def sim_stack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
 
     '''
     
-    fig, (p) = plt.subplots(num, 1, figsize=(8, num*4))
+    fig, (p) = plt.subplots(num, 1, figsize=(8, 8))
     
     expt_min = np.min(expt_ints)
     
@@ -504,7 +509,7 @@ def diff_stack(num, q_list, ints_list, x_lim, y_lim, wl, labels=None,
 
     '''
     
-    fig, (p) = plt.subplots(num, 1, figsize=(8, num*4))
+    fig, (p) = plt.subplots(num, 1, figsize=(8, 8))
     
     # generate color gradient
     if start_hex == False:
