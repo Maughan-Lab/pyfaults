@@ -802,27 +802,21 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
     None.
 
     '''
-    diff_q_list = []
-    diff_ints_list= []
-    for i in range(rows):
-        diff_q, diff_ints = diff_curve(uf_q, flt_q_list[i], 
-                                       uf_ints, flt_ints_list[i])
-        diff_q_list.append(diff_q)
-        diff_ints_list.append(diff_ints)
     
     fig, (p) = plt.subplots(rows, cols, figsize=(rows*2, cols))
     
     g = gradient_gen_2D("#00C6BF", "#009AE1", "#5D7AD3", "#B430C2", rows, cols)
     
     for row in range(rows):
+        diff_q, diff_ints = diff_curve(uf_q, flt_q_list[row], 
+                                       uf_ints, flt_ints_list[row])
         for col in range(cols):
-            q_val = diff_q_list[row][col]
-            ints_val = diff_ints_list[row][col]
-            
             # plot data
-            p[row][col].plot(q_val, ints_val, color=g[row][col].hex)
+            p[row][col].plot(diff_q, diff_ints, color=g[row][col].hex)
             
-            # set axis limits
+    # set axis limits
+    for row in range(rows):
+        for col in range(cols):
             p[row][col].set_xlim(x_lims[col])
             p[row][col].set_ylim(y_lim)
             p[row][col].tick_params(axis="both", labelsize="14")
