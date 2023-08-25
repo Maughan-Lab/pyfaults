@@ -729,9 +729,9 @@ def add_flt_param_box(plot, n_stacks, pos, ha="left", va="top", p=None, s=None,
     
     if color is None:
         color = "white"
-    props = dict(boxstyle="round", facecolor=color, alpha=0.5, pad=0.25)
+    props = dict(boxstyle="round", facecolor=color, alpha=0.5, pad=0.3)
     
-    plot.text(pos[0], pos[1], txt, bbox=props, ha=ha, va=va)
+    plot.text(pos[0], pos[1], txt, bbox=props, ha=ha, va=va, fontsize="16", linespacing=0.2)
     
 #------------------------------------------------------------------------------
 def add_peak_labels(plot, hkl, x_pos, y_pos, color=None, size="14"):
