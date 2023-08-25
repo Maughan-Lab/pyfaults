@@ -443,7 +443,8 @@ def sim_stack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
     # plot data
     for i in range(0, num):
         p[i].scatter(expt_q, expt_ints, color="black", label="Observed", marker=".", s=8)
-        p[i].plot(q_list[i], ints_list[i]+expt_min, color=g[i].hex, linewidth="2")
+    for i in range(0, num):
+        p[i].plot(q_list[i], ints_list[i]+expt_min, color=g[i].hex, linewidth="2.5")
         
     # set axis limits
     for i in range(num):
