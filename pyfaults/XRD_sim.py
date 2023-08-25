@@ -632,7 +632,7 @@ def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim,
     
 #------------------------------------------------------------------------------
 def add_flt_param_box(plot, n_stacks, pos, ha="left", va="top", p=None, s=None, 
-                      s_frac=None, color=None):
+                      color=None):
     '''
     Adds a text box with supercell parameters
 
@@ -651,10 +651,7 @@ def add_flt_param_box(plot, n_stacks, pos, ha="left", va="top", p=None, s=None,
     p : float, optional
         Stacking probability. The default is None.
     s : list (float), optional
-        Stacking vector in non-fractional values. The default is None.
-    s_frac : list (float), optional
-        Stacking vector in fractional values with formatting of 
-        [x_numerator, x_denominator, y_numerator, y_denominator]. The default is None.
+        Stacking vector [x, y]. The default is None.
     color : str, optional
         Hex code for text box fill color, format "#000000". The default is None.
 
@@ -674,40 +671,52 @@ def add_flt_param_box(plot, n_stacks, pos, ha="left", va="top", p=None, s=None,
     p_txt = re.sub("x", str(int(p*100)), r"$P = x \%$")
         
     if s is not None:
-        vec_txt = r"$\vec{S} = \left[ x, y \right]$"
-        var_list = ["x", "y"]
-        for i in range(2):
-            sub_txt = re.sub(var_list[i], str(s[i]), vec_txt)
-            vec_txt = sub_txt
-    if s_frac is not None:
-        l = len(s_frac)
-        if l == 3:
-            if s_frac[0] == 0:
-                vec_txt = r"$\vec{S} = \left[ 0, \frac{x}{y} \right]$"
-                var_list = ["x", "y"]
-                s_vals = []
-                for i in range(l):
-                    if s_frac[l] != 0:
-                        s_vals.append(s_frac[l])
-                for i in range(len(s_vals)):
-                    sub_txt = re.sub(var_list[i], str(s_vals[i]), vec_txt)
-                    vec_txt = sub_txt
-                    
-            if s_frac[2] == 0:
-                vec_txt = r"$\vec{S} = \left[ \frac{x}{y}, 0 \right]$"
-                var_list = ["x", "y"]
-                s_vals = []
-                for i in range(l):
-                    if s_frac[l] != 0:
-                        s_vals.append(s_frac[l])
-                for i in range(len(s_vals)):
-                    sub_txt = re.sub(var_list[i], str(s_vals[i]), vec_txt)
-                    vec_txt = sub_txt
-        if l == 4:
+        isFrac = [False, False]
+        
+        for i in range(len(s)):
+            if "/" in s[i]:
+                isFrac[i] = True
+                
+        if isFrac[0] == False and isFrac[1] == False:
+            vec_txt = r"$\vec{S} = \left[ x, y \right]$"
+            var_list = ["x", "y"]
+            
+            for i in range(len(s)):
+                sub_txt = re.sub(var_list[i], str(s[i]), vec_txt)
+                vec_txt = sub_txt
+            
+        if isFrac[0] == False and isFrac[1] == True:
+            vec_txt = r"$\vec{S} = \left[ x, \frac{y1}{y2} \right]$"
+            var_list = ["x", "y1", "y2"]
+            
+            split_s = s[1].split("/")
+            new_s = [s[0], split_s[0], split_s[1]]
+            
+            for i in range(len(new_s)):
+                sub_txt = re.sub(var_list[i], str(new_s[i]), vec_txt)
+                vec_txt = sub_txt
+            
+        if isFrac[0] == True and isFrac[1] == False:
+            vec_txt = r"$\vec{S} = \left[ \frac{x1}{x2}, y \right]$"
+            var_list = ["x1", "x2", "y"]
+            
+            split_s = s[0].split("/")
+            new_s = [split_s[0], split_s[1], s[1]]
+            
+            for i in range(len(new_s)):
+                sub_txt = re.sub(var_list[i], str(new_s[i]), vec_txt)
+                vec_txt = sub_txt
+            
+        if isFrac[0] == True and isFrac[1] == True:
             vec_txt = r"$\vec{S} = \left[ \frac{x1}{x2}, \frac{y1}{y2} \right]$"
             var_list = ["x1", "x2", "y1", "y2"]
-            for i in range(4):
-                sub_txt = re.sub(var_list[i], str(s_frac[i]), vec_txt)
+            
+            split_sx = s[0].split("/")
+            split_sy = s[1].split("/")
+            new_s = [split_sx[0], split_sx[1], split_sy[0], split_sy[1]]
+            
+            for i in range(len(new_s)):
+                sub_txt = re.sub(var_list[i], str(new_s[i]), vec_txt)
                 vec_txt = sub_txt
         
     if p is None:
