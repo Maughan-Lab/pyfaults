@@ -810,7 +810,7 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
         diff_q_list.append(diff_q)
         diff_ints_list.append(diff_ints)
     
-    fig, (p) = plt.subplots(rows, cols, figsize=(rows, cols))
+    fig, (p) = plt.subplots(rows, cols, figsize=(rows, cols*2))
     
     g = gradient_gen_2D("#00C6BF", "#009AE1", "#5D7AD3", "#B430C2", rows, cols)
     
