@@ -549,7 +549,8 @@ def diff_stack(num, q_list, ints_list, x_lim, y_lim, wl, start_hex, end_hex,
     return(p)
 
 #------------------------------------------------------------------------------
-def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim, y_lim, wl):
+def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim, 
+                   y_lim, wl, calcDiff=False, diff_q=None, diff_ints=None):
     '''
     Generates plot of unfaulted sim vs. expt and one faulted sim vs. expt
 
@@ -586,8 +587,12 @@ def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim, y_l
     expt_min = np.min(expt_ints)
     
     # calculate difference curves
-    uf_diff_q, uf_diff_ints = diff_curve(expt_q, uf_q, expt_ints, uf_ints + expt_min)
-    flt_diff_q, flt_diff_ints = diff_curve(expt_q, flt_q, expt_ints, flt_ints + expt_min)
+    if calcDiff == True:
+        uf_diff_q, uf_diff_ints = diff_curve(expt_q, uf_q, expt_ints, uf_ints + expt_min)
+        flt_diff_q, flt_diff_ints = diff_curve(expt_q, flt_q, expt_ints, flt_ints + expt_min)
+        
+        diff_q = [uf_diff_q, flt_diff_q]
+        diff_ints = [uf_diff_ints, flt_diff_ints]
     
     # plot expt data
     for i in range(2):
@@ -595,12 +600,12 @@ def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim, y_l
     
     # plot unfaulted data
     p[0].plot(uf_q, uf_ints, color=c[0], label="Unfaulted", linewidth="2")
-    p[0].plot(uf_diff_q, uf_diff_ints-np.max(uf_diff_ints), color="#BEBEBE", 
+    p[0].plot(diff_q[0], diff_ints[0]-np.max(diff_ints[0]), color="#BEBEBE", 
               label="Difference", linewidth="1")
 
     # plot faulted data
     p[1].plot(flt_q, flt_ints, color=c[1], label="Faulted", linewidth="2")
-    p[1].plot(flt_diff_q, flt_diff_ints-np.max(flt_diff_ints), color="#BEBEBE", 
+    p[1].plot(diff_q[1], diff_ints[1]-np.max(diff_ints[1]), color="#BEBEBE", 
               label="Difference", linewidth="1")
     
     # set axis limits
