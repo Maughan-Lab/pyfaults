@@ -767,8 +767,8 @@ def add_peak_labels(plot, hkl, x_pos, y_pos, color=None, size="14"):
                   va="center", fontsize=size)
 
 #------------------------------------------------------------------------------
-def fit_compare(rows, cols, uf_q_list, uf_ints_list, flt_q_list, flt_ints_list,
-                x_lims, y_lims, wl, row_labels, col_labels, row_label_adj, col_label_adj):
+def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims, 
+                y_lims, wl, row_labels, col_labels, row_label_adj, col_label_adj):
     '''
     Compare goodness of fit between datasets with a difference of difference curve
 
@@ -804,9 +804,9 @@ def fit_compare(rows, cols, uf_q_list, uf_ints_list, flt_q_list, flt_ints_list,
     '''
     diff_q_list = []
     diff_ints_list= []
-    for i in range(len(uf_q_list)):
-        diff_q, diff_ints = diff_curve(uf_q_list[i], flt_q_list[i], 
-                                       uf_ints_list[i], flt_ints_list[i])
+    for i in range(rows):
+        diff_q, diff_ints = diff_curve(uf_q, flt_q_list[i], 
+                                       uf_ints, flt_ints_list[i])
         diff_q_list.append(diff_q)
         diff_ints_list.append(diff_ints)
     
