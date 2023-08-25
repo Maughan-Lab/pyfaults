@@ -8,6 +8,7 @@ import numpy as np
 import re
 
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 from matplotlib.pyplot import rc
 rc("text", usetex=True)
 rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
@@ -829,6 +830,9 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
     for row in range(rows):
         for col in range(1, cols):
             p[row][col].get_yaxis().set_visible(False)
+      
+    for col in range(cols):
+        p[-1][col].xaxis.set_major_locator(ticker.MultipleLocator(0.01))
     
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
