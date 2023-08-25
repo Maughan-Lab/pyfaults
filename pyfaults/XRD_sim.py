@@ -599,7 +599,7 @@ def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim, y_l
               label="Difference", linewidth="1")
 
     # plot faulted data
-    p[1].plot(flt_q, flt_ints, color=c[1], label="Calculated", linewidth="2")
+    p[1].plot(flt_q, flt_ints, color=c[1], label="Faulted", linewidth="2")
     p[1].plot(flt_diff_q, flt_diff_ints-np.max(flt_diff_ints), color="#BEBEBE", 
               label="Difference", linewidth="1")
     
@@ -675,11 +675,24 @@ def add_flt_param_box(plot, n_stacks, pos, ha="left", va="top", p=None, s=None,
             sub_txt = re.sub(var_list[i], str(s[i]), vec_txt)
             vec_txt = sub_txt
     if s_frac is not None:
-        vec_txt = r"$\vec{S} = \left[ \frac{x1}{x2}, \frac{y1}{y2} \right]$"
-        var_list = ["x1", "x2", "y1", "y2"]
-        for i in range(4):
-            sub_txt = re.sub(var_list[i], str(s[i]), vec_txt)
-            vec_txt = sub_txt
+        if s_frac[0] == 0:
+            vec_txt = r"$\vec{S} = \left[ 0, \frac{x}{y} \right]$"
+            var_list = ["x", "y"]
+            for i in range(1,3):
+                sub_txt = re.sub(var_list[i], str(s_frac[i]), vec_txt)
+                vec_txt = sub_txt
+        if s_frac[2] == 0:
+            vec_txt = r"$\vec{S} = \left[ \frac{x}{y}, 0 \right]$"
+            var_list = ["x", "y"]
+            for i in range(2):
+                sub_txt = re.sub(var_list[i], str(s_frac[i]), vec_txt)
+                vec_txt = sub_txt
+        else: 
+            vec_txt = r"$\vec{S} = \left[ \frac{x1}{x2}, \frac{y1}{y2} \right]$"
+            var_list = ["x1", "x2", "y1", "y2"]
+            for i in range(4):
+                sub_txt = re.sub(var_list[i], str(s_frac[i]), vec_txt)
+                vec_txt = sub_txt
         
     if p is None:
         txt = "\n".join((title, n_txt))
