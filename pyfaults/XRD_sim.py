@@ -768,7 +768,7 @@ def add_peak_labels(plot, hkl, x_pos, y_pos, color=None, size="14"):
 
 #------------------------------------------------------------------------------
 def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims, 
-                y_lims, wl, row_labels, col_labels, row_label_adj, col_label_adj):
+                y_lim, wl, row_labels, col_labels, row_label_adj, col_label_adj):
     '''
     Compare goodness of fit between datasets with a difference of difference curve
 
@@ -784,7 +784,7 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
         DESCRIPTION.
     x_lims : TYPE
         DESCRIPTION.
-    y_lims : TYPE
+    y_lim : TYPE
         DESCRIPTION.
     wl : TYPE
         DESCRIPTION.
@@ -810,7 +810,7 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
         diff_q_list.append(diff_q)
         diff_ints_list.append(diff_ints)
     
-    fig, (p) = plt.subplots(rows, cols, figsize=(rows, cols*2))
+    fig, (p) = plt.subplots(rows, cols, figsize=(rows*2, cols))
     
     g = gradient_gen_2D("#00C6BF", "#009AE1", "#5D7AD3", "#B430C2", rows, cols)
     
@@ -824,7 +824,7 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
             
             # set axis limits
             p[row][col].set_xlim(x_lims[col])
-            p[row][col].set_ylim(y_lims[row])
+            p[row][col].set_ylim(y_lim)
             p[row][col].tick_params(axis="both", labelsize="14")
             
     # format axes
@@ -844,19 +844,17 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
     fig.supylabel(y_label, fontsize=16)
     
     # set plot labels
+    y_mid = ((y_lim[1] - y_lim[0]) / 2) + y_lim[0]
+    x_end = x_lims[cols][1]
+    
     for row in range(rows):
-        for col in range(cols):
-            xrange = x_lims[row]
-            yrange = y_lims[col]
-            
-            x_mid = ((xrange[1] - xrange[0]) / 2) + xrange[0]
-            y_mid = ((yrange[1] - yrange[0]) / 2) + yrange[0]
-            
-            p[0][col].text(x_mid, yrange[1]+row_label_adj, col_labels[col], 
-                           color=g[row][col].hex, fontsize="16")
-            
-            p[row][-1].text(y_mid, xrange[1]+col_label_adj, row_labels[row], 
-                           color=g[row][col].hex, fontsize="16")
+        p[row][-1].text(x_end + row_label_adj, y_mid, row_labels[row],
+                        color=g[row][-1].hex, fontsize="16")
+        
+    for col in range(cols):
+        x_mid = ((x_lims[col][1] - x_lims[col][0]) / 2) + x_lims[col][0]
+        p[0][col].text(x_mid, y_lim[1], col_labels[col], color=g[0][col].hex, 
+                       fontsize="16")
         
     plt.subplots_adjust(hspace=0.1, wspace=0.1)
     
