@@ -849,12 +849,12 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
     
     for row in range(rows):
         p[row][-1].text(x_end + row_label_adj, y_mid, row_labels[row],
-                        color=g[row][-1].hex, fontsize="16")
+                        color=g[row][-1].hex, fontsize="16", ha="left", va="center")
         
     for col in range(cols):
         x_mid = ((x_lims[col][1] - x_lims[col][0]) / 2) + x_lims[col][0]
         p[0][col].text(x_mid, y_lim[1], col_labels[col], color=g[0][col].hex, 
-                       fontsize="16")
+                       fontsize="16", ha="center", va="bottom")
         
     plt.subplots_adjust(hspace=0.1, wspace=0.1)
     
