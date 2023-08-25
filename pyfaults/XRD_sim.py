@@ -680,19 +680,30 @@ def add_flt_param_box(plot, n_stacks, pos, ha="left", va="top", p=None, s=None,
             sub_txt = re.sub(var_list[i], str(s[i]), vec_txt)
             vec_txt = sub_txt
     if s_frac is not None:
-        if s_frac[0] == 0:
-            vec_txt = r"$\vec{S} = \left[ 0, \frac{x}{y} \right]$"
-            var_list = ["x", "y"]
-            for i in range(1,3):
-                sub_txt = re.sub(var_list[i-1], str(s_frac[i]), vec_txt)
-                vec_txt = sub_txt
-        if s_frac[2] == 0:
-            vec_txt = r"$\vec{S} = \left[ \frac{x}{y}, 0 \right]$"
-            var_list = ["x", "y"]
-            for i in range(2):
-                sub_txt = re.sub(var_list[i], str(s_frac[i]), vec_txt)
-                vec_txt = sub_txt
-        else: 
+        l = len(s_frac)
+        if l == 3:
+            if s_frac[0] == 0:
+                vec_txt = r"$\vec{S} = \left[ 0, \frac{x}{y} \right]$"
+                var_list = ["x", "y"]
+                s_vals = []
+                for i in range(l):
+                    if s_frac[l] != 0:
+                        s_vals.append(s_frac[l])
+                for i in range(len(s_vals)):
+                    sub_txt = re.sub(var_list[i], str(s_vals[i]), vec_txt)
+                    vec_txt = sub_txt
+                    
+            if s_frac[2] == 0:
+                vec_txt = r"$\vec{S} = \left[ \frac{x}{y}, 0 \right]$"
+                var_list = ["x", "y"]
+                s_vals = []
+                for i in range(l):
+                    if s_frac[l] != 0:
+                        s_vals.append(s_frac[l])
+                for i in range(len(s_vals)):
+                    sub_txt = re.sub(var_list[i], str(s_vals[i]), vec_txt)
+                    vec_txt = sub_txt
+        if l == 4:
             vec_txt = r"$\vec{S} = \left[ \frac{x1}{x2}, \frac{y1}{y2} \right]$"
             var_list = ["x1", "x2", "y1", "y2"]
             for i in range(4):
