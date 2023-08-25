@@ -609,7 +609,7 @@ def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim, y_l
         p[i].set_ylim(y_lim)
         p[i].tick_params(axis="both", labelsize="14")
     
-    p[1].get_xaxis().set_visible(False)
+    p[1].get_yaxis().set_visible(False)
 
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
