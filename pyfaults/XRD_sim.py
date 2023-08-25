@@ -855,7 +855,7 @@ def fit_compare(rows, cols, uf_q, uf_ints, flt_q_list, flt_ints_list, x_lims,
             p[0][col].text(x_mid, yrange[1]+row_label_adj, col_labels[col], 
                            color=g[row][col].hex, fontsize="16")
             
-            p[row][cols].text(y_mid, xrange[1]+col_label_adj, row_labels[row], 
+            p[row][-1].text(y_mid, xrange[1]+col_label_adj, row_labels[row], 
                            color=g[row][col].hex, fontsize="16")
         
     plt.subplots_adjust(hspace=0.1, wspace=0.1)
