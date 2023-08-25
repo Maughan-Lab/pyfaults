@@ -619,7 +619,7 @@ def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, x_lim, y_l
     p[0].set_ylabel(y_label, fontsize=16)
     
     for i in range(2):
-        p[i].legend(handlelength=1, fontsize="14", ncols=3, loc="center")
+        p[i].legend(handlelength=1, fontsize="14", ncols=3, loc="upper center")
     
     plt.subplots_adjust(wspace=0.05)
     
