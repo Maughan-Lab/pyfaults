@@ -671,6 +671,9 @@ def add_flt_param_box(plot, n_stacks, pos, ha="left", va="top", p=None, s=None,
     p_txt = re.sub("x", str(int(p*100)), r"$P = x \%$")
         
     if s is not None:
+        s[0] = str(s[0])
+        s[1] = str(s[1])
+        
         isFrac = [False, False]
         
         for i in range(len(s)):
