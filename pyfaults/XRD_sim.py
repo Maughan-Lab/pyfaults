@@ -424,7 +424,7 @@ def sim_stack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
 
     '''
     
-    fig, (p) = plt.subplots(num, 1, figsize=(num*4,8))
+    fig, (p) = plt.subplots(num, 1, figsize=(8, num*4))
     
     expt_min = np.min(expt_ints)
     
@@ -504,7 +504,7 @@ def diff_stack(num, q_list, ints_list, x_lim, y_lim, wl, labels=None,
 
     '''
     
-    fig, (p) = plt.subplots(num, 1, figsize=(num*4,8))
+    fig, (p) = plt.subplots(num, 1, figsize=(8, num*4))
     
     # generate color gradient
     if start_hex == False:
