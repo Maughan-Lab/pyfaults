@@ -668,7 +668,8 @@ def add_flt_param_box(plot, n_stacks, pos, ha="left", va="top", p=None, s=None,
         
     n_txt = re.sub("x", str(n_stacks), r"$N = x$")
     
-    p_txt = re.sub("x", str(int(p*100)), r"$P = x \%$")
+    if p is not None:
+        p_txt = re.sub("x", str(int(p*100)), r"$P = x \%$")
         
     if s is not None:
         s[0] = str(s[0])
