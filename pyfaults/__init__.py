@@ -24,6 +24,8 @@ from pyfaults.childLayer import ChildLayer
 from pyfaults.unitcell import Unitcell
 from pyfaults.supercell import Supercell
 
+import pyfaults.simXRD
+
 # top level methods ---------------------------------------------------------------------
 
 def toCif(cell, path, fn, inclPkl=False):
@@ -125,3 +127,4 @@ assert Layer
 assert ChildLayer
 assert Unitcell
 assert Supercell
+assert pyfaults.simXRD
