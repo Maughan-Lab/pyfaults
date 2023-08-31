@@ -173,7 +173,6 @@ def q_to_tt(q, wavelength):
     '''
     twotheta = 360 * np.pi * np.arcsin((q * wavelength) / (4 * np.pi))
     return twotheta
-        S
         
 assert Lattice
 assert LayerAtom
