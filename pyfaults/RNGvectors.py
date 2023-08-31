@@ -93,10 +93,16 @@ class RNGvectors(list):
         for i in range(self.num):
             if self.xRange != (0,0):
                 xval = round(r.uniform(self.xRange[0], self.xRange[1]), self.numDecimals)
+            elif self.xRange == (0,0):
+                xval = 0
             if self.yRange != (0,0):
                 yval = round(r.uniform(self.yRange[0], self.yRange[1]), self.numDecimals)
+            elif self.yRange == (0,0):
+                yval = 0
             if self.zRange != (0,0):
                 zval = round(r.uniform(self.zRange[0], self.zRange[1]), self.numDecimals)
+            elif self.zRange == (0,0):
+                zval = 0
                 
             s = np.array([xval, yval, zval])
             vecList.append(s)
