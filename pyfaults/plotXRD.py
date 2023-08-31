@@ -9,7 +9,7 @@ import re
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-import matplotlib.lines.Line2D as line
+import matplotlib.lines as mlines
 from matplotlib.pyplot import rc
 rc("text", usetex=True)
 rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
@@ -375,13 +375,13 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     p[0].set_ylabel(y_label, fontsize=16)
     
     # set legend handles
-    obsHandle = line([], [], color="white", label="Observed", marker=".", 
+    obsHandle = mlines.Line2D([], [], color="white", label="Observed", marker=".", 
                      mfc="black", ms=15)
     UFlabel = "\n".join(("Unfaulted", re.sub("x", str(nStacks), r"$N = x$")))
-    UFhandle = line([], [], color=c[0], label=UFlabel)
+    UFhandle = mlines.Line2D([], [], color=c[0], label=UFlabel)
     FLTlabel = "\n".join(("Faulted", re.sub("x", str(nStacks), r"$N = x$")))
-    FLThandle = line([], [], color=c[1], label=FLTlabel)
-    diffHandle = line([], [], color="#BEBEBE", label="Difference")
+    FLThandle = mlines.Line2D([], [], color=c[1], label=FLTlabel)
+    diffHandle = mlines.Line2D([], [], color="#BEBEBE", label="Difference")
     
     # add legend
     p[1].legend(handles=[obsHandle, UFhandle, FLThandle, diffHandle], 
