@@ -28,7 +28,7 @@ import pyfaults.simXRD
 
 # top level methods ---------------------------------------------------------------------
 
-def toCif(cell, path, fn, inclPkl=False):
+def toCif(cell, path, fn):
     '''
     Writes cif file from unit cell or supercell object
 
@@ -40,11 +40,7 @@ def toCif(cell, path, fn, inclPkl=False):
         File directory to save cif to
     fn : str
         File name
-    inclPkl : bool, optional
-        Generates pickle file of cif info when True. The default is False.
     '''
-    
-    import pickle as p
     
     lines = []
     
@@ -94,11 +90,6 @@ def toCif(cell, path, fn, inclPkl=False):
         for i in lines:
             cif.write(i + "\n")
     cif.close()
-    
-    if inclPkl == True:
-        with open(path + fn + ".pkl", "wb") as pkl:
-            p.dump(lines, pkl)
-        pkl.close()
         
         
 def importCSV(path, fn):
