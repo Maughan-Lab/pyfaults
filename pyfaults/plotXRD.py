@@ -18,49 +18,6 @@ rc("text.latex",preamble=r"\usepackage{sfmath}")
 ''' XRD plotting functions '''
 #########################################################################################
 
-def importSim(path, fn):
-    '''
-    Imports text file with simulated XRD data
-
-    Parameters
-    ----------
-    path : str
-        File directory
-    fn : str
-        File name
-
-    Returns
-    -------
-    q : nparray
-        Calculated Q values
-    ints : nparray
-        Calculated intensity values
-
-    '''
-    q, ints = np.loadtxt(path + fn + ".txt", unpack=True, dtype=float)
-    return q, ints
-
-#------------------------------------------------------------------------------
-def tt_to_q(twotheta, wavelength):
-    '''
-    Converts 2theta to Q
-
-    Parameters
-    ----------
-    twotheta : nparray
-        2theta values
-    wavelength : float
-        Instrument wavelength
-
-    Returns
-    -------
-    Q : nparray
-        Calculated Q values
-    '''
-    Q = 4 * np.pi * np.sin((twotheta * np.pi)/360) / wavelength
-    return Q
-
-#------------------------------------------------------------------------------
 def saveFig(plot, path, fn):
     '''
     Save figure as a .png file

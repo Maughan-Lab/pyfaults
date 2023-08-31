@@ -135,7 +135,45 @@ def importSim(path, fn):
     '''
     q, ints = np.loadtxt(path + fn + ".txt", unpack=True, dtype=float)
     return q, ints
-        
+
+def tt_to_q(twotheta, wavelength):
+    '''
+    Converts 2theta to Q
+
+    Parameters
+    ----------
+    twotheta : nparray
+        2theta values
+    wavelength : float
+        Instrument wavelength
+
+    Returns
+    -------
+    Q : nparray
+        Calculated Q values
+    '''
+    Q = 4 * np.pi * np.sin((twotheta * np.pi)/360) / wavelength
+    return Q
+
+def q_to_tt(q, wavelength):
+    '''
+    Converts Q to 2theta
+
+    Parameters
+    ----------
+    q : nparray
+        Q values
+    wavelength : float
+        Instrument wavelength
+
+    Returns
+    -------
+     twotheta: nparray
+        Calculated 2theta values
+    '''
+    twotheta = 360 * np.pi * np.arcsin((q * wavelength) / (4 * np.pi))
+    return twotheta
+        S
         
 assert Lattice
 assert LayerAtom
