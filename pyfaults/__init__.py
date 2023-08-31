@@ -14,6 +14,7 @@ Classes:
 '''
 
 import pandas as pd
+import numpy as np
 
 # submodules ----------------------------------------------------------------------------
 
@@ -112,6 +113,28 @@ def importCSV(path, fn):
     '''
     df = pd.read_csv(path + fn + ".csv")
     return df
+
+def importSim(path, fn):
+    '''
+    Imports text file with simulated XRD data
+
+    Parameters
+    ----------
+    path : str
+        File directory
+    fn : str
+        File name
+
+    Returns
+    -------
+    q : nparray
+        Calculated Q values
+    ints : nparray
+        Calculated intensity values
+
+    '''
+    q, ints = np.loadtxt(path + fn + ".txt", unpack=True, dtype=float)
+    return q, ints
         
         
 assert Lattice
