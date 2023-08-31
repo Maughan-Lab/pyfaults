@@ -9,6 +9,7 @@ import re
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import matplotlib.lines.line2D as line
 from matplotlib.pyplot import rc
 rc("text", usetex=True)
 rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
@@ -18,10 +19,10 @@ rc("text.latex",preamble=r"\usepackage{sfmath}")
 ''' XRD plotting functions '''
 #########################################################################################
 
+''' Saves figure as PNG file '''
+#----------------------------------------------------------------------------------------
 def saveFig(plot, path, fn):
     '''
-    Save figure as a .png file
-
     Parameters
     ----------
     plot : figure
@@ -30,25 +31,38 @@ def saveFig(plot, path, fn):
         File directory path
     fn : str
         File name to save to
-
-    Returns
-    -------
-    None
-
     '''
     save = path + fn + ".png"
     plot.savefig(save, bbox_inches="tight", pad_inches=0.2, dpi=1000)
-
-#------------------------------------------------------------------------------
-def gradientGen(start_hex, end_hex, num):
+ 
+    
+''' Normalizes intensity values '''
+#----------------------------------------------------------------------------------------
+def norm(ints):
     '''
-    Generates color gradient
-
     Parameters
     ----------
-    start_hex : str
+    ints : nparray
+        Intensity values
+
+    Returns
+    -------
+    norm_ints : nparray
+        Normalized intensity values
+    '''
+    normInts = (ints / np.max(ints))
+    return normInts
+    
+
+''' Generates color gradient '''
+#----------------------------------------------------------------------------------------
+def gradientGen(startHex, endHex, num):
+    '''
+    Parameters
+    ----------
+    startHex : str
         Hex code for first gradient color, format "#000000"
-    end_hex : str
+    endHex : str
         Hex code for final gradient color, format "#000000"
     num : int
         Number of colors to generate
@@ -58,28 +72,24 @@ def gradientGen(start_hex, end_hex, num):
     colors_list : list (Color)
         Hex codes, will need to use .hex() to retrieve as string
     '''
-    start_color = Color(start_hex)
-    end_color = Color(end_hex)
+    startColor = Color(startHex)
+    endColor = Color(endHex)
     
-    colors_list = list(start_color.range_to(end_color, num))
+    colorsList = list(startColor.range_to(endColor, num))
     
-    return colors_list
+    return colorsList
 
-#------------------------------------------------------------------------------
-def gradientGen2D(top_lf, top_rt, bott_lf, bott_rt, rows, cols):
+
+''' Generates 2D color gradient '''
+#----------------------------------------------------------------------------------------
+def gradientGen2D(cornerColors, rows, cols):
     '''
-    Generates a 2D color gradient
-
     Parameters
     ----------
-    top_lf : str
-        Hex code for top left gradient color, format "#000000"
-    top_rt : str
-        Hex code for top right gradient color, format "#000000"
-    bott_lf : str
-        Hex code for bottom left gradient color, format "#000000"
-    bott_rt : str
-        Hex code for bottom right gradient color, format "#000000"
+    cornerColors : list (str)
+        Hex codes for colors in each corner of gradient map, format "#000000".
+        List colors in position order: top left, top right, bottom left, bottom
+        right.
     rows : int
         Number of rows
     cols : int
@@ -90,80 +100,82 @@ def gradientGen2D(top_lf, top_rt, bott_lf, bott_rt, rows, cols):
     color_list : list (Color)
         Hex codes in 2D array format, will need to use .hex() to retrieve as string
     '''
-    # get colors from hex codes
-    tl = Color(top_lf)
-    tr = Color(top_rt)
-    bl = Color(bott_lf)
-    br = Color(bott_rt)
+    tl = Color(cornerColors[0])
+    tr = Color(cornerColors[1])
+    bl = Color(cornerColors[2])
+    br = Color(cornerColors[3])
     
     # generate gradient from upper left to lower left
-    start_col_colors = list(tl.range_to(bl, rows))
+    startColColors = list(tl.range_to(bl, rows))
     
     # generate gradient from upper right to lower lright
-    end_col_colors = list(tr.range_to(br, rows))
+    endColColors = list(tr.range_to(br, rows))
     
     # generate remaining gradient colors
-    color_list = []
-    for i in range(0, rows):
-        c1 = start_col_colors[i]
-        c2 = end_col_colors[i]
-        curr_row_colors = list(c1.range_to(c2, cols))
-        color_list.append(curr_row_colors)
+    colorList = []
+    for i in range(rows):
+        c1 = startColColors[i]
+        c2 = endColColors[i]
+        currRowColors = list(c1.range_to(c2, cols))
+        colorList.append(currRowColors)
     
-    return color_list
+    return colorList
 
 
-#------------------------------------------------------------------------------
-def simStack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
-                    start_hex, end_hex, labels=None, label_offsets=None):
+''' Generates stacked plot with experimental data '''
+#----------------------------------------------------------------------------------------
+def exptStackedPlot(num, expt, qVals, intsVals, x_lim, y_lim, wl, gradient=None, 
+             labels=None, labelOffsets=None, normalize=False):
     '''
-    Generates stacked plot of simulated vs. experimental data
-
     Parameters
     ----------
-    expt_q : nparray
-        Experimental Q data
-    expt_ints : nparray
-        Experimental intensity data (normalized)
     num : int
         Total number of datasets
-    q_list : list (nparray)
-        Arrays of simulated Q datasets
-    ints_list : list (nparray)
-        Arrays of simulated intensity datasets (normalized)
+    expt : list (nparray)
+        Tuple of arrays of experimental Q data and intensity data
+    qVals : list (nparray)
+        List of Q datasets
+    intsVals : list (nparray)
+        List of intensity datasets
     x_lim : list (float)
         Tuple with x-axis minimum and maximum
     y_lim : list (float)
         Tuple with y-axis minimum and maximum
     wl : float
         Instrument wavelength (A)
-    start_hex : str
-        Hex code for initial gradient color, format "#000000"
-    end_hex : str
-        Hex code for final gradient color, format "#000000"
+    gradient : list (str), optional
+        Tuple of start and end values of color gradient, format "#000000". The 
+        default is ("#00C6BF", "#B430C2").
     labels : list (str), optional
         Labels for each dataset. The default is None.
-    label_offsets : list (float), optional
+    labelOffsets : list (float), optional
         Tuple with offsets from x-axis maximum and vertical spacing from data
         for text labels. The default is None.
+    normalize : bool, optional
+        Set to True to normalize intensity values. The default is False.
     '''
     
     fig, (p) = plt.subplots(num, 1, figsize=(8, 8))
     
-    expt_min = np.min(expt_ints)
+    exptMin = np.min(expt[1])
     
-    # generate color gradient
-    if start_hex == False:
-        start_hex = "#00C6BF"
-    if end_hex == False:
-        end_hex = "#B430C2"
-    g = gradientGen(start_hex, end_hex, num)
+    # generate gradient
+    if gradient is not None:
+        g = gradientGen(gradient[0], gradient[1], num)
+    elif gradient is None:
+        g = gradientGen("#00C6BF", "#B430C2", num)
+        
+    # normalize
+    if normalize == True:
+        expt[1] = norm(expt[1])
+        for i in range(num):
+            intsVals[i] = norm(intsVals[i])
     
     # plot data
-    for i in range(0, num):
-        p[i].scatter(expt_q, expt_ints, color="black", label="Observed", marker=".", s=8)
-    for i in range(0, num):
-        p[i].plot(q_list[i], ints_list[i]+expt_min, color=g[i].hex, linewidth="2.5")
+    for i in range(num):
+        p[i].scatter(expt, color="black", label="Observed", marker=".", s=8)
+    for i in range(num):
+        p[i].plot(qVals[i], intsVals[i]+exptMin, color=g[i].hex, linewidth="2.5")
         
     # set axis limits
     for i in range(num):
@@ -175,7 +187,10 @@ def simStack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
     
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
-    y_label = "Intensity (counts, normalized)"
+    if normalize == True:
+        y_label = "Intensity (counts, normalized)"
+    elif normalize == False:
+        y_label = "Intensity (counts)"
     
     p[-1].set_xlabel(x_label, fontsize=16)
     fig.supylabel(y_label, fontsize=16)
@@ -183,7 +198,7 @@ def simStack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
     # add stack labels 
     if labels is not None:
         for i in range(num):
-            p[i].text(x_lim[1] - label_offsets[0], label_offsets[1],
+            p[i].text(x_lim[1] - labelOffsets[0], labelOffsets[1],
                     labels[i], color=g[i].hex, fontsize="16", ha="right", va="top")
     
     # add legend
@@ -193,49 +208,54 @@ def simStack(expt_q, expt_ints, num, q_list, ints_list, x_lim, y_lim, wl,
     
     return(p)
 
-#------------------------------------------------------------------------------
-def diffStack(num, q_list, ints_list, x_lim, y_lim, wl, start_hex, end_hex, 
-               labels=None, label_offsets=None):
-    '''
-    Generates stacked plot of sim vs. expt difference curves
 
+''' Generates stacked plot '''
+#----------------------------------------------------------------------------------------
+def stackedPlot(num, qVals, intsVals, x_lim, y_lim, wl, gradient=None, 
+                labels=None, labelOffsets=None, normalize=False):
+    '''
     Parameters
     ----------
     num : int
         Total number of datasets
-    q_list : list (nparray)
-        Arrays of difference curve Q datasets
-    ints_list : list (nparray)
-        Arrays of difference curve intensity datasets (normalized)
+    qVals : list (nparray)
+        List of Q datasets
+    intsVals : list (nparray)
+        List of intensity datasets
     x_lim : list (float)
         Tuple with x-axis minimum and maximum
     y_lim : list (float)
         Tuple with y-axis minimum and maximum
     wl : float
         Instrument wavelength (A)
-    start_hex : str
-        Hex code for initial gradient color, format "#000000"
-    end_hex : str
-        Hex code for final gradient color, format "#000000"
+    gradient : list (str), optional
+        Tuple of start and end values of color gradient, format "#000000". The 
+        default is ("#00C6BF", "#B430C2").
     labels : list (str), optional
         Labels for each dataset. The default is None.
-    label_offsets : list (float), optional
+    labelOffsets : list (float), optional
         Tuple with offsets from x-axis maximum and vertical spacing from data
         for text labels. The default is None.
+    normalize : bool, optional
+        Set to True to normalize intensity values. The default is False.
     '''
     
     fig, (p) = plt.subplots(num, 1, figsize=(8, 8))
     
-    # generate color gradient
-    if start_hex == False:
-        start_hex = "#00C6BF"
-    if end_hex == False:
-        end_hex = "#B430C2"
-    g = gradientGen(start_hex, end_hex, num)
+    # generate gradient
+    if gradient is not None:
+        g = gradientGen(gradient[0], gradient[1], num)
+    elif gradient is None:
+        g = gradientGen("#00C6BF", "#B430C2", num)
+        
+    # normalize
+    if normalize == True:
+        for i in range(num):
+            intsVals[i] = norm(intsVals[i])
     
     # plot data
-    for i in range(0, num):
-        p[i].plot(q_list[i], ints_list[i], color="#BEBEBE", linewidth="2")
+    for i in range(num):
+        p[i].plot(qVals[i], intsVals[i], color=g[i].hex, linewidth="2.5")
         
     # set axis limits
     for i in range(num):
@@ -247,7 +267,10 @@ def diffStack(num, q_list, ints_list, x_lim, y_lim, wl, start_hex, end_hex,
     
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
-    y_label = "Intensity (counts, normalized)"
+    if normalize == True:
+        y_label = "Intensity (counts, normalized)"
+    elif normalize == False:
+        y_label = "Intensity (counts)"
     
     p[-1].set_xlabel(x_label, fontsize=16)
     fig.supylabel(y_label, fontsize=16)
@@ -255,57 +278,82 @@ def diffStack(num, q_list, ints_list, x_lim, y_lim, wl, start_hex, end_hex,
     # add stack labels 
     if labels is not None:
         for i in range(num):
-            p[i].text(x_lim[1] - label_offsets[0], label_offsets[1],
+            p[i].text(x_lim[1] - labelOffsets[0], labelOffsets[1],
                     labels[i], color=g[i].hex, fontsize="16", ha="right", va="top")
+    
+    # add legend
+    p[0].legend(handlelength=0.25, fontsize="14")
     
     plt.subplots_adjust(hspace=0.05) 
     
     return(p)
 
-#------------------------------------------------------------------------------
-def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, uf_diff,
-                   flt_diff, x_lim, y_lim, wl, diff_q=None, diff_ints=None):
-    '''
-    Generates plot of unfaulted sim vs. expt and one faulted sim vs. expt
 
+''' Generates dual plot. Plot 1 shows experimental XRD and unfaulted supercell
+XRD. Plot 2 shows experimental XRD and faulted supercell XRD. '''
+#----------------------------------------------------------------------------------------
+def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl, 
+                   prob, sVec, boxAdj=None, colors=None, normalize=False):
+    '''
     Parameters
     ----------
-    expt_q : nparray
-        Experimental Q data
-    expt_ints : nparray
-        Experimental intensity data (normalized)
-    uf_q : nparray
-        Unfaulted supercell Q data
-    uf_ints : nparray
-        Unfaulted supercell intensity data
-    flt_q : nparray
-        Faulted supercell Q data
-    flt_ints : nparray
-        Faulted supercell intensity data
+    expt : list (nparray)
+        Tuple of arrays of experimental Q data and intensity data
+    UF : list (nparray)
+        Tuple of arrays of unfaulted supercell Q data and intensity data
+    FLT : list (nparray)
+        Tuple of arrays of faulted supercell Q data and intensity data
+    UFdiff : list (nparray)
+        Tuple of arrays of expt vs UF difference Q data and intensity data
+    FLTdiff : list (nparray)
+        Tuple of arrays of expt vs FLT difference Q data and intensity data
+    nStacks : int
+        Number of stacks in supercells
     x_lim : list (float)
         Tuple with x-axis minimum and maximum
     y_lim : list (float)
         Tuple with y-axis minimum and maximum
     wl : float
         Instrument wavelength (A)
+    prob : float
+        Stacking probability
+    sVec : list (str)
+        List of stacking vector components as strings
+    boxAdj : list (float), optional
+        Tuple of parameter box position displacement from upper left corner.
+        Default is (0.01, 0.01).
+    colors : list (str), optional
+        Tuple of color hex codes for unfaulted and faulted curves, format 
+        "#000000". The default is ("#00C6BF", "#B430C2").
+    normalize : bool, optional
+        Set to True to normalize intensity values. The default is False.
     '''
     
     fig, (p) = plt.subplots(1, 2, sharey=True, figsize=(14,7))
     
-    c = ["#FA008E", "#2FF8B9"]
+    if colors is not None:
+        c = colors
+    if colors is None:
+        c = ("#00C6BF", "#B430C2")
+        
+    # normalize
+    if normalize == True:
+        expt[1] = norm(expt[1])
+        UF[1] = norm(UF[1])
+        FLT[1] = norm(FLT[1])
     
     # plot expt data
     for i in range(2):
-        p[i].scatter(expt_q, expt_ints, color="black", label="Observed", marker=".")
+        p[i].scatter(expt, color="black", label="Observed", marker=".")
     
     # plot unfaulted data
-    p[0].plot(uf_q, uf_ints, color=c[0], label="Unfaulted", linewidth="2")
-    p[0].plot(diff_q[0], diff_ints[0]-np.max(diff_ints[0]), color="#BEBEBE", 
+    p[0].plot(UF, color=c[0], label="Unfaulted", linewidth="2")
+    p[0].plot(UFdiff[0], UFdiff[1]-np.max(UFdiff[1]), color="#BEBEBE", 
               label="Difference", linewidth="1")
 
     # plot faulted data
-    p[1].plot(flt_q, flt_ints, color=c[1], label="Faulted", linewidth="2")
-    p[1].plot(diff_q[1], diff_ints[1]-np.max(diff_ints[1]), color="#BEBEBE", 
+    p[1].plot(FLT, color=c[1], label="Faulted", linewidth="2")
+    p[1].plot(FLTdiff[0], FLTdiff[1]-np.max(FLTdiff[1]), color="#BEBEBE", 
               label="Difference", linewidth="1")
     
     # set axis limits
@@ -318,122 +366,53 @@ def compare_uf_flt(expt_q, expt_ints, uf_q, uf_ints, flt_q, flt_ints, uf_diff,
 
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
-    y_label = "Intensity (counts, normalized)"
+    if normalize == True:
+        y_label = "Intensity (counts, normalized)"
+    elif normalize == False:
+        y_label = "Intensity (counts)"
     
     fig.supxlabel(x_label, fontsize=16)
     p[0].set_ylabel(y_label, fontsize=16)
     
-    for i in range(2):
-        p[i].legend(handlelength=1, fontsize="14", ncols=3, loc="upper center")
+    # set legend handles
+    obsHandle = line([], [], color="white", label="Observed", marker=".", 
+                     mfc="black", ms=15)
+    UFlabel = "\n".join(("Unfaulted", re.sub("x", str(nStacks), r"$N = x$")))
+    UFhandle = line([], [], color=c[0], label=UFlabel)
+    FLTlabel = "\n".join(("Faulted", re.sub("x", str(nStacks), r"$N = x$")))
+    FLThandle = line([], [], color=c[1], label=FLTlabel)
+    diffHandle = line([], [], color="#BEBEBE", label="Difference")
+    
+    # add legend
+    p[1].legend(handles=[obsHandle, UFhandle, FLThandle, diffHandle], 
+                handlelength=1, fontsize="16", loc="upper left", 
+                bbox_to_anchor=(1.05, 1))
+    
+    # add fault parameters box
+    probText = re.sub("x", str(int(p*100)), r"$P = x \%$")
+    sVecText = r"$\vec{S} = \left[ x, y, z \right]$"
+    for i in ["x", "y", "z"]:
+        subText = re.sub(i, sVec[i], sVecText)
+        sVecText = subText
+    
+    if boxAdj is not None:
+        ba = boxAdj
+    elif boxAdj is None:
+        ba = (0.01, 0.01)
+        
+    params = "\n".join((sVecText, probText))
+    props = dict(boxstyle="round", facecolor="white", alpha=0.5, pad=0.3)
+    p[1].text(x_lim[0] + ba[0], y_lim[1] + ba[1], params, bbox=props, 
+              ha="left", va="top", fontsize="16", linespacing=2)
     
     plt.subplots_adjust(wspace=0.05)
     
     return(p)
-    
-#------------------------------------------------------------------------------
-def addFltParamBox(plot, n_stacks, pos, ha="left", va="top", p=None, s=None, 
-                      color=None):
-    '''
-    Adds a text box with supercell parameters
 
-    Parameters
-    ----------
-    plot : Figure
-        Plot to add text to
-    n_stacks : int
-        Number of stacks in supercell
-    pos : list (float)
-        Tuple with (x, y) position
-    ha : str, optional
-        Horizontal text alignment. The default is "left".
-    va : str, optional
-        Vertical text alignment. The default is "top".
-    p : float, optional
-        Stacking probability. The default is None.
-    s : list (float), optional
-        Stacking vector [x, y]. The default is None.
-    color : str, optional
-        Hex code for text box fill color, format "#000000". The default is None.
-    '''
-    
-    if p is None:
-        title = "Unfaulted"
-    if p is not None:
-        title = "Faulted"
-        
-    n_txt = re.sub("x", str(n_stacks), r"$N = x$")
-    
-    if p is not None:
-        p_txt = re.sub("x", str(int(p*100)), r"$P = x \%$")
-        
-    if s is not None:
-        s[0] = str(s[0])
-        s[1] = str(s[1])
-        
-        isFrac = [False, False]
-        
-        for i in range(len(s)):
-            if "/" in s[i]:
-                isFrac[i] = True
-                
-        if isFrac[0] == False and isFrac[1] == False:
-            vec_txt = r"$\vec{S} = \left[ x, y \right]$"
-            var_list = ["x", "y"]
-            
-            for i in range(len(s)):
-                sub_txt = re.sub(var_list[i], str(s[i]), vec_txt)
-                vec_txt = sub_txt
-            
-        if isFrac[0] == False and isFrac[1] == True:
-            vec_txt = r"$\vec{S} = \left[ x, \frac{y1}{y2} \right]$"
-            var_list = ["x", "y1", "y2"]
-            
-            split_s = s[1].split("/")
-            new_s = [s[0], split_s[0], split_s[1]]
-            
-            for i in range(len(new_s)):
-                sub_txt = re.sub(var_list[i], str(new_s[i]), vec_txt)
-                vec_txt = sub_txt
-            
-        if isFrac[0] == True and isFrac[1] == False:
-            vec_txt = r"$\vec{S} = \left[ \frac{x1}{x2}, y \right]$"
-            var_list = ["x1", "x2", "y"]
-            
-            split_s = s[0].split("/")
-            new_s = [split_s[0], split_s[1], s[1]]
-            
-            for i in range(len(new_s)):
-                sub_txt = re.sub(var_list[i], str(new_s[i]), vec_txt)
-                vec_txt = sub_txt
-            
-        if isFrac[0] == True and isFrac[1] == True:
-            vec_txt = r"$\vec{S} = \left[ \frac{x1}{x2}, \frac{y1}{y2} \right]$"
-            var_list = ["x1", "x2", "y1", "y2"]
-            
-            split_sx = s[0].split("/")
-            split_sy = s[1].split("/")
-            new_s = [split_sx[0], split_sx[1], split_sy[0], split_sy[1]]
-            
-            for i in range(len(new_s)):
-                sub_txt = re.sub(var_list[i], str(new_s[i]), vec_txt)
-                vec_txt = sub_txt
-        
-    if p is None:
-        txt = "\n".join((title, n_txt))
-    if p is not None:
-        txt = "\n".join((title, n_txt, p_txt, vec_txt))
-    
-    if color is None:
-        color = "white"
-    props = dict(boxstyle="round", facecolor=color, alpha=0.5, pad=0.3)
-    
-    plot.text(pos[0], pos[1], txt, bbox=props, ha=ha, va=va, fontsize="16", linespacing=2)
-    
-#------------------------------------------------------------------------------
+''' Add labels to specific (hkl) reflections '''
+#----------------------------------------------------------------------------------------
 def addPeakLabels(plot, hkl, x_pos, y_pos, color=None, size="14"):
     '''
-    Adds (hkl) text labels to reflections
-
     Parameters
     ----------
     plot : Figure
@@ -456,21 +435,24 @@ def addPeakLabels(plot, hkl, x_pos, y_pos, color=None, size="14"):
         plot.text(x_pos[i], y_pos[i], hkl[i], color=color, ha="center", 
                   va="center", fontsize=size)
 
-#------------------------------------------------------------------------------
-def fitCompare(rows, cols, diff_q, diff_ints, x_lims, y_lim, wl, row_labels, 
-                col_labels, row_label_adj, col_label_adj):
-    '''
-    Compare goodness of fit between datasets with a difference of difference curve
 
+''' Compare goodness of fit between data sets using difference of differences.
+Generates plot with rows corresponding to different models and columns
+corresponding to different reflections of interest.'''
+#----------------------------------------------------------------------------------------
+def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels, 
+                colLabels, rowLabelAdj=None, colLabelAdj=None, gradient=None,
+                normalize=False):
+    '''
     Parameters
     ----------
     rows : int
         Number of rows
     cols : int
         Number of columns
-    diff_q : list (nparray)
+    diffQ : list (nparray)
         List of Q datasets of difference of difference curves
-    diff_ints : list (nparray)
+    diffInts : list (nparray)
         List of intensity datasets of difference of difference curves
     x_lims : list (float)
         List of tuples with x-axis minimums and maximums for each column
@@ -478,24 +460,37 @@ def fitCompare(rows, cols, diff_q, diff_ints, x_lims, y_lim, wl, row_labels,
         Tuple with y-axis minimum and maximum
     wl : float
         Instrument wavelength (A)
-    row_labels : list (str)
+    rowLabels : list (str)
         Text labels for rows
-    col_labels : list (str)
+    colLabels : list (str)
         Text labels for columns
-    row_label_adj : float
-        Value to shift row labels along x-axis
-    col_label_adj : float
-        Value to shift column labels along y-axis
+    rowLabelAdj : float, optional
+        Value to shift row labels along x-axis. The default is 0.01.
+    colLabelAdj : float, optional
+        Value to shift column labels along y-axis. The default is 0.01.
+    gradient : list (str)
+        Hex codes for colors in each corner of gradient map, format "#000000".
+        List colors in position order: top left, top right, bottom left, bottom
+        right. The default is ["#00C6BF", "#009AE1", "#5D7AD3", "#B430C2"].
+    normalize : bool, optional
+        Set to True to normalize intensity values. The default is False.
     '''
     
     fig, (p) = plt.subplots(rows, cols, figsize=(rows*2, cols))
     
-    g = gradientGen2D("#00C6BF", "#009AE1", "#5D7AD3", "#B430C2", rows, cols)
+    if gradient is not None:
+        g = gradientGen2D(gradient, rows, cols)
+    elif gradient is None:
+        g = gradientGen2D("#00C6BF", "#009AE1", "#5D7AD3", "#B430C2", rows, cols)
+        
+    if normalize == True:
+        for i in range(len(diffInts)):
+            diffInts[i] = norm(diffInts)
     
     for row in range(rows):
         for col in range(cols):
             # plot data
-            p[row][col].plot(diff_q[row], diff_ints[row], color=g[row][col].hex)
+            p[row][col].plot(diffQ[row], diffInts[row], color=g[row][col].hex)
             
     # set axis limits
     for row in range(rows):
@@ -518,7 +513,10 @@ def fitCompare(rows, cols, diff_q, diff_ints, x_lims, y_lim, wl, row_labels,
     
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
-    y_label = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts, normalized)"
+    if normalize == True:
+        y_label = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts, normalized)"
+    elif normalize == False:
+        y_label = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts)"
     
     fig.supxlabel(x_label, fontsize=16)
     fig.supylabel(y_label, fontsize=16)
@@ -528,12 +526,12 @@ def fitCompare(rows, cols, diff_q, diff_ints, x_lims, y_lim, wl, row_labels,
     x_end = x_lims[-1][1]
     
     for row in range(rows):
-        p[row][-1].text(x_end + row_label_adj, y_mid, row_labels[row],
+        p[row][-1].text(x_end + rowLabelAdj, y_mid, rowLabels[row],
                         color=g[row][-1].hex, fontsize="16", ha="left", va="center")
         
     for col in range(cols):
         x_mid = ((x_lims[col][1] - x_lims[col][0]) / 2) + x_lims[col][0]
-        p[0][col].text(x_mid, y_lim[1] + col_label_adj, col_labels[col], color=g[0][col].hex, 
+        p[0][col].text(x_mid, y_lim[1] + colLabelAdj, colLabels[col], color=g[0][col].hex, 
                        fontsize="16", ha="center", va="bottom")
         
     plt.subplots_adjust(hspace=0.1, wspace=0.1)
