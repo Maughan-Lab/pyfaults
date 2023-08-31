@@ -25,6 +25,8 @@ from pyfaults.unitcell import Unitcell
 from pyfaults.supercell import Supercell
 
 import pyfaults.simXRD
+import pyfaults.plotXRD
+from pyfaults.RNGvectors import RNGvectors
 
 # top level methods ---------------------------------------------------------------------
 
@@ -119,3 +121,5 @@ assert ChildLayer
 assert Unitcell
 assert Supercell
 assert pyfaults.simXRD
+assert pyfaults.plotXRD
+assert RNGvectors
