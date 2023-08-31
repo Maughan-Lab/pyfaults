@@ -9,7 +9,7 @@ import re
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-import matplotlib.lines.line2D as line
+import matplotlib.lines.Line2D as line
 from matplotlib.pyplot import rc
 rc("text", usetex=True)
 rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
