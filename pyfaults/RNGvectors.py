@@ -23,11 +23,6 @@ class RNGvectors(list):
         Tuple of minimum and maximum z-values. The default is (0,0).
     numDecimals : int, optional
         Specify number of decimal places in vector components. The default is 2.
-
-    Returns
-    -------
-    vecList : list (nparray)
-        List of stacking vector arrays
     '''
         
     # properties ------------------------------------------------------------------------
@@ -45,6 +40,8 @@ class RNGvectors(list):
     
     numDecimals = property(lambda self: self._numDecimals,
                            lambda self, val: self.setParam(numDecimals=val))
+    
+    vecList = property(lambda self: self._vecList)
         
     # creates instance of RNGvectors object ---------------------------------------------
     def __init__(self, num, xRange=None, yRange=None, zRange=None, numDecimals=None):
@@ -57,9 +54,10 @@ class RNGvectors(list):
         self._numDecimals = None
         
         self.setParam(num, xRange, yRange, zRange, numDecimals)
-        vecList = self.setVec()
         
-        return vecList
+        self._vecList = self.setVec()
+        
+        return
     
     # set parameters --------------------------------------------------------------------
     def setParam(self, num, xRange=None, yRange=None, zRange=None, numDecimals=None):
