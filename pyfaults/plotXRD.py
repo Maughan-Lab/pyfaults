@@ -381,7 +381,7 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     # add legend
     p[1].legend(handles=[obsHandle, UFhandle, FLThandle, diffHandle], 
                 handlelength=1, fontsize="16", loc="upper left", 
-                bbox_to_anchor=la)
+                bbox_to_anchor=(1 + la[0], 1 + la[1]))
     
     # add fault parameters box
     probText = re.sub("x", str(int(prob*100)), r"$P = x \%$")
