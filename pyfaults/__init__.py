@@ -11,6 +11,7 @@ Classes:
     Child
     Unitcell
     Supercell
+    vecGridGen
 '''
 
 import pandas as pd
@@ -27,7 +28,7 @@ from pyfaults.supercell import Supercell
 
 import pyfaults.simXRD
 import pyfaults.plotXRD
-from pyfaults.vectorGen import RNGvectors, vecGridGen
+from pyfaults.vectorGen import vecGridGen
 
 # top level methods ---------------------------------------------------------------------
 
@@ -182,5 +183,4 @@ assert Unitcell
 assert Supercell
 assert pyfaults.simXRD
 assert pyfaults.plotXRD
-assert RNGvectors
 assert vecGridGen
