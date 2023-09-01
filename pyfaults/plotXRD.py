@@ -125,7 +125,7 @@ def gradientGen2D(cornerColors, rows, cols):
 ''' Generates stacked plot with experimental data '''
 #----------------------------------------------------------------------------------------
 def exptStackedPlot(num, expt, qVals, intsVals, x_lim, y_lim, wl, gradient=None, 
-             labels=None, labelOffsets=None, normalize=False):
+             labels=None, labelOffsets=None, normalized=False):
     '''
     Parameters
     ----------
@@ -151,8 +151,8 @@ def exptStackedPlot(num, expt, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
     labelOffsets : list (float), optional
         Tuple with offsets from x-axis maximum and vertical spacing from data
         for text labels. The default is None.
-    normalize : bool, optional
-        Set to True to normalize intensity values. The default is False.
+    normalized : bool, optional
+        Set to True if intensity is normalized. The default is False.
     '''
     
     fig, (p) = plt.subplots(num, 1, figsize=(8, 8))
@@ -164,12 +164,6 @@ def exptStackedPlot(num, expt, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
         g = gradientGen(gradient[0], gradient[1], num)
     elif gradient is None:
         g = gradientGen("#00C6BF", "#B430C2", num)
-        
-    # normalize
-    if normalize == True:
-        expt[1] = norm(expt[1])
-        for i in range(num):
-            intsVals[i] = norm(intsVals[i])
     
     # plot data
     for i in range(num):
@@ -187,9 +181,9 @@ def exptStackedPlot(num, expt, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
     
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
-    if normalize == True:
+    if normalized == True:
         y_label = "Intensity (counts, normalized)"
-    elif normalize == False:
+    elif normalized == False:
         y_label = "Intensity (counts)"
     
     p[-1].set_xlabel(x_label, fontsize=16)
@@ -212,7 +206,7 @@ def exptStackedPlot(num, expt, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
 ''' Generates stacked plot '''
 #----------------------------------------------------------------------------------------
 def stackedPlot(num, qVals, intsVals, x_lim, y_lim, wl, gradient=None, 
-                labels=None, labelOffsets=None, normalize=False):
+                labels=None, labelOffsets=None, normalized=False):
     '''
     Parameters
     ----------
@@ -236,8 +230,8 @@ def stackedPlot(num, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
     labelOffsets : list (float), optional
         Tuple with offsets from x-axis maximum and vertical spacing from data
         for text labels. The default is None.
-    normalize : bool, optional
-        Set to True to normalize intensity values. The default is False.
+    normalized : bool, optional
+        Set to True if intensity is normalized. The default is False.
     '''
     
     fig, (p) = plt.subplots(num, 1, figsize=(8, 8))
@@ -247,12 +241,7 @@ def stackedPlot(num, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
         g = gradientGen(gradient[0], gradient[1], num)
     elif gradient is None:
         g = gradientGen("#00C6BF", "#B430C2", num)
-        
-    # normalize
-    if normalize == True:
-        for i in range(num):
-            intsVals[i] = norm(intsVals[i])
-    
+
     # plot data
     for i in range(num):
         p[i].plot(qVals[i], intsVals[i], color=g[i].hex, linewidth="2.5")
@@ -267,9 +256,9 @@ def stackedPlot(num, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
     
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
-    if normalize == True:
+    if normalized == True:
         y_label = "Intensity (counts, normalized)"
-    elif normalize == False:
+    elif normalized == False:
         y_label = "Intensity (counts)"
     
     p[-1].set_xlabel(x_label, fontsize=16)
@@ -293,7 +282,7 @@ def stackedPlot(num, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
 XRD. Plot 2 shows experimental XRD and faulted supercell XRD. '''
 #----------------------------------------------------------------------------------------
 def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl, 
-                   prob, sVec, boxAdj=None, colors=None, normalize=False,
+                   prob, sVec, boxAdj=None, colors=None, normalized=False,
                    diffOffset=0):
     '''
     Parameters
@@ -326,8 +315,8 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     colors : list (str), optional
         Tuple of color hex codes for unfaulted and faulted curves, format 
         "#000000". The default is ("#00C6BF", "#B430C2").
-    normalize : bool, optional
-        Set to True to normalize intensity values. The default is False.
+    normalized : bool, optional
+        Set to True if intensity is normalized. The default is False.
     diffOffset : float, optional
         Additional adjustment parameter for difference curve placement. The
         default is 0.
@@ -339,12 +328,6 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
         c = colors
     if colors is None:
         c = ("#00C6BF", "#B430C2")
-        
-    # normalize
-    if normalize == True:
-        expt[1] = norm(expt[1])
-        UF[1] = norm(UF[1])
-        FLT[1] = norm(FLT[1])
     
     # plot expt data
     for i in range(2):
@@ -370,9 +353,9 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
 
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
-    if normalize == True:
+    if normalized == True:
         y_label = "Intensity (counts, normalized)"
-    elif normalize == False:
+    elif normalized == False:
         y_label = "Intensity (counts)"
     
     fig.supxlabel(x_label, fontsize=16)
@@ -447,7 +430,7 @@ corresponding to different reflections of interest.'''
 #----------------------------------------------------------------------------------------
 def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels, 
                 colLabels, rowLabelAdj=None, colLabelAdj=None, gradient=None,
-                normalize=False):
+                normalized=False):
     '''
     Parameters
     ----------
@@ -477,8 +460,8 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
         Hex codes for colors in each corner of gradient map, format "#000000".
         List colors in position order: top left, top right, bottom left, bottom
         right. The default is ["#00C6BF", "#009AE1", "#5D7AD3", "#B430C2"].
-    normalize : bool, optional
-        Set to True to normalize intensity values. The default is False.
+    normalized : bool, optional
+        Set to True if intensity is normalized. The default is False.
     '''
     
     fig, (p) = plt.subplots(rows, cols, figsize=(rows*2, cols))
@@ -487,10 +470,6 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
         g = gradientGen2D(gradient, rows, cols)
     elif gradient is None:
         g = gradientGen2D("#00C6BF", "#009AE1", "#5D7AD3", "#B430C2", rows, cols)
-        
-    if normalize == True:
-        for i in range(len(diffInts)):
-            diffInts[i] = norm(diffInts)
     
     for row in range(rows):
         for col in range(cols):
@@ -518,9 +497,9 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
-    if normalize == True:
+    if normalized == True:
         y_label = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts, normalized)"
-    elif normalize == False:
+    elif normalized == False:
         y_label = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts)"
     
     fig.supxlabel(x_label, fontsize=16)
