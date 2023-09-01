@@ -328,18 +328,20 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
         c = colors
     if colors is None:
         c = ("#00C6BF", "#B430C2")
+        
+    exptMin = np.min(expt[1])
     
     # plot expt data
     for i in range(2):
         p[i].scatter(expt[0], expt[1], color="black", label="Observed", marker=".")
     
     # plot unfaulted data
-    p[0].plot(UF[0], UF[1], color=c[0], label="Unfaulted", linewidth="2")
+    p[0].plot(UF[0], UF[1] + exptMin, color=c[0], label="Unfaulted", linewidth="3")
     p[0].plot(UFdiff[0], UFdiff[1] + diffOffset, color="#BEBEBE", 
               label="Difference", linewidth="1")
 
     # plot faulted data
-    p[1].plot(FLT[0], FLT[1], color=c[1], label="Faulted", linewidth="2")
+    p[1].plot(FLT[0], FLT[1] + exptMin, color=c[1], label="Faulted", linewidth="3")
     p[1].plot(FLTdiff[0], FLTdiff[1] + diffOffset, color="#BEBEBE", 
               label="Difference", linewidth="1")
     
