@@ -389,7 +389,7 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
                 bbox_to_anchor=(1.05, 1))
     
     # add fault parameters box
-    probText = re.sub("x", str(int(p*100)), r"$P = x \%$")
+    probText = re.sub("x", str(int(prob*100)), r"$P = x \%$")
     sVecText = r"$\vec{S} = \left[ x, y, z \right]$"
     for i in ["x", "y", "z"]:
         subText = re.sub(i, sVec[i], sVecText)

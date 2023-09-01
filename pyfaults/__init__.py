@@ -27,7 +27,7 @@ from pyfaults.supercell import Supercell
 
 import pyfaults.simXRD
 import pyfaults.plotXRD
-from pyfaults.RNGvectors import RNGvectors
+from pyfaults.vectorGen import RNGvectors, vecGridGen
 
 # top level methods ---------------------------------------------------------------------
 
@@ -183,3 +183,4 @@ assert Supercell
 assert pyfaults.simXRD
 assert pyfaults.plotXRD
 assert RNGvectors
+assert vecGridGen
