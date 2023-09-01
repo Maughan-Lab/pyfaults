@@ -391,8 +391,9 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     # add fault parameters box
     probText = re.sub("x", str(int(prob*100)), r"$P = x \%$")
     sVecText = r"$\vec{S} = \left[ x, y, z \right]$"
-    for i in ["x", "y", "z"]:
-        subText = re.sub(i, sVec[i], sVecText)
+    varList = ["x", "y", "z"]
+    for i in range(3):
+        subText = re.sub(varList[i], sVec[i], sVecText)
         sVecText = subText
     
     if boxAdj is not None:
