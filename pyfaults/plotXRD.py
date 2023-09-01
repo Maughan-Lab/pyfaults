@@ -294,7 +294,7 @@ XRD. Plot 2 shows experimental XRD and faulted supercell XRD. '''
 #----------------------------------------------------------------------------------------
 def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl, 
                    prob, sVec, boxAdj=None, colors=None, normalize=False,
-                   diffOffset=None):
+                   diffOffset=0):
     '''
     Parameters
     ----------
@@ -330,7 +330,7 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
         Set to True to normalize intensity values. The default is False.
     diffOffset : float, optional
         Additional adjustment parameter for difference curve placement. The
-        default is None.
+        default is 0.
     '''
     
     fig, (p) = plt.subplots(1, 2, sharey=True, figsize=(14,7))
@@ -339,11 +339,6 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
         c = colors
     if colors is None:
         c = ("#00C6BF", "#B430C2")
-        
-    if diffOffset is not None:
-        da = diffOffset
-    elif diffOffset is None:
-        da = 0
         
     # normalize
     if normalize == True:
@@ -357,12 +352,12 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     
     # plot unfaulted data
     p[0].plot(UF[0], UF[1], color=c[0], label="Unfaulted", linewidth="2")
-    p[0].plot(UFdiff[0], UFdiff[1]-np.max(UFdiff[1])+da, color="#BEBEBE", 
+    p[0].plot(UFdiff[0], UFdiff[1] + diffOffset, color="#BEBEBE", 
               label="Difference", linewidth="1")
 
     # plot faulted data
     p[1].plot(FLT[0], FLT[1], color=c[1], label="Faulted", linewidth="2")
-    p[1].plot(FLTdiff[0], FLTdiff[1]-np.max(FLTdiff[1])+da, color="#BEBEBE", 
+    p[1].plot(FLTdiff[0], FLTdiff[1] + diffOffset, color="#BEBEBE", 
               label="Difference", linewidth="1")
     
     # set axis limits
