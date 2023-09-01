@@ -282,8 +282,8 @@ def stackedPlot(num, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
 XRD. Plot 2 shows experimental XRD and faulted supercell XRD. '''
 #----------------------------------------------------------------------------------------
 def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl, 
-                   prob, sVec, boxAdj=None, colors=None, normalized=False,
-                   diffOffset=0):
+                   prob, sVec, boxAdj=None, legendAdj=None, colors=None, 
+                   normalized=False, diffOffset=0):
     '''
     Parameters
     ----------
@@ -311,7 +311,8 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
         List of stacking vector components as strings
     boxAdj : list (float), optional
         Tuple of parameter box position displacement from upper left corner.
-        Default is (0.01, 0.01).
+    legendAdj : list (float), optional
+        Tuple of legend position displacement. Default is (0.01, 0.01).
     colors : list (str), optional
         Tuple of color hex codes for unfaulted and faulted curves, format 
         "#000000". The default is ("#00C6BF", "#B430C2").
@@ -349,7 +350,7 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     for i in range(2):
         p[i].set_xlim(x_lim)
         p[i].set_ylim(y_lim)
-        p[i].tick_params(axis="both", labelsize="14")
+        p[i].tick_params(axis="both", labelsize="16")
     
     p[1].get_yaxis().set_visible(False)
 
@@ -360,8 +361,8 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     elif normalized == False:
         y_label = "Intensity (counts)"
     
-    fig.supxlabel(x_label, fontsize=16)
-    p[0].set_ylabel(y_label, fontsize=16)
+    fig.supxlabel(x_label, fontsize=18)
+    p[0].set_ylabel(y_label, fontsize=18)
     
     # set legend handles
     obsHandle = mlines.Line2D([], [], color="white", label="Observed", marker=".", 
@@ -372,10 +373,15 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     FLThandle = mlines.Line2D([], [], color=c[1], label=FLTlabel)
     diffHandle = mlines.Line2D([], [], color="#BEBEBE", label="Difference")
     
+    if legendAdj is not None:
+        la = legendAdj
+    elif legendAdj is None:
+        la = (0.01, 0.01)
+    
     # add legend
     p[1].legend(handles=[obsHandle, UFhandle, FLThandle, diffHandle], 
                 handlelength=1, fontsize="16", loc="upper left", 
-                bbox_to_anchor=(1.05, 1))
+                bbox_to_anchor=la)
     
     # add fault parameters box
     probText = re.sub("x", str(int(prob*100)), r"$P = x \%$")
@@ -388,7 +394,7 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     if boxAdj is not None:
         ba = boxAdj
     elif boxAdj is None:
-        ba = (0.01, 0.01)
+        ba = (0.01, -0.01)
         
     params = "\n".join((sVecText, probText))
     props = dict(boxstyle="round", facecolor="white", alpha=0.5, pad=0.3)
