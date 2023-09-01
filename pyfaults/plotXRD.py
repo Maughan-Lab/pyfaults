@@ -344,15 +344,15 @@ def compareUFtoFLT(expt, UF, FLT, UFdiff, FLTdiff, nStacks, x_lim, y_lim, wl,
     
     # plot expt data
     for i in range(2):
-        p[i].scatter(expt, color="black", label="Observed", marker=".")
+        p[i].scatter(expt[0], expt[1], color="black", label="Observed", marker=".")
     
     # plot unfaulted data
-    p[0].plot(UF, color=c[0], label="Unfaulted", linewidth="2")
+    p[0].plot(UF[0], UF[1], color=c[0], label="Unfaulted", linewidth="2")
     p[0].plot(UFdiff[0], UFdiff[1]-np.max(UFdiff[1]), color="#BEBEBE", 
               label="Difference", linewidth="1")
 
     # plot faulted data
-    p[1].plot(FLT, color=c[1], label="Faulted", linewidth="2")
+    p[1].plot(FLT[0], FLT[1], color=c[1], label="Faulted", linewidth="2")
     p[1].plot(FLTdiff[0], FLTdiff[1]-np.max(FLTdiff[1]), color="#BEBEBE", 
               label="Difference", linewidth="1")
     
