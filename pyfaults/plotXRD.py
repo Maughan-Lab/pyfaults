@@ -167,7 +167,7 @@ def exptStackedPlot(num, expt, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
     
     # plot data
     for i in range(num):
-        p[i].scatter(expt, color="black", label="Observed", marker=".", s=8)
+        p[i].scatter(expt[0], expt[1], color="black", label="Observed", marker=".", s=8)
     for i in range(num):
         p[i].plot(qVals[i], intsVals[i]+exptMin, color=g[i].hex, linewidth="2.5")
         
@@ -477,7 +477,7 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     if gradient is not None:
         g = gradientGen2D(gradient, rows, cols)
     elif gradient is None:
-        g = gradientGen2D("#00C6BF", "#009AE1", "#5D7AD3", "#B430C2", rows, cols)
+        g = gradientGen2D(["#00C6BF", "#009AE1", "#5D7AD3", "#B430C2"], rows, cols)
     
     for row in range(rows):
         for col in range(cols):
