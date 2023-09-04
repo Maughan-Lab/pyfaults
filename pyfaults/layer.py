@@ -75,11 +75,10 @@ class Layer(object):
             pAtom = cp.deepcopy(a)
             
             splitLabel = pAtom.atomLabel.split("_")
-            newLabel = splitLabel[0] + "_" + childName
             
             newPos = np.add(pAtom.xyz, transVec)
             
-            cAtom = LayerAtom(childName, newLabel, pAtom.element, newPos,
+            cAtom = LayerAtom(childName, splitLabel[0], pAtom.element, newPos,
                               pAtom.occupancy, self.lattice)
             
             childAtoms.append(cAtom)
