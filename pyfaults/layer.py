@@ -64,6 +64,29 @@ class Layer(object):
     def atom_info(self):
         for i in self.atoms:
             print(i.atomLabel + ", " + str(i.xyz))
+    
+    # Generates a child layer ------------------------------------------------------------
+    def genChildLayer(self, childName, transVec):
+        from pyfaults.layerAtom import LayerAtom
+        
+        childAtoms = []
+        
+        for a in self.atoms:
+            pAtom = cp.deepcopy(a)
+            
+            splitLabel = pAtom.atomLabel.split("_")
+            newLabel = splitLabel[0] + "_" + childName
+            
+            newPos = np.add(pAtom.xyz, transVec)
+            
+            cAtom = LayerAtom(childName, newLabel, pAtom.element, newPos,
+                              pAtom.occupancy, self.lattice)
+            
+            childAtoms.append(cAtom)
+            
+        childLayer = Layer(childAtoms, self.lattice, childName)
+        
+        return childLayer
 
 
 ''' Pulls layers from imported dataframe'''
@@ -130,33 +153,3 @@ def getLayers(df, lattice, layerNames, stackDir):
         layers.append(newLayer)
     
     return layers
-
-''' Generates a child layer '''
-#----------------------------------------------------------------------------------------
-def genChildLayer(self, childName, transVec):
-    from pyfaults.layerAtom import LayerAtom
-    
-    childAtoms = []
-    
-    for a in self.atoms:
-        pAtom = cp.deepcopy(a)
-        
-        splitLabel = pAtom.atomLabel.split("_")
-        newLabel = splitLabel[0] + "_" + childName
-        
-        newPos = np.add(pAtom.xyz, transVec)
-        
-        cAtom = LayerAtom(childName, newLabel, pAtom.element, newPos,
-                          pAtom.occupancy, self.lattice)
-        
-        childAtoms.append(cAtom)
-        
-    childLayer = Layer(childAtoms, self.lattice, childName)
-    
-    return childLayer
-
-
-
-
-
-
