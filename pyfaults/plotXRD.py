@@ -270,9 +270,6 @@ def stackedPlot(num, qVals, intsVals, x_lim, y_lim, wl, gradient=None,
             p[i].text(x_lim[1] - labelOffsets[0], labelOffsets[1],
                     labels[i], color=g[i].hex, fontsize="16", ha="right", va="top")
     
-    # add legend
-    p[0].legend(handlelength=0.25, fontsize="14")
-    
     plt.subplots_adjust(hspace=0.05) 
     
     return(p)
