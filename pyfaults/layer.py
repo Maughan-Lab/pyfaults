@@ -73,7 +73,7 @@ class Layer(object):
         childName : str
             Unique identifier for child layer
         transVec : nparray
-            Translation vector [x, y, z] for generating child
+            Translation vector [x, y, z] relative to parent to generate child
 
         Returns
         -------
