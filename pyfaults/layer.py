@@ -67,6 +67,20 @@ class Layer(object):
     
     # generates a child layer ------------------------------------------------------------
     def genChildLayer(self, childName, transVec):
+        '''
+        Parameters
+        ----------
+        childName : str
+            Unique identifier for child layer
+        transVec : nparray
+            Translation vector [x, y, z] for generating child
+
+        Returns
+        -------
+        childLayer : Layer
+            Child layer translated from parent layer
+
+        '''
         from pyfaults.layerAtom import LayerAtom
         
         childAtoms = []
