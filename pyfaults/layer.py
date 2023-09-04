@@ -77,6 +77,9 @@ class Layer(object):
             splitLabel = pAtom.atomLabel.split("_")
             
             newPos = np.add(pAtom.xyz, transVec)
+            for i in range(len(newPos)):
+                if newPos[i] >= 1:
+                    newPos[i] = newPos[i] - 1
             
             cAtom = LayerAtom(childName, splitLabel[0], pAtom.element, newPos,
                               pAtom.occupancy, self.lattice)
