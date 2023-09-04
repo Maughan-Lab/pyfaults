@@ -65,7 +65,7 @@ class Layer(object):
         for i in self.atoms:
             print(i.atomLabel + ", " + str(i.xyz))
     
-    # Generates a child layer ------------------------------------------------------------
+    # generates a child layer ------------------------------------------------------------
     def genChildLayer(self, childName, transVec):
         from pyfaults.layerAtom import LayerAtom
         
@@ -126,30 +126,24 @@ def getLayers(df, lattice, layerNames, stackDir):
                           gamma=lattice.gamma)
 
     layers = []
-    for i in layerNames:
-        lyr = df[df["Layer"] == i]
-        
-        alist = []
-        for j in range(len(lyr.index)):
-            layerName = df.iloc[j]["Layer"]
-            atomLabel = df.iloc[j]["Atom"]
-            element = df.iloc[j]["Element"]
-            x = df.iloc[j]["x"]
-            y = df.iloc[j]["y"]
-            z = df.iloc[j]["z"]
-            occ = df.iloc[j]["Occupancy"]
-            
-            if stackDir == "a":
-                newXYZ = [z, y, x]
-            elif stackDir == "b":
-                newXYZ = [x, z, y]
-            elif stackDir == "c":
-                newXYZ = [x, y, z]
-            
-            newAtom = LayerAtom(layerName, atomLabel, element, newXYZ, occ, newLatt)
-            alist.append(newAtom)    
     
-        newLayer = Layer(alist, newLatt, i)
+    for i in range(len(layerNames)):
+        alist = []
+        for index, row in df.iterrows():
+            if row["Layer"] == layerNames[i]:
+                
+                if stackDir == "a":
+                    xyz = [row["z"], row["y"], row["x"]]
+                elif stackDir == "b":
+                    xyz = [row["x"], row["z"], row["y"]]
+                elif stackDir == "c":
+                    xyz = [row["x"], row["y"], row["z"]]
+                    
+                newAtom = LayerAtom(layerNames[i], row["Atom"], row["Element"], 
+                                    xyz, row["Occupancy"], newLatt)
+                alist.append(newAtom)
+    
+        newLayer = Layer(alist, newLatt, layerNames[i])
         layers.append(newLayer)
     
     return layers
