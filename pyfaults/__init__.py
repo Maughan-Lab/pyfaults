@@ -8,7 +8,6 @@ Classes:
     Lattice
     LayerAtom
     Layer
-    Child
     Unitcell
     Supercell
     vecGridGen
@@ -22,7 +21,6 @@ import numpy as np
 from pyfaults.lattice import Lattice
 from pyfaults.layerAtom import LayerAtom
 from pyfaults.layer import Layer
-from pyfaults.childLayer import ChildLayer
 from pyfaults.unitcell import Unitcell
 from pyfaults.supercell import Supercell
 
@@ -178,7 +176,6 @@ def q_to_tt(q, wavelength):
 assert Lattice
 assert LayerAtom
 assert Layer
-assert ChildLayer
 assert Unitcell
 assert Supercell
 assert pyfaults.simXRD
