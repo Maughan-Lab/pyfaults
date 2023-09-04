@@ -46,7 +46,7 @@ class ChildLayer (object):
         self._atoms = []
         self._lattice = None
         
-        self.setLayerName(layerName)
+        self.setParam(layerName)
         
         self.generate(parent, transVec)
         
