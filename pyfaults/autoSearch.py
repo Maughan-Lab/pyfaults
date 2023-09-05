@@ -63,19 +63,6 @@ class AutoSearch(object):
         self._fitDiffList = self.fitDiffs()
         
         return
-
-    # sets search parameters ------------------------------------------------------------
-    def setSearchParams(self, nStacks, fltLayer, sVecList, sProbList, maxQ, wl, saveDir):
-        
-        self._nStacks = nStacks
-        self._fltLayer = fltLayer
-        self._sVecList = sVecList
-        self._sProbList = sProbList
-        self._maxQ = maxQ
-        self._wl = wl
-        self._saveDir = saveDir
-        
-        return
     
     # generate supercells ---------------------------------------------------------------
     def genSupercells(self):
@@ -93,7 +80,7 @@ class AutoSearch(object):
         
         for i in range(len(self.sProbList)):
             for j in range(len(self.sVecList)):
-                FLTcell = Supercell(self.unitell, self.nStacks, 
+                FLTcell = Supercell(self.unitcell, self.nStacks, 
                                     fltLayer=self.fltLayer, stackVec=self.sVecList[j], 
                                     stackProb=self.sProbList[i])
                 
