@@ -50,16 +50,12 @@ class AutoSearch(object):
         self._wl = wl
         self._saveDir = saveDir
         
-        self._cellList = None
         self._cellList = self.genSupercells()
         
-        self._simList = None
         self._simList = self.calcSims()
         
-        self._exptDiffList = None
         self._exptDiffList = self.calcDiffs()
         
-        self._fitDiffList = None
         self._fitDiffList = self.fitDiffs()
         
         return
@@ -95,10 +91,8 @@ class AutoSearch(object):
                 cellList.append([FLTcell, sVec, self.sProbList[i], tag])
                 
                 toCif(FLTcell, self.saveDir, tag)
-                
-        self._cellList = cellList
         
-        return
+        return cellList
     
     # calculate XRD simulations ---------------------------------------------------------
     def calcSims(self):
@@ -118,10 +112,8 @@ class AutoSearch(object):
             Q, ints = xs.fullSim(self.saveDir, cif, self.wl, ttMax, pw=0.01)
             
             simList.append([Q, ints])
-            
-        self._simList = simList
         
-        return
+        return simList
     
     # calculate model vs experimental differences ---------------------------------------
     def calcDiffs(self):
@@ -136,10 +128,8 @@ class AutoSearch(object):
             diffQ, diffInts = diffCurve(self.expt[0], self.simList[i][0], 
                                         self.expt[1], self.simList[i][1])
             exptDiffList.append([diffQ, diffInts])
-            
-        self._exptDiffList = exptDiffList
         
-        return
+        return exptDiffList
     
     # calculate goodness of fits --------------------------------------------------------
     def fitDiffs(self):
@@ -153,10 +143,8 @@ class AutoSearch(object):
         for i in range(1, len(self.exptDiffList)):
             diffQ, diffInts = diffCurve(self.exptDiffList[0][0], self.exptDiffList[i][0],
                                         self.exptDiffList[0][1], self.exptDiffList[i][1])
-            
-        self._fitDiffList = fitDiffList
         
-        return
+        return fitDiffList
 
 
 
