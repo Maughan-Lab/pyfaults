@@ -23,7 +23,6 @@ from pyfaults.layerAtom import LayerAtom
 from pyfaults.layer import Layer
 from pyfaults.unitcell import Unitcell
 from pyfaults.supercell import Supercell
-from pyfaults.autoSearch import AutoSearch
 
 import pyfaults.simXRD
 import pyfaults.plotXRD
@@ -180,7 +179,7 @@ assert LayerAtom
 assert Layer
 assert Unitcell
 assert Supercell
-assert AutoSearch
+
 assert pyfaults.simXRD
 assert pyfaults.plotXRD
 assert pyfaults.vectorGen
