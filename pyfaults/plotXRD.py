@@ -494,7 +494,7 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     # set axis limits
     for row in range(rows):
         for col in range(cols):
-            p[row][col].set_xlim(x_lims[col])
+            p[row][col].set_xlim(x_lims[col][0], x_lims[col][1])
             p[row][col].set_ylim(y_lim)
             p[row][col].tick_params(axis="both", labelsize="14")
             
