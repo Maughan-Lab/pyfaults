@@ -10,26 +10,19 @@ class AutoSearch(object):
     
     unitcell = property(lambda self: self._unitcell)
     
-    nStacks = property(lambda self: self._nStacks,
-                       lambda self, val: self.setSearchParams(nStacks=val))
+    nStacks = property(lambda self: self._nStacks)
     
-    fltLayer = property(lambda self: self._fltLayer,
-                        lambda self, val: self.setSearchParams(fltLayer=val))
+    fltLayer = property(lambda self: self._fltLayer)
     
-    sVecList = property(lambda self: self._sVecList,
-                        lambda self, val: self.setSearchParams(sVecList=val))
+    sVecList = property(lambda self: self._sVecList)
     
-    sProbList = property(lambda self: self._sProbList,
-                         lambda self, val: self.setSearchParams(sProbList=val))
+    sProbList = property(lambda self: self._sProbList)
     
-    maxQ = property(lambda self: self._maxQ,
-                    lambda self, val: self.setSearchParams(maxQ=val))
+    maxQ = property(lambda self: self._maxQ)
     
-    wl = property(lambda self: self._wl,
-                  lambda self, val: self.setSearchParams(wl=val))
+    wl = property(lambda self: self._wl)
     
-    saveDir = property(lambda self: self._saveDir,
-                       lambda self, val: self.setSearchParams(saveDir=val))
+    saveDir = property(lambda self: self._saveDir)
     
     cellList = property(lambda self: self._cellList,
                         lambda self, val: self.genSupercells(cellList=val))
@@ -43,18 +36,19 @@ class AutoSearch(object):
     fitDiffList = property(lambda self: self._fitDiffList,
                             lambda self, val: self.fitDiffs(fitDiffList=val))
     
-    def __init__(self, expt, unitcell):
+    def __init__(self, expt, unitcell, nStacks, fltLayer, sVecList, sProbList,
+                 maxQ, wl, saveDir):
         
         # initialize parameters
         self._expt = expt
         self._unitcell = unitcell
-        self._nStacks = None
-        self._fltLayer = None
-        self._sVecList = None
-        self._sProbList = None
-        self._maxQ = None
-        self._wl = None
-        self._saveDir = None
+        self._nStacks = nStacks
+        self._fltLayer = fltLayer
+        self._sVecList = sVecList
+        self._sProbList = sProbList
+        self._maxQ = maxQ
+        self._wl = wl
+        self._saveDir = saveDir
         
         self._cellList = None
         self._cellList = self.genSupercells()
