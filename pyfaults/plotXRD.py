@@ -434,8 +434,8 @@ Generates plot with rows corresponding to different models and columns
 corresponding to different reflections of interest.'''
 #----------------------------------------------------------------------------------------
 def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels, 
-                colLabels, rowLabelAdj=None, colLabelAdj=None, gradient=None,
-                normalized=False):
+                colLabels, rowLabelAdj=None, colLabelAdj=None, xLabelAdj=None, 
+                yLabelAdj=None, gradient=None, normalized=False):
     '''
     Parameters
     ----------
@@ -460,9 +460,15 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     colLabels : list (str)
         Text labels for columns
     rowLabelAdj : float, optional
-        Value to shift row labels along x-axis. The default is 0.01.
+        Adjustment paramter for row label position along x-axis. The default 
+        is 0.01.
     colLabelAdj : float, optional
-        Value to shift column labels along y-axis. The default is 0.01.
+        Adjustment paramter for column label position along y-axis. The default
+        is 0.01.
+    xLabelAdj : float, optional
+        Adjustment parameter for x-axis label position. The default is 0.
+    yLabelAdj : float, optional
+        Adjustment parameter for y-axis label position. The default is 0.
     gradient : list (str)
         Hex codes for colors in each corner of gradient map, format "#000000".
         List colors in position order: top left, top right, bottom left, bottom
@@ -538,3 +544,31 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     plt.subplots_adjust(hspace=0.1, wspace=0.1)
     
     return(p)
+
+
+''' Set spacing of tick marks on plot axis '''
+#----------------------------------------------------------------------------------------
+def setTickSpacing(plot, axis, interval):
+    '''
+    Parameters
+    ----------
+    plot : Figure
+        Plot to adjust tick spacing on
+    axis : str
+        Axis to adjust spacing on; set to "x", "y", or "both"
+    interval : float
+        Spacing interval
+    '''
+    
+    if axis == "x":
+        plot.xaxis.set_major_locator(ticker.MultipleLocator(interval))
+    elif axis == "y":
+        plot.yaxis.set_major_locator(ticker.MultipleLocator(interval))
+    elif axis == "both":
+        plot.xaxis.set_major_locator(ticker.MultipleLocator(interval))
+        plot.yaxis.set_major_locator(ticker.MultipleLocator(interval))
+        
+''' Adjust axis label position '''
+#----------------------------------------------------------------------------------------
+
+
