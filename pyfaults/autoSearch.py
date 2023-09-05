@@ -5,7 +5,7 @@
 
 import pandas as pd
 
-class autoSearch(object):
+class AutoSearch(object):
     
     # properties ------------------------------------------------------------------------
     expt = property(lambda self: self._expt)
