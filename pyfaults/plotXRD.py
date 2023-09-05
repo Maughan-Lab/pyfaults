@@ -443,9 +443,8 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
         Number of rows
     cols : int
         Number of columns
-    diffQ : list (nparray)
-        Lists of Q datasets of difference of difference curves, format as list
-        of lists where each row entry has [c1, c2, c3, ...]
+    diffQ : nparray
+        List of Q values
     diffInts : list (nparray)
         List of intensity datasets of difference of difference curves, format
         as list of lists where each row entry has [c1, c2, c3, ...]
@@ -486,15 +485,15 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
         
     if rows == 1:
         for col in range(cols):
-            p[col].plot(diffQ[0][col], diffInts[0][col], color=g[0][col].hex)
+            p[col].plot(diffQ, diffInts[0][col], color=g[0][col].hex)
     elif cols == 1:
         for row in range(rows):
-            p[row].plot(diffQ[row][0], diffInts[row][0], color=g[row][0].hex)
+            p[row].plot(diffQ, diffInts[row][0], color=g[row][0].hex)
     else:
         for row in range(rows):
             for col in range(cols):
                 # plot data
-                p[row][col].plot(diffQ[row][col], diffInts[row][col], 
+                p[row][col].plot(diffQ, diffInts[row][col], 
                                  color=g[row][col].hex)
             
     # set axis limits
