@@ -3,149 +3,102 @@
 # Author: Sinclair R. Combs
 #########################################################################################
 
-class AutoSearch(object):
+def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList):
+    from pyfaults.supercell import Supercell
     
-    # properties ------------------------------------------------------------------------
-    expt = property(lambda self: self._expt)
+    cellList = []
     
-    unitcell = property(lambda self: self._unitcell)
+    UF = Supercell(unitcell, nStacks)
+    cellList.append([UF, "Unfaulted", 0, "UF"])
     
-    nStacks = property(lambda self: self._nStacks)
-    
-    fltLayer = property(lambda self: self._fltLayer)
-    
-    sVecList = property(lambda self: self._sVecList)
-    
-    sProbList = property(lambda self: self._sProbList)
-    
-    maxQ = property(lambda self: self._maxQ)
-    
-    wl = property(lambda self: self._wl)
-    
-    saveDir = property(lambda self: self._saveDir)
-    
-    cellList = property(lambda self: self._cellList,
-                        lambda self, val: self.genSupercells(cellList=val))
-    
-    simList = property(lambda self: self._simList,
-                       lambda self, val: self.calcSims(simList=val))
-    
-    exptDiffList = property(lambda self: self._exptDiffList,
-                            lambda self, val: self.calcDiffs(exptDiffList=val))
-    
-    fitDiffList = property(lambda self: self._fitDiffList,
-                            lambda self, val: self.fitDiffs(fitDiffList=val))
-    
-    def __init__(self, expt, unitcell, nStacks, fltLayer, sVecList, sProbList,
-                 maxQ, wl, saveDir):
-        
-        # initialize parameters
-        self._expt = expt
-        self._unitcell = unitcell
-        self._nStacks = nStacks
-        self._fltLayer = fltLayer
-        self._sVecList = sVecList
-        self._sProbList = sProbList
-        self._maxQ = maxQ
-        self._wl = wl
-        self._saveDir = saveDir
-        
-        self._cellList = self.genSupercells()
-        
-        self._simList = self.calcSims()
-        
-        self._exptDiffList = self.calcDiffs()
-        
-        self._fitDiffList = self.fitDiffs()
-        
-        return
-    
-    # generate supercells ---------------------------------------------------------------
-    def genSupercells(self):
-        from pyfaults import toCif
-        from pyfaults.supercell import Supercell
-        
-        if self.nStacks is None:
-            raise ValueError("Search parameters not specified")
+    for p in range(len(probList)):
+        probTag = str(int(probList[p] * 100))
+        for s in range(len(sVecList)):
+            FLT = Supercell(unitcell, nStacks, fltLayer=fltLayer, 
+                            stackVec=sVecList[s], stackProb=probList[p])
             
-        cellList = []
+            sx = str(sVecList[s][0])
+            sy = str(sVecList[s][1])
+            sz = str(sVecList[s][2])
             
-        UFcell = Supercell(self.unitcell, self.nStacks)
-        cellList.append([UFcell, "Unfaulted", 0, "UF"])
-        toCif(UFcell, self.saveDir, "UF")
-        
-        for i in range(len(self.sProbList)):
-            for j in range(len(self.sVecList)):
-                FLTcell = Supercell(self.unitcell, self.nStacks, 
-                                    fltLayer=self.fltLayer, stackVec=self.sVecList[j], 
-                                    stackProb=self.sProbList[i])
-                
-                sx = str(self.sVecList[j][0])
-                sy = str(self.sVecList[j][1])
-                sz = str(self.sVecList[j][2])
-                
-                sVec = "[" + sx + ", " + sy + ", " + sz + "]"
-                    
-                tag = "P" + str(i) + "_FLT_" + str(j)
-                
-                cellList.append([FLTcell, sVec, self.sProbList[i], tag])
-                
-                toCif(FLTcell, self.saveDir, tag)
-        
-        return cellList
-    
-    # calculate XRD simulations ---------------------------------------------------------
-    def calcSims(self):
-        from pyfaults import q_to_tt
-        import pyfaults.simXRD as xs
-        
-        if self.cellList is None:
-            raise ValueError("Supercells not specified")
+            sVecTag = "[" + sx + ", " + sy + ", " + sz + "]"
+            cellTag = "S" + str(s+1) + "_P" + probTag
             
-        ttMax = q_to_tt(self.maxQ, self.wl)
+            cellList.append([FLT, sVecTag, probTag, cellTag])
             
-        simList = []
-        
-        for i in range(len(self.cellList)):
-            cif = self.cellList[i][3]
-            
-            Q, ints = xs.fullSim(self.saveDir, cif, self.wl, ttMax, pw=0.01)
-            
-            simList.append([Q, ints])
-        
-        return simList
-    
-    # calculate model vs experimental differences ---------------------------------------
-    def calcDiffs(self):
-        from pyfaults.simXRD import diffCurve
-        
-        if self.simList is None:
-            raise ValueError("Diffraction simulations not calculated")
-        
-        exptDiffList = []
-        
-        for i in range(len(self.simList)):
-            diffQ, diffInts = diffCurve(self.expt[0], self.simList[i][0], 
-                                        self.expt[1], self.simList[i][1])
-            exptDiffList.append([diffQ, diffInts])
-        
-        return exptDiffList
-    
-    # calculate goodness of fits --------------------------------------------------------
-    def fitDiffs(self):
-        from pyfaults.simXRD import diffCurve
-        
-        if self.exptDiffList is None:
-            raise ValueError("Difference curves not calculated")
-        
-        fitDiffList = []
-        
-        for i in range(1, len(self.exptDiffList)):
-            diffQ, diffInts = diffCurve(self.exptDiffList[0][0], self.exptDiffList[i][0],
-                                        self.exptDiffList[0][1], self.exptDiffList[i][1])
-        
-        return fitDiffList
+    return cellList
 
+
+def cellListToCIF(cellList, path):
+    from pyfaults import toCif
+    
+    for cell in range(len(cellList)):
+        toCif(cellList[cell][0], path + "cifs/", cellList[cell][3])
+
+
+def calcSims(path, wl, maxTT, pw):
+    import glob
+    import pyfaults.simXRD as xs
+    
+    CIFfileList = glob.glob(path + "cifs/" + ".cif")
+        
+    simList = []
+    for i in range(len(CIFfileList)):
+        cellName = CIFfileList[i].split(".")
+        Q, ints = xs.fullSim(path, CIFfileList[i], wl, maxTT, pw=pw)
+        
+        simList.append([Q, ints, cellName[0]])
+        xs.saveSim(path + "sims/", cellName[0] + "_sim", Q, ints)
+    
+    return simList
+
+
+def calcDiffs(path, simList, expt):
+    import pyfaults.simXRD as xs
+    
+    exptDiffList = []
+    for i in range(len(simList)):
+        diffQ, diffInts = xs.diffCurve(expt[0], simList[i][0], expt[1], simList[i][1])
+        
+        exptDiffList.append([diffQ, diffInts, simList[i][2]])
+        xs.saveDiff(path + "exptDiffs/", "expt_" + simList[i][2] + "_diff", 
+                    diffQ, diffInts)
+    
+    return exptDiffList
+
+
+def calcFitDiffs(path, exptDiffList):
+    import pyfaults.simXRD as xs
+    
+    UFdiffQ = exptDiffList[0][0]
+    UFdiffInts = exptDiffList[0][1]
+    
+    fitDiffList = []
+    for i in range(1, len(exptDiffList)):
+        fitDiffQ, fitDiffInts = xs.diffCurve(UFdiffQ, exptDiffList[i][0], 
+                                             UFdiffInts, exptDiffList[i][1])
+        
+        fitDiffList.append([fitDiffQ, fitDiffInts, exptDiffList[i][2]])
+        xs.saveDiff(path + "fitDiffs/", exptDiffList[i][2] + "_fitDiff", 
+                    fitDiffQ, fitDiffInts)
+    
+    return fitDiffList
+
+
+def autoSearch(path, unitcell, expt, nStacks, fltLayer, probList, sVecList, 
+               wl, maxTT, pw=0.0):
+    
+    cellList = genSupercells(unitcell, nStacks, fltLayer, probList, sVecList)
+    
+    cellListToCIF(cellList, path)
+    
+    simList = calcSims(path, wl, maxTT, pw)
+    
+    exptDiffList = calcDiffs(path, simList, expt)
+    
+    fitDiffList = calcFitDiffs(path, exptDiffList)
+    
+    return fitDiffList
 
 
 

@@ -27,7 +27,8 @@ from pyfaults.autoSearch import AutoSearch
 
 import pyfaults.simXRD
 import pyfaults.plotXRD
-from pyfaults.vectorGen import vecGridGen
+import pyfaults.vectorGen
+import pyfaults.autoSearch
 
 # top level methods ---------------------------------------------------------------------
 
@@ -182,4 +183,5 @@ assert Supercell
 assert AutoSearch
 assert pyfaults.simXRD
 assert pyfaults.plotXRD
-assert vecGridGen
+assert pyfaults.vectorGen
+assert pyfaults.autoSearch
