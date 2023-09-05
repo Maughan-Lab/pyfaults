@@ -444,9 +444,11 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     cols : int
         Number of columns
     diffQ : list (nparray)
-        List of Q datasets of difference of difference curves
+        Lists of Q datasets of difference of difference curves, format as list
+        of lists where each row entry has [c1, c2, c3, ...]
     diffInts : list (nparray)
-        List of intensity datasets of difference of difference curves
+        List of intensity datasets of difference of difference curves, format
+        as list of lists where each row entry has [c1, c2, c3, ...]
     x_lims : list (float)
         List of tuples with x-axis minimums and maximums for each column
     y_lim : list (float)
@@ -475,11 +477,19 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
         g = gradientGen2D(gradient, rows, cols)
     elif gradient is None:
         g = gradientGen2D(["#00C6BF", "#009AE1", "#5D7AD3", "#B430C2"], rows, cols)
-    
-    for row in range(rows):
+        
+    if rows == 1:
         for col in range(cols):
-            # plot data
-            p[row][col].plot(diffQ[row], diffInts[row], color=g[row][col].hex)
+            p[col].plot(diffQ[0][col], diffInts[0][col], color=g[0][col].hex)
+    elif cols == 1:
+        for row in range(rows):
+            p[row].plot(diffQ[row][0], diffInts[row][0], color=g[row][0].hex)
+    else:
+        for row in range(rows):
+            for col in range(cols):
+                # plot data
+                p[row][col].plot(diffQ[row][col], diffInts[row], 
+                                 color=g[row][col].hex)
             
     # set axis limits
     for row in range(rows):
