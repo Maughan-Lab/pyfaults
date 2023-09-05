@@ -488,7 +488,7 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
         for row in range(rows):
             for col in range(cols):
                 # plot data
-                p[row][col].plot(diffQ[row][col], diffInts[row], 
+                p[row][col].plot(diffQ[row][col], diffInts[row][col], 
                                  color=g[row][col].hex)
             
     # set axis limits
