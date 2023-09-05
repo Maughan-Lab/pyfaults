@@ -519,9 +519,14 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
         y_label = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts, normalized)"
     elif normalized == False:
         y_label = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts)"
+        
+    if xLabelAdj is None:
+        xLabelAdj = 0
+    if yLabelAdj is None:
+        yLabelAdj = 0
     
-    fig.supxlabel(x_label, fontsize=16)
-    fig.supylabel(y_label, fontsize=16)
+    fig.supxlabel(x_label, fontsize=16, x=xLabelAdj)
+    fig.supylabel(y_label, fontsize=16, y=yLabelAdj)
     
     # set plot labels
     y_mid = ((y_lim[1] - y_lim[0]) / 2) + y_lim[0]
