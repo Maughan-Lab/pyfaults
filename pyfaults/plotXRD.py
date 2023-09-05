@@ -525,8 +525,8 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     if yLabelAdj is None:
         yLabelAdj = 0
     
-    fig.supxlabel(x_label, fontsize=16, x=xLabelAdj)
-    fig.supylabel(y_label, fontsize=16, y=yLabelAdj)
+    fig.supxlabel(x_label, fontsize=16, y=xLabelAdj)
+    fig.supylabel(y_label, fontsize=16, x=yLabelAdj)
     
     # set plot labels
     y_mid = ((y_lim[1] - y_lim[0]) / 2) + y_lim[0]
