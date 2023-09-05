@@ -506,9 +506,6 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     for row in range(rows):
         for col in range(1, cols):
             p[row][col].get_yaxis().set_visible(False)
-      
-    for col in range(cols):
-        p[-1][col].xaxis.set_major_locator(ticker.MultipleLocator(0.01))
     
     # set axis labels
     x_label = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
@@ -523,6 +520,11 @@ def fitCompare(rows, cols, diffQ, diffInts, x_lims, y_lim, wl, rowLabels,
     # set plot labels
     y_mid = ((y_lim[1] - y_lim[0]) / 2) + y_lim[0]
     x_end = x_lims[-1][1]
+    
+    if rowLabelAdj is None:
+        rowLabelAdj = 0.01
+    if colLabelAdj is None:
+        colLabelAdj = 0.01
     
     for row in range(rows):
         p[row][-1].text(x_end + rowLabelAdj, y_mid, rowLabels[row],
