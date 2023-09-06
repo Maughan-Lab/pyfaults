@@ -45,7 +45,7 @@ def calcSims(path, wl, maxTT, pw):
     simList = []
     for i in range(len(CIFfileList)):
         cellName = CIFfileList[i].split(".")
-        Q, ints = xs.fullSim(path, cellName, wl, maxTT, pw=pw)
+        Q, ints = xs.fullSim(path, cellName[0], wl, maxTT, pw=pw)
         
         simList.append([Q, ints, cellName[0]])
         xs.saveSim(path, cellName[0] + "_sim", Q, ints)
