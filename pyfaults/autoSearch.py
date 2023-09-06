@@ -33,14 +33,14 @@ def cellListToCIF(cellList, path):
     from pyfaults import toCif
     
     for cell in range(len(cellList)):
-        toCif(cellList[cell][0], path + "cifs/", cellList[cell][3])
+        toCif(cellList[cell][0], path, cellList[cell][3])
 
 
 def calcSims(path, wl, maxTT, pw):
     import glob
     import pyfaults.simXRD as xs
     
-    CIFfileList = glob.glob(path + "cifs/" + ".cif")
+    CIFfileList = glob.glob(path + ".cif")
         
     simList = []
     for i in range(len(CIFfileList)):
@@ -48,7 +48,7 @@ def calcSims(path, wl, maxTT, pw):
         Q, ints = xs.fullSim(path, CIFfileList[i], wl, maxTT, pw=pw)
         
         simList.append([Q, ints, cellName[0]])
-        xs.saveSim(path + "sims/", cellName[0] + "_sim", Q, ints)
+        xs.saveSim(path, cellName[0] + "_sim", Q, ints)
     
     return simList
 
@@ -61,7 +61,7 @@ def calcDiffs(path, simList, expt):
         diffQ, diffInts = xs.diffCurve(expt[0], simList[i][0], expt[1], simList[i][1])
         
         exptDiffList.append([diffQ, diffInts, simList[i][2]])
-        xs.saveDiff(path + "exptDiffs/", "expt_" + simList[i][2] + "_diff", 
+        xs.saveDiff(path, "expt_" + simList[i][2] + "_diff", 
                     diffQ, diffInts)
     
     return exptDiffList
@@ -79,7 +79,7 @@ def calcFitDiffs(path, exptDiffList):
                                              UFdiffInts, exptDiffList[i][1])
         
         fitDiffList.append([fitDiffQ, fitDiffInts, exptDiffList[i][2]])
-        xs.saveDiff(path + "fitDiffs/", exptDiffList[i][2] + "_fitDiff", 
+        xs.saveDiff(path, exptDiffList[i][2] + "_fitDiff", 
                     fitDiffQ, fitDiffInts)
     
     return fitDiffList
