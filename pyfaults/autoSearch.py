@@ -53,6 +53,15 @@ def calcSims(path, wl, maxTT, pw):
     
     return simList
 
+def normalizeInts(expt, simList):
+    import pyfaults.simXRD as xs
+    
+    exptNorm = [expt[0], xs.norm(expt[1])]
+    for i in range(len(simList)):
+        simListNorm = [simList[i][0], xs.norm(simList[i][1])]
+        
+    return exptNorm, simListNorm
+
 
 def calcDiffs(path, simList, expt):
     import pyfaults.simXRD as xs
@@ -62,7 +71,7 @@ def calcDiffs(path, simList, expt):
         diffQ, diffInts = xs.diffCurve(expt[0], simList[i][0], expt[1], simList[i][1])
         
         exptDiffList.append([diffQ, diffInts, simList[i][2]])
-        xs.saveDiff(path, "expt_" + simList[i][2] + "_diff", 
+        xs.saveSim(path, "expt_" + simList[i][2] + "_diff", 
                     diffQ, diffInts)
     
     return exptDiffList
@@ -80,7 +89,7 @@ def calcFitDiffs(path, exptDiffList):
                                              UFdiffInts, exptDiffList[i][1])
         
         fitDiffList.append([fitDiffQ, fitDiffInts, exptDiffList[i][2]])
-        xs.saveDiff(path, exptDiffList[i][2] + "_fitDiff", 
+        xs.saveSim(path, exptDiffList[i][2] + "_fitDiff", 
                     fitDiffQ, fitDiffInts)
     
     return fitDiffList
@@ -95,7 +104,9 @@ def autoSearch(path, unitcell, expt, nStacks, fltLayer, probList, sVecList,
     
     simList = calcSims(path, wl, maxTT, pw)
     
-    exptDiffList = calcDiffs(path, simList, expt)
+    exptNorm, simListNorm = normalizeInts(expt, simList)
+    
+    exptDiffList = calcDiffs(path, simListNorm, exptNorm)
     
     fitDiffList = calcFitDiffs(path, exptDiffList)
     
