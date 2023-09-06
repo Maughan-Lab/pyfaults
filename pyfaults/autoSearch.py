@@ -60,7 +60,7 @@ def normalizeInts(expt, simList):
     
     simListNorm = []
     for i in range(len(simList)):
-        simNorm = [simList[i][0], xs.norm(simList[i][1])]
+        simNorm = [simList[i][0], xs.norm(simList[i][1]), simList[i][2]]
         simListNorm.append(simNorm)
         
     return exptNorm, simListNorm
