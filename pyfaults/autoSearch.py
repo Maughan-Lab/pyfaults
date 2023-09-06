@@ -26,7 +26,7 @@ def formatStr(probList, sVecList):
         sVecStr = re.sub("n", str(s+1), txt)
         strVars = ["x", "y", "z"]
         for v in range(len(strVars)):
-            txtSub = re.sub(strVars[v], sVecList[s][v], sVecStr)
+            txtSub = re.sub(strVars[v], str(sVecList[s][v]), sVecStr)
             sVecStr = txtSub
         sVecStrList.append(sVecStr)
         
