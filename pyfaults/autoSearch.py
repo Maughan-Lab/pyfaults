@@ -40,7 +40,7 @@ def calcSims(path, wl, maxTT, pw):
     import glob
     import pyfaults.simXRD as xs
     
-    CIFfileList = glob.glob(path + ".cif")
+    CIFfileList = glob.glob(path + "*.cif")
         
     simList = []
     for i in range(len(CIFfileList)):
