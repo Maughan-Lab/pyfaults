@@ -98,6 +98,46 @@ def calcFitDiffs(path, exptDiffList):
     return fitDiffList
 
 
+def peakFitCompare(fitDiffList, peakQList, brd):
+    import numpy as np
+    
+    numPeaks = len(peakQList)
+    
+    peakRanges = []
+    for i in range(numPeaks):
+        newRange = (peakQList-brd, peakQList+brd)
+        peakRanges.append(newRange)
+        
+    fitDiffPeaks = []
+    for i in range(numPeaks):
+        for model in range(len(fitDiffList)):
+            modelFitDiffPeak = []
+            for qVal in range(len(fitDiffList[model][0])):
+                if fitDiffList[model][0][qVal] >= peakRanges[i][0] and\
+                    fitDiffList[model][0][qVal] <= peakRanges[i][1]:
+                        modelFitDiffPeak.append(fitDiffList[model][0][qVal])
+            fitDiffPeaks.append(modelFitDiffPeak)
+            
+    for i in range(numPeaks):
+        for model in range(len(fitDiffPeaks)):
+            cSum = np.cumsum(fitDiffPeaks[model])
+            resultStr = []
+            if cSum < 0:
+                resultStr.append(fitDiffList[model][2] +\
+                                 ": Improved fit for peak at " + peakQList[i])
+            elif cSum > 0:
+                resultStr.append(fitDiffList[model][2] +\
+                                 ": Worsened fit for peak at " + peakQList[i])
+                    
+            elif cSum == 0:
+                resultStr.append(fitDiffList[model][2] +\
+                                 ": No change in fit for peak at " + peakQList[i])
+                    
+    return resultStr
+    
+    
+
+
 def autoSearch(path, unitcell, expt, nStacks, fltLayer, probList, sVecList, 
                wl, maxTT, pw=0.0):
     
