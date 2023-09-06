@@ -6,6 +6,8 @@
 import numpy as np
 import pandas as pd
 import re
+import os
+
 from matplotlib.pyplot import rc
 rc("text", usetex=True)
 rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
@@ -49,10 +51,9 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
     UF = Supercell(unitcell, nStacks)
     cellList.append([UF, "Unfaulted"])
     
-    df.loc[len(df)] = {"Model": "Unfaulted", 
-                       "Stacking Vector": r"$\vec{S}_0 = \left[0, 0, 0 \right]$",
-                       "Stacking Probability" : r"$P = 0 \%$",
-                       "S_x": 0, "S_y": 0, "S_z": 0, "P": 0}
+    df.loc[len(df)] = {"Model": "Unfaulted", "Stacking Vector": np.nan, 
+                       "Stacking Probability" : np.nan,
+                       "S_x": np.nan, "S_y": np.nan, "S_z": np.nan, "P": np.nan}
     
     for p in range(len(probList)):
         for s in range(len(sVecList)):
@@ -82,20 +83,22 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
 def calcSims(df, path, wl, maxTT, pw):
     import pyfaults.simXRD as xs
     
-    simQ = []
-    simInts = []
-    for i in df.index:
-        name = df["Model"][i]
+    simDF = df
+    simDF["Simulated Q"] = np.nan
+    simDF["Simulated Intensity"] = np.nan
+
+    for i in simDF.index:
+        name = simDF["Model"][i]
         Q, ints = xs.fullSim(path, name, wl, maxTT, pw=pw)
         
-        simQ.append(Q)
-        normInts = xs.norm(ints)
-        simInts.append(normInts)
-    
-    df.loc[:, ["Simulated Q"]] = simQ
-    df.loc[:, ["Simulated Intensity"]] = simInts
-    
-    simDF = df
+        simDF[i] = {"Simulated Q": Q, "Simulated Intensity": xs.norm(ints)}
+        
+        if os.path.exists(path + "sims/") == False:
+            os.mkdir(path + "sims/")
+        with open(path + "sims/" + name + "_sim.txt", "w") as f:
+            for (Q, ints) in zip(Q, ints):
+                f.write("{0} {1}\n".format(Q, ints))
+        f.close() 
     
     return simDF
 
@@ -123,6 +126,9 @@ def calcDiffs(path, simDF, expt):
         
         exptDiffs.append(diffInts)
         
+        if os.path.exists(path + "diffCurves/") == False:
+            os.mkdir(path + "diffCurves/")
+        
         with open(path + "diffCurves/" + name + "_exptDiff.txt", "w") as f:
             for (diffInts) in zip(diffInts):
                 f.write("{0}\n".format(diffInts))
@@ -148,6 +154,9 @@ def calcFitDiffs(path, exptDiffDF):
         fitDiffQ, fitDiffInts = xs.diffCurve(Q, UFdiff, Q, modelDiff)
         
         fitDiffs.append(fitDiffInts)
+        
+        if os.path.exists(path + "diffCurves/") == False:
+            os.mkdir(path + "diffCurves/")
         
         with open(path + "diffCurves/" + name + "_fitDiff.txt", "w") as f:
             for (fitDiffInts) in zip(fitDiffInts):
