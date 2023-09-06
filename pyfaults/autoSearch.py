@@ -54,11 +54,12 @@ def calcSims(path, wl, maxTT, pw):
     return simList
 
 def normalizeInts(expt, simList):
+    import numpy as np
     import pyfaults.simXRD as xs
     
-    exptNorm = [expt[0], xs.norm(expt[1])]
+    exptNorm = np.array([expt[0], xs.norm(expt[1])])
     for i in range(len(simList)):
-        simListNorm = [simList[i][0], xs.norm(simList[i][1])]
+        simListNorm = np.array([simList[i][0], xs.norm(simList[i][1])])
         
     return exptNorm, simListNorm
 
