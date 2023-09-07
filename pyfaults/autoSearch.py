@@ -183,25 +183,22 @@ def calcFitDiffs(path, exptDiffDF):
     
     UFdiff = exptDiffDF["Expt vs. Model Difference"][0]
     
-    fitDiffList = []
+    fitDiffs = []
     for i in exptDiffDF.index:
         while i > 0:
             name = exptDiffDF["Model"][i]
             modelDiff = exptDiffDF["Expt vs. Model Difference"][i]
             
-            fitDiff = []
-            for j in range(len(UFdiff)):
-                diff = UFdiff[j] - modelDiff[j]
-                fitDiff.append(diff)
+            diff = np.subtract(UFdiff, modelDiff)
                 
-            fitDiffList.append(fitDiff)
+            fitDiffs.append(diff)
             
-            with open(path + "fitDiffCurves/" + name + "_fitDiff.txt", "w") as f:
-                for diff in range(len(fitDiff)):
-                    f.write("{0}\n".format(diff))
-            f.close() 
+    with open(path + "fitDiffCurves/" + name + "_fitDiff.txt", "w") as f:
+        for diff in range(len(fitDiffs)):
+            f.write("{0}\n".format(diff))
+    f.close() 
             
-    fitDiffDF["UF vs. FLT Model"] = fitDiffList
+    fitDiffDF["UF vs. FLT Model"] = fitDiffs
     
     return fitDiffDF
 
