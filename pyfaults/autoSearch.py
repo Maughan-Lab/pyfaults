@@ -15,7 +15,7 @@ rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
 rc("text.latex",preamble=r"\usepackage{sfmath}")
 
 #----------------------------------------------------------------------------------------
-def importExpt(path, fn, wl, units="tt"):
+def importExpt(path, fn, wl):
     from pyfaults import importSim, tt_to_q
     import pyfaults.simXRD as xs
     
@@ -141,10 +141,10 @@ def calcDiffs(path, simDF, expt):
     exptInts = expt[1]
     
     exptDiffs = []
-    for i in simDF.index:
-        name = simDF["Model"][i]
-        simQ = simDF["Simulated Q"][i]
-        simInts = simDF["Simulated Intensity"][i]
+    for row in simDF.index:
+        name = simDF["Model"][row]
+        simQ = simDF["Simulated Q"][row]
+        simInts = simDF["Simulated Intensity"][row]
         
         index = []
         for i in range(len(exptQ)):
@@ -156,7 +156,10 @@ def calcDiffs(path, simDF, expt):
         
         modelDiff = []
         for ind in range(len(index)):
-            diff = exptInts[ind][i] - simInts[ind][j]
+            exptIndex = index[ind][0]
+            simIndex = index[ind][1]
+            
+            diff = exptInts[exptIndex] - simInts[simIndex]
             modelDiff.append(diff)
         
         exptDiffs.append(modelDiff)
