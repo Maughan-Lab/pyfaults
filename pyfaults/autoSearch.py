@@ -149,7 +149,8 @@ def calcDiffs(path, simDF, expt):
     exptQ = expt[0]
     exptInts = expt[1]
     
-    exptDiffs = []
+    exptDiffQ = []
+    exptDiffInts = []
     for row in simDF.index:
         name = simDF["Model"][row]
         simQ = simDF["Simulated Q"][row]
@@ -163,22 +164,27 @@ def calcDiffs(path, simDF, expt):
                 if q1 == q2:
                     index.append([i, j])
         
-        modelDiff = []
+        modelDiffQ = []
+        modelDiffInts = []
         for ind in range(len(index)):
             exptIndex = index[ind][0]
             simIndex = index[ind][1]
             
-            diff = exptInts[exptIndex] - simInts[simIndex]
-            modelDiff.append(diff)
+            diffQ = exptQ[exptIndex] - simQ[simIndex]
+            diffInts = exptInts[exptIndex] - simInts[simIndex]
+            modelDiffQ.append(diffQ)
+            modelDiffInts.append(diffInts)
         
-        exptDiffs.append(modelDiff)
+        exptDiffQ.append(modelDiffQ)
+        exptDiffInts.append(modelDiffInts)
         
         with open(path + "diffCurves/" + name + "_exptDiff.txt", "w") as f:
-            for diff in range(len(modelDiff)):
-                f.write("{0}\n".format(diff))
+            for (q, ints) in zip(modelDiffQ, modelDiffInts):
+                f.write("{0} {1}\n".format(q, ints))
         f.close() 
     
-    exptDiffDF["Expt vs. Model Difference"] = exptDiffs
+    exptDiffDF["Expt vs. Model Q"] = exptDiffQ
+    exptDiffDF["Expt vs. Model Difference"] = exptDiffInts
     
     return exptDiffDF
 
