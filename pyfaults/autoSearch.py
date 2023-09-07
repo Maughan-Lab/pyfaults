@@ -84,12 +84,16 @@ def calcSims(df, path, wl, maxTT, pw):
     import pyfaults.simXRD as xs
     
     simDF = df
-    simDF["Simulated Q"] = np.nan
-    simDF["Simulated Intensity"] = np.nan
+    
+    simQList = []
+    simDiffList = []
 
     for i in simDF.index:
         name = simDF["Model"][i]
         Q, ints = xs.fullSim(path, name, wl, maxTT, pw=pw)
+        
+        simQList.append(Q)
+        simDiffList.append(xs.norm(ints))
         
         simDF[i] = {"Simulated Q": Q, "Simulated Intensity": xs.norm(ints)}
         
@@ -98,7 +102,10 @@ def calcSims(df, path, wl, maxTT, pw):
         with open(path + "sims/" + name + "_sim.txt", "w") as f:
             for (Q, ints) in zip(Q, ints):
                 f.write("{0} {1}\n".format(Q, ints))
-        f.close() 
+        f.close()
+        
+    simDF["Simulated Q"] = simQList
+    simDF["Simulated Intensity"] = simDiffList
     
     return simDF
 
