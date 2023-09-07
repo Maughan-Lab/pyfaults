@@ -28,6 +28,8 @@ def importExpt(path, fn, wl, maxTT):
             truncTT.append(exptTT[i])
             truncInts.append(exptInts[i])
     
+    truncTT = np.array(truncTT)
+    truncInts = np.array(truncInts)
     exptQ = tt_to_q(truncTT, wl)
         
     exptIntsMin = truncInts - np.min(truncInts)
