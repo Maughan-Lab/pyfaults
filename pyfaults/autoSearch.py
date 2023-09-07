@@ -142,6 +142,8 @@ def calcSims(df, path, wl, maxTT, pw):
 
 #----------------------------------------------------------------------------------------
 def calcDiffs(path, simDF, expt):
+    import pyfaults.simXRD as xs
+    
     if os.path.exists(path + "diffCurves/") == False:
         os.mkdir(path + "diffCurves/")
     
@@ -156,30 +158,13 @@ def calcDiffs(path, simDF, expt):
         simQ = simDF["Simulated Q"][row]
         simInts = simDF["Simulated Intensity"][row]
         
-        index = []
-        for i in range(len(exptQ)):
-            q1 = float("%.3f"%(exptQ[i]))
-            for j in range(len(simQ)):
-                q2 = float("%.3f"%(simQ[j]))
-                if q1 == q2:
-                    index.append([i, j])
+        diffQ, diffInts = xs.diffCurve(exptQ, simQ, exptInts, simInts)
         
-        modelDiffQ = []
-        modelDiffInts = []
-        for ind in range(len(index)):
-            exptIndex = index[ind][0]
-            simIndex = index[ind][1]
-            
-            diffQ = simQ[simIndex]
-            diffInts = exptInts[exptIndex] - simInts[simIndex]
-            modelDiffQ.append(diffQ)
-            modelDiffInts.append(diffInts)
-        
-        exptDiffQ.append(modelDiffQ)
-        exptDiffInts.append(modelDiffInts)
+        exptDiffQ.append(diffQ)
+        exptDiffInts.append(diffInts)
         
         with open(path + "diffCurves/" + name + "_exptDiff.txt", "w") as f:
-            for (q, ints) in zip(modelDiffQ, modelDiffInts):
+            for (q, ints) in zip(diffQ, diffInts):
                 f.write("{0} {1}\n".format(q, ints))
         f.close() 
     
@@ -200,7 +185,9 @@ def calcFitDiffs(path, exptDiffDF):
     
     fitDiffs = []
     for i in exptDiffDF.index:
-        while i > 0:
+        if i == 0:
+            fitDiffs.append(np.nan)
+        elif i > 0:
             name = exptDiffDF["Model"][i]
             modelDiff = exptDiffDF["Expt vs. Model Difference"][i]
             
@@ -208,10 +195,10 @@ def calcFitDiffs(path, exptDiffDF):
                 
             fitDiffs.append(diff)
             
-    with open(path + "fitDiffCurves/" + name + "_fitDiff.txt", "w") as f:
-        for diff in range(len(fitDiffs)):
-            f.write("{0}\n".format(diff))
-    f.close() 
+            with open(path + "fitDiffCurves/" + name + "_fitDiff.txt", "w") as f:
+                for diff in range(len(fitDiffs)):
+                    f.write("{0}\n".format(diff))
+            f.close() 
             
     fitDiffDF["UF vs. FLT Model"] = fitDiffs
     
