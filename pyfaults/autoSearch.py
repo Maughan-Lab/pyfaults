@@ -19,8 +19,8 @@ def importExpt(path, fn, wl, units="tt"):
     from pyfaults import importSim, tt_to_q
     import pyfaults.simXRD as xs
     
-    exptTT, exptInts = pf.importSim(path, fn)
-    exptQ = pf.tt_to_q(exptTT, wl)
+    exptTT, exptInts = importSim(path, fn)
+    exptQ = tt_to_q(exptTT, wl)
         
     exptIntsMin = exptInts - np.min(exptInts)
     exptNorm = xs.norm(exptIntsMin)
@@ -152,7 +152,7 @@ def calcDiffs(path, simDF, expt):
             for j in range(len(simQ)):
                 q2 = float("%.3f"%(simQ[j]))
                 if q1 == q2:
-                    index.append[[i, j]]
+                    index.append([i, j])
         
         modelDiff = []
         for ind in range(len(index)):
