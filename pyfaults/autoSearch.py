@@ -4,6 +4,7 @@
 #########################################################################################
 
 import numpy as np
+import copy as cp
 import pandas as pd
 import re
 import os
@@ -91,7 +92,7 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
 def calcSims(df, path, wl, maxTT, pw):
     import pyfaults.simXRD as xs
     
-    simDF = df
+    simDF = cp.deepcopy(df)
     
     simQList = []
     simDiffList = []
@@ -122,7 +123,7 @@ def calcSims(df, path, wl, maxTT, pw):
 def calcDiffs(path, simDF, expt):
     import pyfaults.simXRD as xs
     
-    exptDiffDF = simDF
+    exptDiffDF = cp.deepcopy(simDF)
     
     exptDiffs = []
     for i in simDF.index:
@@ -151,6 +152,8 @@ def calcDiffs(path, simDF, expt):
 def calcFitDiffs(path, exptDiffDF):
     import pyfaults.simXRD as xs
     
+    fitDiffDF = cp.deepcopy(exptDiffDF)
+    
     Q = exptDiffDF["Simulated Q"][0]
     UFdiff = exptDiffDF["Expt vs. Model Difference"][0]
     
@@ -170,8 +173,7 @@ def calcFitDiffs(path, exptDiffDF):
                 f.write("{0}\n".format(fitDiffInts))
         f.close() 
     
-    exptDiffDF.loc[:, ["Unfaulted vs. Faulted"]] = fitDiffs
-    fitDiffDF = exptDiffDF
+    fitDiffDF["Unfaulted vs. Faulted"] = fitDiffs
     
     return fitDiffDF
 
