@@ -44,16 +44,18 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
     
     probStrList, sVecStrList = formatStr(probList, sVecList)
     
-    df = pd.DataFrame({"Model": [],"Stacking Vector": [], 
-                       "Stacking Probability" : [],
-                       "S_x": [], "S_y": [], "S_z": [], "P": []})
+    df = pd.DataFrame()
     
     UF = Supercell(unitcell, nStacks)
     cellList.append([UF, "Unfaulted"])
     
-    df.loc[len(df)] = {"Model": "Unfaulted", "Stacking Vector": np.nan, 
-                       "Stacking Probability" : np.nan,
-                       "S_x": np.nan, "S_y": np.nan, "S_z": np.nan, "P": np.nan}
+    modelCol = ["Unfaulted"]
+    sVecTxtCol = [np.nan]
+    probTxtCol = [np.nan]
+    sxCol = [np.nan]
+    syCol = [np.nan]
+    szCol = [np.nan]
+    probCol = [np.nan]
     
     for p in range(len(probList)):
         for s in range(len(sVecList)):
@@ -63,18 +65,24 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
             cellTag = "S" + str(s+1) + "_P" + str(int(probList[p]*100))
             cellList.append([FLT, cellTag])
             
-            sx = sVecList[s][0]
-            sy = sVecList[s][1]
-            sz = sVecList[s][2]
-            
-            df.loc[len(df)] = {"Model": cellTag, 
-                               "Stacking Vector": sVecStrList[s],
-                               "Stacking Probability" : probStrList[p],
-                               "S_x": sx, "S_y": sy, "S_z": sz, 
-                               "P": probList[p]}
+            modelCol.append(cellTag)
+            sVecTxtCol.append(sVecStrList[s])
+            probTxtCol.append(probStrList[p])
+            sxCol.append(sVecList[s][0])
+            syCol.append(sVecList[s][1])
+            szCol.append(sVecList[s][2])
+            probCol.append(probList[p])
             
     for c in range(len(cellList)):
         toCif((cellList[c][0]), path, cellList[c][1])
+        
+    df["Model"] = modelCol
+    df["Stacking Vector"] = sVecTxtCol
+    df["Stacking Probability"] = probTxtCol
+    df["S_x"] = sxCol
+    df["S_y"] = syCol
+    df["S_z"] = szCol
+    df["P"] = probCol
             
     return df
 
@@ -111,17 +119,10 @@ def calcSims(df, path, wl, maxTT, pw):
 
 
 #----------------------------------------------------------------------------------------
-def normalizeExpt(expt):
-    import pyfaults.simXRD as xs
-    
-    exptNorm = [expt[0], xs.norm(expt[1])]
-        
-    return exptNorm
-
-
-#----------------------------------------------------------------------------------------
 def calcDiffs(path, simDF, expt):
     import pyfaults.simXRD as xs
+    
+    exptDiffDF = simDF
     
     exptDiffs = []
     for i in simDF.index:
@@ -141,8 +142,7 @@ def calcDiffs(path, simDF, expt):
                 f.write("{0}\n".format(diffInts))
         f.close() 
     
-    simDF.loc[:, ["Expt vs. Model Difference"]] = exptDiffs
-    exptDiffDF = simDF
+    exptDiffDF["Expt vs. Model Difference"] = exptDiffs
     
     return exptDiffDF
 
