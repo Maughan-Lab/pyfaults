@@ -15,18 +15,25 @@ rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
 rc("text.latex",preamble=r"\usepackage{sfmath}")
 
 #----------------------------------------------------------------------------------------
-def importExpt(path, fn, wl):
+def importExpt(path, fn, wl, maxTT):
     from pyfaults import importSim, tt_to_q
     import pyfaults.simXRD as xs
     
     exptTT, exptInts = importSim(path, fn)
-    exptQ = tt_to_q(exptTT, wl)
+    
+    truncTT = []
+    truncInts = []
+    for i in range(len(exptTT)):
+        if exptTT[i] <= maxTT:
+            truncTT.append(exptTT[i])
+            truncInts.append(exptInts[i])
+    
+    exptQ = tt_to_q(truncTT, wl)
         
-    exptIntsMin = exptInts - np.min(exptInts)
+    exptIntsMin = truncInts - np.min(truncInts)
     exptNorm = xs.norm(exptIntsMin)
     
-    expt = [exptQ, exptNorm]
-    return expt
+    return exptQ, exptNorm
         
 
 #----------------------------------------------------------------------------------------
@@ -129,20 +136,6 @@ def calcSims(df, path, wl, maxTT, pw):
     simDF["Simulated Intensity"] = simDiffList
     
     return simDF
-
-
-#----------------------------------------------------------------------------------------
-def formatExpt(expt, wl, maxTT):
-    truncQ = []
-    truncInts = []
-        
-    for i in range(len(expt[0])):
-        if expt[0][i] <= maxTT:
-            truncQ.append(expt[0][i])
-            truncInts.append(expt[1][i])
-    
-    truncExpt = [truncQ, truncInts]
-    return truncExpt
 
 
 #----------------------------------------------------------------------------------------
