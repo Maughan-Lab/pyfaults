@@ -156,20 +156,21 @@ def calcFitDiffs(path, exptDiffDF):
     UFdiff = exptDiffDF["Expt vs. Model Difference"][0]
     
     fitDiffs = []
-    for i in range(1, exptDiffDF.index):
-        name = exptDiffDF["Model"][i]
-        modelDiff = exptDiffDF["Expt vs. Model Difference"][i]
-        fitDiffQ, fitDiffInts = xs.diffCurve(Q, UFdiff, Q, modelDiff)
+    for i in exptDiffDF.index:
+        while i > 0:
+            name = exptDiffDF["Model"][i]
+            modelDiff = exptDiffDF["Expt vs. Model Difference"][i]
+            fitDiffQ, fitDiffInts = xs.diffCurve(Q, UFdiff, Q, modelDiff)
         
-        fitDiffs.append(fitDiffInts)
+            fitDiffs.append(fitDiffInts)
         
-        if os.path.exists(path + "diffCurves/") == False:
-            os.mkdir(path + "diffCurves/")
+            if os.path.exists(path + "diffCurves/") == False:
+                os.mkdir(path + "diffCurves/")
         
-        with open(path + "diffCurves/" + name + "_fitDiff.txt", "w") as f:
-            for (fitDiffInts) in zip(fitDiffInts):
-                f.write("{0}\n".format(fitDiffInts))
-        f.close() 
+            with open(path + "diffCurves/" + name + "_fitDiff.txt", "w") as f:
+                for (fitDiffInts) in zip(fitDiffInts):
+                    f.write("{0}\n".format(fitDiffInts))
+                    f.close() 
     
     fitDiffDF["Unfaulted vs. Faulted"] = fitDiffs
     
@@ -177,16 +178,19 @@ def calcFitDiffs(path, exptDiffDF):
 
 
 #----------------------------------------------------------------------------------------
-def makePeakDF(labels, qVal, pw):
-    df = pd.DataFrame({"Reflection": [],"Q": [], "Peak Range" : []})
+def makePeakDF(labels, qVals, pw):
+    df = pd.DataFrame()
     
+    peakRanges = []
     for i in range(len(labels)):
-        qMin = qVal[i] - (pw/2)
-        qMax = qVal[i] + (pw/2)
+        qMin = qVals[i] - (pw/2)
+        qMax = qVals[i] + (pw/2)
         qRange = [qMin, qMax]
+        peakRanges.append(qRange)
         
-        addRow = {"Reflection": labels[i], "Q": qVal[i], "Peak Range": qRange}
-        df.loc[len(df)] = addRow
+    df["Reflection"] = labels
+    df["Q"] = qVals
+    df["Peak Range"] = peakRanges
     
     return df
 
@@ -202,14 +206,16 @@ def peakFitCompare(fitDiffDF, peakDF):
     for i in fitDiffDF.index:
         name = fitDiffDF["Model"][i]
         
-        compDF = pd.DataFrame({"Peak": [], "UF vs. FLT Fit Difference": [], 
-                              "Sum": [], "Fit Result": []})
+        compDF = pd.DataFrame()
         
         fullFitDiff = fitDiffDF["Unfaulted vs. Faulted"][i]
         
+        truncFitCol = []
+        sumCol = []
+        resultCol = []
+        
         # for each peak
         for j in peakDF.index:
-            peakLabel = peakDF["Reflection"][j]
             qRange = peakDF["Peak Range"][j]
             qMin = qRange[0]
             qMax = qRange[1]
@@ -227,11 +233,14 @@ def peakFitCompare(fitDiffDF, peakDF):
             elif diffSum[-1] == 0:
                 result = "No Change"
                 
-            addRow = {"Peak": peakLabel, 
-                      "UF vs. FLT Fit Difference": truncFitDiff,
-                      "Sum": diffSum, "Fit Result": result}
+            truncFitCol.append(truncFitDiff)
+            sumCol.append(diffSum)
+            resultCol.append(result)
             
-            compDF.loc[len(compDF)] = addRow
+        compDF["Peak"] = peakDF["Reflection"]
+        compDF["UF vs. FLT Fit Difference"] = truncFitCol
+        compDF["Sum"] = sumCol
+        compDF["Fit Result"] = resultCol
             
         addEntry = [name, compDF]
         fitComp.append(addEntry)
