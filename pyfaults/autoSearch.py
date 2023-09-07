@@ -104,8 +104,6 @@ def calcSims(df, path, wl, maxTT, pw):
         simQList.append(Q)
         simDiffList.append(xs.norm(ints))
         
-        simDF[i] = {"Simulated Q": Q, "Simulated Intensity": xs.norm(ints)}
-        
         if os.path.exists(path + "sims/") == False:
             os.mkdir(path + "sims/")
         with open(path + "sims/" + name + "_sim.txt", "w") as f:
