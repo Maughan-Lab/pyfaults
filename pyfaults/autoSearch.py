@@ -17,15 +17,13 @@ rc("text.latex",preamble=r"\usepackage{sfmath}")
 #----------------------------------------------------------------------------------------
 def importExpt(path, fn, wl):
     from pyfaults import importSim, tt_to_q
-    import pyfaults.simXRD as xs
     
     exptTT, exptInts = importSim(path, fn)
     exptQ = tt_to_q(exptTT, wl)
         
     exptIntsMin = exptInts - np.min(exptInts)
-    exptNorm = xs.norm(exptIntsMin)
     
-    expt = [exptQ, exptNorm]
+    expt = [exptQ, exptIntsMin]
     return expt
         
 
@@ -129,6 +127,20 @@ def calcSims(df, path, wl, maxTT, pw):
     simDF["Simulated Intensity"] = simDiffList
     
     return simDF
+
+
+#----------------------------------------------------------------------------------------
+def formatExpt(expt, wl, maxTT):
+    truncQ = []
+    truncInts = []
+        
+    for i in range(len(expt[0])):
+        if expt[0][i] <= maxTT:
+            truncQ.append(expt[0][i])
+            truncInts.append(expt[1][i])
+    
+    truncExpt = [truncQ, truncInts]
+    return truncExpt
 
 
 #----------------------------------------------------------------------------------------
