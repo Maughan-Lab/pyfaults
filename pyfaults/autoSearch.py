@@ -14,6 +14,20 @@ rc("text", usetex=True)
 rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
 rc("text.latex",preamble=r"\usepackage{sfmath}")
 
+#----------------------------------------------------------------------------------------
+def importExpt(path, fn, wl, units="tt"):
+    from pyfaults import importSim, tt_to_q
+    import pyfaults.simXRD as xs
+    
+    exptTT, exptInts = pf.importSim(path, fn)
+    exptQ = pf.tt_to_q(exptTT, wl)
+        
+    exptIntsMin = exptInts - np.min(exptInts)
+    exptNorm = xs.norm(exptIntsMin)
+    
+    expt = [exptQ, exptNorm]
+    return expt
+        
 
 #----------------------------------------------------------------------------------------
 def formatStr(probList, sVecList):
@@ -91,6 +105,8 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
 #----------------------------------------------------------------------------------------
 def calcSims(df, path, wl, maxTT, pw):
     import pyfaults.simXRD as xs
+    if os.path.exists(path + "sims/") == False:
+        os.mkdir(path + "sims/")
     
     simDF = cp.deepcopy(df)
     
@@ -104,8 +120,6 @@ def calcSims(df, path, wl, maxTT, pw):
         simQList.append(Q)
         simDiffList.append(xs.norm(ints))
         
-        if os.path.exists(path + "sims/") == False:
-            os.mkdir(path + "sims/")
         with open(path + "sims/" + name + "_sim.txt", "w") as f:
             for (Q, ints) in zip(Q, ints):
                 f.write("{0} {1}\n".format(Q, ints))
@@ -119,26 +133,37 @@ def calcSims(df, path, wl, maxTT, pw):
 
 #----------------------------------------------------------------------------------------
 def calcDiffs(path, simDF, expt):
-    import pyfaults.simXRD as xs
+    if os.path.exists(path + "diffCurves/") == False:
+        os.mkdir(path + "diffCurves/")
     
     exptDiffDF = cp.deepcopy(simDF)
+    exptQ = expt[0]
+    exptInts = expt[1]
     
     exptDiffs = []
     for i in simDF.index:
         name = simDF["Model"][i]
-        qVals = simDF["Simulated Q"][i]
-        intVals = simDF["Simulated Intensity"][i]
+        simQ = simDF["Simulated Q"][i]
+        simInts = simDF["Simulated Intensity"][i]
         
-        diffQ, diffInts = xs.diffCurve(expt[0], qVals, expt[1], intVals)
+        index = []
+        for i in range(len(exptQ)):
+            q1 = float("%.3f"%(exptQ[i]))
+            for j in range(len(simQ)):
+                q2 = float("%.3f"%(simQ[j]))
+                if q1 == q2:
+                    index.append[[i, j]]
         
-        exptDiffs.append(diffInts)
+        modelDiff = []
+        for ind in range(len(index)):
+            diff = exptInts[ind][i] - simInts[ind][j]
+            modelDiff.append(diff)
         
-        if os.path.exists(path + "diffCurves/") == False:
-            os.mkdir(path + "diffCurves/")
+        exptDiffs.append(modelDiff)
         
         with open(path + "diffCurves/" + name + "_exptDiff.txt", "w") as f:
-            for (diffInts) in zip(diffInts):
-                f.write("{0}\n".format(diffInts))
+            for diff in range(len(modelDiff)):
+                f.write("{0}\n".format(diff))
         f.close() 
     
     exptDiffDF["Expt vs. Model Difference"] = exptDiffs
@@ -148,31 +173,32 @@ def calcDiffs(path, simDF, expt):
 
 #----------------------------------------------------------------------------------------
 def calcFitDiffs(path, exptDiffDF):
-    import pyfaults.simXRD as xs
+    if os.path.exists(path + "fitDiffCurves/") == False:
+        os.mkdir(path + "fitDiffCurves/")
     
     fitDiffDF = cp.deepcopy(exptDiffDF)
     
-    Q = exptDiffDF["Simulated Q"][0]
     UFdiff = exptDiffDF["Expt vs. Model Difference"][0]
     
-    fitDiffs = []
+    fitDiffList = []
     for i in exptDiffDF.index:
         while i > 0:
             name = exptDiffDF["Model"][i]
             modelDiff = exptDiffDF["Expt vs. Model Difference"][i]
-            fitDiffQ, fitDiffInts = xs.diffCurve(Q, UFdiff, Q, modelDiff)
-        
-            fitDiffs.append(fitDiffInts)
-        
-            if os.path.exists(path + "diffCurves/") == False:
-                os.mkdir(path + "diffCurves/")
-        
-            with open(path + "diffCurves/" + name + "_fitDiff.txt", "w") as f:
-                for (fitDiffInts) in zip(fitDiffInts):
-                    f.write("{0}\n".format(fitDiffInts))
-                    f.close() 
-    
-    fitDiffDF["Unfaulted vs. Faulted"] = fitDiffs
+            
+            fitDiff = []
+            for i in range(len(UFdiff)):
+                diff = UFdiff[i] - modelDiff[i]
+                fitDiff.append(diff)
+                
+            fitDiffList.append(fitDiff)
+            
+            with open(path + "fitDiffCurves/" + name + "_fitDiff.txt", "w") as f:
+                for diff in range(len(fitDiff)):
+                    f.write("{0}\n".format(diff))
+            f.close() 
+            
+    fitDiffDF["UF vs. FLT Model"] = fitDiffList
     
     return fitDiffDF
 
@@ -284,20 +310,31 @@ def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList,
 
 
 #----------------------------------------------------------------------------------------
-def autoSearch(path, unitcell, expt, nStacks, fltLayer, probList, sVecList, 
-               wl, maxTT, pw=0.0):
+def autoSearch(path, unitcell, exptPath, exptFile, nStacks, fltLayer, probList, 
+               sVecList, wl, maxTT, simPW=0.0):
     
-    cellList = genSupercells(unitcell, nStacks, fltLayer, probList, sVecList)
+    # format experimental data
+    expt = importExpt(exptPath, exptFile, wl)
     
-    simList = calcSims(path, wl, maxTT, pw)
+    # generate supercells
+    cellDF = genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path)
+    print("Generated supercell CIFs: ")
+    for i in cellDF.index:
+        print(cellDF["Model"][i])
     
-    exptNorm, simListNorm = normalizeInts(expt, simList)
+    # simulate XRD
+    simDF = calcSims(cellDF, path, wl, maxTT, simPW)
+    print("Generated simulated X-ray diffraction patterns: ")
     
-    exptDiffList = calcDiffs(path, simListNorm, exptNorm)
+    # calculate expt vs. model difference curves
+    exptDiffDF = calcDiffs(path, simDF, expt)
+    print("Generated experiment vs. model difference curves")
     
-    fitDiffList = calcFitDiffs(path, exptDiffList)
+    # calculate fit differences
+    fitDiffDF = calcFitDiffs(path, exptDiffDF)
+    print(r"Generated fit difference curves, Diff$_\mathrm{UF} -$ Diff$_\mathrm{FLT}$")
     
-    return fitDiffList
+    return
 
 
 
