@@ -170,7 +170,7 @@ def calcDiffs(path, simDF, expt):
             exptIndex = index[ind][0]
             simIndex = index[ind][1]
             
-            diffQ = exptQ[exptIndex] - simQ[simIndex]
+            diffQ = simQ[exptIndex]
             diffInts = exptInts[exptIndex] - simInts[simIndex]
             modelDiffQ.append(diffQ)
             modelDiffInts.append(diffInts)
