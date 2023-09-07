@@ -190,8 +190,8 @@ def calcFitDiffs(path, exptDiffDF):
             modelDiff = exptDiffDF["Expt vs. Model Difference"][i]
             
             fitDiff = []
-            for i in range(len(UFdiff)):
-                diff = UFdiff[i] - modelDiff[i]
+            for j in range(len(UFdiff)):
+                diff = UFdiff[j] - modelDiff[j]
                 fitDiff.append(diff)
                 
             fitDiffList.append(fitDiff)
