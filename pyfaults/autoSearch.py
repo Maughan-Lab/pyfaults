@@ -336,8 +336,7 @@ def autoSearch(path, unitcell, exptPath, exptFile, nStacks, fltLayer, probList,
     fitDiffDF = calcFitDiffs(path, exptDiffDF)
     print(r"Generated fit difference curves, Diff$_\mathrm{UF} -$ Diff$_\mathrm{FLT}$")
     
-    return
-
+    return fitDiffDF
 
 
 
