@@ -355,11 +355,11 @@ def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peakLabels,
     params["Save Folder"] = savePath
     params["N"] = nStacks
     params["Fault Layer"] = fltLayer
-    params["Fault Probabilities"] = probList
-    params["Stacking Vectors"] = sVecList
+    params.loc[0, "Fault Probabilities"] = probList
+    params.loc[0, "Stacking Vectors"] = sVecList
         
-    params["Peak Labels"] = peakLabels
-    params["Peak Q Positions"] = peakQ
+    params.loc[0, "Peak Labels"] = peakLabels
+    params.loc[0, "Peak Q Positions"] = peakQ
     params["Peak Width For Fit Comparison"] = calcPW
     
     params["Wavelength"] = wl
