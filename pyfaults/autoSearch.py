@@ -379,18 +379,14 @@ def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peakLabels,
 #----------------------------------------------------------------------------------------
 def autoSearch(params, path, unitcell, expt):
     
-    wl = params["Wavelength"]
-    maxTT = params["Maximum 2Theta"]
-    simPW = params["Simulated Peak Width"]
+    wl = params["Wavelength"][0]
+    maxTT = params["Maximum 2Theta"][0]
+    simPW = params["Simulated Peak Width"][0]
     
-    # format experimental data
-    #exptQ, exptNorm = importExpt(exptPath, exptFile, wl, maxTT)
-    #expt = [exptQ, exptNorm]
-    
-    nStacks = params["N"]
-    fltLayer = params["Fault Layer"]
-    probList = params["Fault Probabilities"]
-    sVecList = params["Stacking Vectors"]
+    nStacks = params["N"][0]
+    fltLayer = params["Fault Layer"][0]
+    probList = params["Fault Probabilities"][0]
+    sVecList = params["Stacking Vectors"][0]
     
     # generate supercells
     cellDF = genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path)
@@ -410,9 +406,9 @@ def autoSearch(params, path, unitcell, expt):
     fitDiffDF = calcFitDiffs(path, exptDiffDF)
     print(r"Generated fit difference curves, Diff$_\mathrm{UF} -$ Diff$_\mathrm{FLT}$")
     
-    peakLabels = params["Peak Labels"]
-    peakQ = params["Peak Q Positions"]
-    calcPW = params["Peak Width For Fit Comparison"]
+    peakLabels = params["Peak Labels"][0]
+    peakQ = params["Peak Q Positions"][0]
+    calcPW = params["Peak Width For Fit Comparison"][0]
     
     # set peak parameters
     peakDF = makePeakDF(peakLabels, peakQ, calcPW)
