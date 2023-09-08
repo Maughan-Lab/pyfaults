@@ -351,25 +351,27 @@ def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList,
 #----------------------------------------------------------------------------------------
 def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peakLabels, 
                     peakQ, calcPW, wl, maxTT, simPW=0.0):
+    import pandas as pd
+    
     params = pd.DataFrame()
-    params["Save Folder"] = savePath
-    params["N"] = nStacks
-    params["Fault Layer"] = fltLayer
+    params["Save Folder"] = [savePath]
+    params["N"] = [nStacks]
+    params["Fault Layer"] = [fltLayer]
     
-    params["Fault Probabilities"] = []
-    params.loc[0, "Fault Probabilities"] = probList
-    params["Stacking Vectors"] = []
-    params.loc[0, "Stacking Vectors"] = sVecList
+    params["Fault Probabilities"] = [" "]
+    params.at[0, "Fault Probabilities"] = probList
+    params["Stacking Vectors"] = [" "]
+    params.at[0, "Stacking Vectors"] = [sVecList]
     
-    params["Peak Labels"] = []
-    params["Peak Q Positions"] = []
-    params.loc[0, "Peak Labels"] = peakLabels
-    params.loc[0, "Peak Q Positions"] = peakQ
-    params["Peak Width For Fit Comparison"] = calcPW
+    params["Peak Labels"] = [" "]
+    params["Peak Q Positions"] = [" "]
+    params.at[0, "Peak Labels"] = [peakLabels]
+    params.at[0, "Peak Q Positions"] = [peakQ]
+    params["Peak Width For Fit Comparison"] = [calcPW]
     
-    params["Wavelength"] = wl
-    params["Maximum 2Theta"] = maxTT
-    params["Simulated Peak Width"] = simPW
+    params["Wavelength"] = [wl]
+    params["Maximum 2Theta"] = [maxTT]
+    params["Simulated Peak Width"] = [simPW]
     
     return params
 
