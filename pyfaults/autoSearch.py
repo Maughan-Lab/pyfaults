@@ -364,8 +364,8 @@ def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peaks, calc
         peakLabels.append(peaks[i][0])
         peakQ.append(peaks[i][1])
         
-    params["Peak Labels"] = peakLabels
-    params["Peak Q Positions"] = peakQ
+    params["Peak Labels"] = [peakLabels]
+    params["Peak Q Positions"] = [peakQ]
     params["Peak Width For Fit Comparison"] = calcPW
     
     params["Wavelength"] = wl
