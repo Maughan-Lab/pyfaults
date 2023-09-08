@@ -377,15 +377,15 @@ def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peakLabels,
 
 
 #----------------------------------------------------------------------------------------
-def autoSearch(params, path, unitcell, exptPath, exptFile):
+def autoSearch(params, path, unitcell, expt):
     
     wl = params["Wavelength"]
     maxTT = params["Maximum 2Theta"]
     simPW = params["Simulated Peak Width"]
     
     # format experimental data
-    exptQ, exptNorm = importExpt(exptPath, exptFile, wl, maxTT)
-    expt = [exptQ, exptNorm]
+    #exptQ, exptNorm = importExpt(exptPath, exptFile, wl, maxTT)
+    #expt = [exptQ, exptNorm]
     
     nStacks = params["N"]
     fltLayer = params["Fault Layer"]
