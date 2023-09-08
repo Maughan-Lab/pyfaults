@@ -349,11 +349,47 @@ def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList,
 
 
 #----------------------------------------------------------------------------------------
-def autoSearch(path, unitcell, exptPath, exptFile, nStacks, fltLayer, probList, 
-               sVecList, wl, maxTT, simPW=0.0):
+def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peaks, calcPW,
+                    wl, maxTT, simPW=0.0):
+    params = pd.DataFrame()
+    params["Save Folder"] = savePath
+    params["N"] = nStacks
+    params["Fault Layer"] = fltLayer
+    params["Fault Probabilities"] = probList
+    params["Stacking Vectors"] = sVecList
+    
+    peakLabels = []
+    peakQ = []
+    for i in range(len(peaks)):
+        peakLabels.append(peaks[i][0])
+        peakQ.append(peaks[i][1])
+        
+    params["Peak Labels"] = peakLabels
+    params["Peak Q Positions"] = peakQ
+    params["Peak Width For Fit Comparison"] = calcPW
+    
+    params["Wavelength"] = wl
+    params["Maximum 2Theta"] = maxTT
+    params["Simulated Peak Width"] = simPW
+    
+    return params
+
+
+#----------------------------------------------------------------------------------------
+def autoSearch(params, path, unitcell, exptPath, exptFile):
+    
+    wl = params["Wavelength"]
+    maxTT = params["Maximum 2Theta"]
+    simPW = params["Simulated Peak Width"]
     
     # format experimental data
-    expt = importExpt(exptPath, exptFile, wl)
+    exptQ, exptNorm = importExpt(exptPath, exptFile, wl, maxTT)
+    expt = [exptQ, exptNorm]
+    
+    nStacks = params["N"]
+    fltLayer = params["Fault Layer"]
+    probList = params["Fault Probabilities"]
+    sVecList = params["Stacking Vectors"]
     
     # generate supercells
     cellDF = genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path)
@@ -373,7 +409,18 @@ def autoSearch(path, unitcell, exptPath, exptFile, nStacks, fltLayer, probList,
     fitDiffDF = calcFitDiffs(path, exptDiffDF)
     print(r"Generated fit difference curves, Diff$_\mathrm{UF} -$ Diff$_\mathrm{FLT}$")
     
-    return fitDiffDF
+    peakLabels = params["Peak Labels"]
+    peakQ = params["Peak Q Positions"]
+    calcPW = params["Peak Width For Fit Comparison"]
+    
+    # set peak parameters
+    peakDF = makePeakDF(peakLabels, peakQ, calcPW)
+    print("Set peak parameters")
+    
+    # compare peak fits
+    fitComp = peakFitCompare(fitDiffDF, peakDF)
+    
+    return fitComp
 
 
 
