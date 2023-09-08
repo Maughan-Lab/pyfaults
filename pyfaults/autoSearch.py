@@ -211,8 +211,8 @@ def makePeakDF(labels, qVals, pw):
     
     peakRanges = []
     for i in range(len(labels)):
-        qMin = qVals[i] - (pw/2)
-        qMax = qVals[i] + (pw/2)
+        qMin = float("%.3f"%(qVals[i] - (pw/2)))
+        qMax = float("%.3f"%(qVals[i] + (pw/2)))
         qRange = [qMin, qMax]
         peakRanges.append(qRange)
         
