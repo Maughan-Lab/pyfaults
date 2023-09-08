@@ -349,23 +349,17 @@ def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList,
 
 
 #----------------------------------------------------------------------------------------
-def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peaks, calcPW,
-                    wl, maxTT, simPW=0.0):
+def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peakLabels, 
+                    peakQ, calcPW, wl, maxTT, simPW=0.0):
     params = pd.DataFrame()
     params["Save Folder"] = savePath
     params["N"] = nStacks
     params["Fault Layer"] = fltLayer
     params["Fault Probabilities"] = probList
     params["Stacking Vectors"] = sVecList
-    
-    peakLabels = []
-    peakQ = []
-    for i in range(len(peaks)):
-        peakLabels.append(peaks[i][0])
-        peakQ.append(peaks[i][1])
         
-    params["Peak Labels"] = [peakLabels]
-    params["Peak Q Positions"] = [peakQ]
+    params["Peak Labels"] = peakLabels
+    params["Peak Q Positions"] = peakQ
     params["Peak Width For Fit Comparison"] = calcPW
     
     params["Wavelength"] = wl
