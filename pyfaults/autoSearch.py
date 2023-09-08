@@ -60,6 +60,33 @@ def formatStr(probList, sVecList):
 
 
 #----------------------------------------------------------------------------------------
+def genUnitCell(cellName, path, csvFile, lattice, layerList, stackDir, 
+                childLayerList=None, childGenVecList=None):
+    from pyfaults import importCSV
+    import pyfaults.layer as lyr
+    from pyfaults.unitcell import Unitcell
+    
+    csv = importCSV(path, csvFile)
+    
+    layers = lyr.getLayers(csv, lattice, layerList, stackDir)
+    
+    if childLayerList is not None:
+        for i in childLayerList:
+            name = childLayerList[i]
+            parent = childGenVecList[i][0]
+            vec = childGenVecList[i][1]
+            
+            for j in layers:
+                if j.layerName == parent:
+                    childLayer = lyr.j.genChildLayer(name, vec)
+                    layers.append(childLayer)
+    
+    unitcell = Unitcell(cellName, layers, lattice)
+    
+    return unitcell
+
+
+#----------------------------------------------------------------------------------------
 def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
     from pyfaults.supercell import Supercell
     from pyfaults import toCif
@@ -236,42 +263,52 @@ def peakFitCompare(fitDiffDF, peakDF):
         
         compDF = pd.DataFrame()
         
-        fullFitDiff = fitDiffDF["Unfaulted vs. Faulted"][i]
+        Q = fitDiffDF["Expt vs. Model Q"][i]
+        fullFitDiff = fitDiffDF["UF vs. FLT Model"][i]
         
         truncFitCol = []
         sumCol = []
         resultCol = []
         
-        # for each peak
-        for j in peakDF.index:
-            qRange = peakDF["Peak Range"][j]
-            qMin = qRange[0]
-            qMax = qRange[1]
+        if i == 0:
+            truncFitCol.append(np.nan)
+            sumCol.append(np.nan)
+            resultCol.append(np.nan)
+        
+        if i > 0:
+            Q = fitDiffDF["Expt vs. Model Q"][i]
+            fullFitDiff = fitDiffDF["UF vs. FLT Model"][i]
             
-            truncFitDiff = []
-            for val in range(len(Q)):
-                if Q[val] >= qMin and Q[val] <= qMax:
-                    truncFitDiff.append(fullFitDiff[val])
+            # for each peak
+            for j in peakDF.index:
+                qRange = peakDF["Peak Range"][j]
+                qMin = qRange[0]
+                qMax = qRange[1]
+            
+                truncFitDiff = []
+                for val in range(len(Q)):
+                    if Q[val] >= qMin and Q[val] <= qMax:
+                        truncFitDiff.append(fullFitDiff[val])
                     
-            diffSum = np.cumsum(truncFitDiff)
-            if diffSum[-1] < 0:
-                result = "Improved"
-            elif diffSum[-1] > 0:
-                result = "Worsened"
-            elif diffSum[-1] == 0:
-                result = "No Change"
+                diffSum = np.cumsum(truncFitDiff)
+                if diffSum[-1] < 0:
+                    result = "Improved"
+                elif diffSum[-1] > 0:
+                    result = "Worsened"
+                elif diffSum[-1] == 0:
+                    result = "No Change"
                 
-            truncFitCol.append(truncFitDiff)
-            sumCol.append(diffSum)
-            resultCol.append(result)
+                truncFitCol.append(truncFitDiff)
+                sumCol.append(diffSum)
+                resultCol.append(result)
             
-        compDF["Peak"] = peakDF["Reflection"]
-        compDF["UF vs. FLT Fit Difference"] = truncFitCol
-        compDF["Sum"] = sumCol
-        compDF["Fit Result"] = resultCol
+            compDF["Peak"] = peakDF["Reflection"]
+            compDF["UF vs. FLT Fit Difference"] = truncFitCol
+            compDF["Sum"] = sumCol
+            compDF["Fit Result"] = resultCol
             
-        addEntry = [name, compDF]
-        fitComp.append(addEntry)
+            addEntry = [name, compDF]
+            fitComp.append(addEntry)
         
     return fitComp
 
