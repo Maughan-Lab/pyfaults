@@ -51,8 +51,8 @@ def formatStr(probList, sVecList):
         txt = r"$\vec{S}_n = \left[ x, y, z \right]$"
         sVecStr = re.sub("n", str(s+1), txt)
         strVars = ["x", "y", "z"]
-        for v in range(len(strVars)):
-            txtSub = re.sub(strVars[v], str(sVecList[s][v]), sVecStr)
+        for i in range(2):
+            txtSub = re.sub(strVars[i], str(sVecList[s][i]), sVecStr)
             sVecStr = txtSub
         sVecStrList.append(sVecStr)
         
