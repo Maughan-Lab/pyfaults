@@ -393,7 +393,7 @@ def autoSearch(path, unitcell, expt, nStacks, fltLayer, probList, sVecList,
     
     displayResults(fitComp)
     
-    return fitComp, fitDiffDF
+    return fitComp, fitDiffDF, peakDF
 
 
 
