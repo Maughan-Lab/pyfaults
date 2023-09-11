@@ -547,8 +547,5 @@ def setTickSpacing(plot, axis, interval):
     elif axis == "both":
         plot.xaxis.set_major_locator(ticker.MultipleLocator(interval))
         plot.yaxis.set_major_locator(ticker.MultipleLocator(interval))
-        
-''' Adjust axis label position '''
-#----------------------------------------------------------------------------------------
 
 

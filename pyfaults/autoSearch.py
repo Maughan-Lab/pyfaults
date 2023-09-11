@@ -330,7 +330,7 @@ def displayResults(fitComp):
 
 #----------------------------------------------------------------------------------------
 def plotSearchResults(fitDiffDF, peakDF, xSpacing, wl, yLim, rowAdj=0.0,
-                      colAdj=0.0):
+                      colAdj=0.0, xLabelAdj=0.0, yLabelAdj=0.0):
     from pyfaults.plotXRD import gradientGen2D
 
     rows = len(fitDiffDF)-1
@@ -368,8 +368,8 @@ def plotSearchResults(fitDiffDF, peakDF, xSpacing, wl, yLim, rowAdj=0.0,
     xLabel = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
     yLabel = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts, normalized)"
     
-    fig.supxlabel(xLabel, fontsize=16)
-    fig.supylabel(yLabel, fontsize=16)
+    fig.supxlabel(xLabel, fontsize=16, y=xLabelAdj)
+    fig.supylabel(yLabel, fontsize=16, x=yLabelAdj)
     
     yMid = ((yLim[1] - yLim[0]) / 2) + yLim[0]
     xEnd = xLims[-1][1]
