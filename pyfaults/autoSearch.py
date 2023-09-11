@@ -314,8 +314,22 @@ def peakFitCompare(fitDiffDF, peakDF):
 
 
 #----------------------------------------------------------------------------------------
+def displayResults(fitComp):
+    for i in range(len(fitComp)):
+        modelResult = fitComp[i][1]
+        
+        print("Model: " + fitComp[i][0])
+    
+        for j in modelResult.index:
+            print("Peak: " + modelResult["Peak"][j] + " " +\
+                  modelResult["Fit Result"][j])
+                
+    return
+
+
+#----------------------------------------------------------------------------------------
 def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList, 
-                      sVecLabels, xSpacing, wl):
+                      sVecLabels, xSpacing, wl, rowLabelAdj=0.01):
     from pyfaults import plotXRD
     
     rows = len(fitDiffList)
@@ -349,75 +363,37 @@ def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList,
 
 
 #----------------------------------------------------------------------------------------
-def setSearchParams(savePath, nStacks, fltLayer, probList, sVecList, peakLabels, 
-                    peakQ, calcPW, wl, maxTT, simPW=0.0):
-    import pandas as pd
-    
-    params = pd.DataFrame()
-    params["Save Folder"] = [savePath]
-    params["N"] = [nStacks]
-    params["Fault Layer"] = [fltLayer]
-    
-    params["Fault Probabilities"] = [" "]
-    params.at[0, "Fault Probabilities"] = probList
-    params["Stacking Vectors"] = [" "]
-    params.at[0, "Stacking Vectors"] = [sVecList]
-    
-    params["Peak Labels"] = [" "]
-    params["Peak Q Positions"] = [" "]
-    params.at[0, "Peak Labels"] = [peakLabels]
-    params.at[0, "Peak Q Positions"] = [peakQ]
-    params["Peak Width For Fit Comparison"] = [calcPW]
-    
-    params["Wavelength"] = [wl]
-    params["Maximum 2Theta"] = [maxTT]
-    params["Simulated Peak Width"] = [simPW]
-    
-    return params
-
-
-#----------------------------------------------------------------------------------------
-def autoSearch(params, path, unitcell, expt):
-    
-    wl = params["Wavelength"][0]
-    maxTT = params["Maximum 2Theta"][0]
-    simPW = params["Simulated Peak Width"][0]
-    
-    nStacks = params["N"][0]
-    fltLayer = params["Fault Layer"][0]
-    probList = params["Fault Probabilities"][0]
-    sVecList = params["Stacking Vectors"][0]
+def autoSearch(path, unitcell, expt, nStacks, fltLayer, probList, sVecList, 
+               peakLabels, peakQ, calcPW, wl, maxTT, simPW=0.0):
     
     # generate supercells
     cellDF = genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path)
-    print("Generated supercell CIFs: ")
+    print("Finished generating supercell CIFs: ")
     for i in cellDF.index:
         print(cellDF["Model"][i])
     
     # simulate XRD
     simDF = calcSims(cellDF, path, wl, maxTT, simPW)
-    print("Generated simulated X-ray diffraction patterns: ")
+    print("Finished simulating X-ray diffraction patterns")
     
     # calculate expt vs. model difference curves
     exptDiffDF = calcDiffs(path, simDF, expt)
-    print("Generated experiment vs. model difference curves")
+    print("Finished calculating experiment vs. model difference curves")
     
     # calculate fit differences
     fitDiffDF = calcFitDiffs(path, exptDiffDF)
-    print(r"Generated fit difference curves, Diff$_\mathrm{UF} -$ Diff$_\mathrm{FLT}$")
-    
-    peakLabels = params["Peak Labels"][0]
-    peakQ = params["Peak Q Positions"][0]
-    calcPW = params["Peak Width For Fit Comparison"][0]
+    print(r"Finished calculating fit difference curves,\
+          Diff$_\mathrm{UF} -$ Diff$_\mathrm{FLT}$")
     
     # set peak parameters
     peakDF = makePeakDF(peakLabels, peakQ, calcPW)
-    print("Set peak parameters")
     
     # compare peak fits
     fitComp = peakFitCompare(fitDiffDF, peakDF)
     
-    return fitComp
+    displayResults(fitComp)
+    
+    return
 
 
 
