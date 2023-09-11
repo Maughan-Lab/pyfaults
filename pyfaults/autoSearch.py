@@ -384,12 +384,12 @@ def plotSearchResults(fitDiffDF, peakDF, xSpacing, wl, yLim, rowAdj=0.0,
     colLabels = peakDF["Reflection"]
     
     for r in range(rows):
-        p[r][-1].text(xEnd, yMid+colAdj, rowLabels[r], color=g[r][-1].hex, 
+        p[r][-1].text(xEnd+rowAdj, yMid, rowLabels[r], color=g[r][-1].hex, 
                       fontsize="14", ha="left", va="center")
         
     for c in range(cols):
         xMid = ((xLims[c][1] - xLims[c][0]) / 2) + xLims[c][0]
-        p[0][c].text(xMid, yLim[1]+rowAdj, colLabels[c], color=g[0][c].hex, 
+        p[0][c].text(xMid, yLim[1]+colAdj, colLabels[c], color=g[0][c].hex, 
                      fontsize="14", ha="center", va="bottom")
         
     plt.subplots_adjust(hspace=0.1, wspace=0.1)
