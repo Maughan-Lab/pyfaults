@@ -329,7 +329,7 @@ def displayResults(fitComp):
 
 #----------------------------------------------------------------------------------------
 def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList, 
-                      sVecLabels, xSpacing, wl, rowLabelAdj=0.01):
+                      sVecLabels, xSpacing, wl):
     from pyfaults import plotXRD
     
     rows = len(fitDiffList)
@@ -357,14 +357,14 @@ def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList,
         xLims.append([peakQList[i]-xSpacing, peakQList[i]+xSpacing])
     
     ax1 = plotXRD.fitCompare(rows, cols, diffQ, diffInts, xLims, yLim, wl, 
-                             sVecLabels, peakLabels)
+                             sVecLabels, peakLabels, rowLabelAdj=0.01)
     
     return ax1
 
 
 #----------------------------------------------------------------------------------------
 def autoSearch(path, unitcell, expt, nStacks, fltLayer, probList, sVecList, 
-               peakLabels, peakQ, calcPW, wl, maxTT, simPW=0.0):
+               peakLabels, peakQ, calcPW, wl, maxTT, simPW=0.0, showPlot=False):
     
     # generate supercells
     cellDF = genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path)
@@ -393,7 +393,7 @@ def autoSearch(path, unitcell, expt, nStacks, fltLayer, probList, sVecList,
     
     displayResults(fitComp)
     
-    return fitComp
+    return fitComp, fitDiffDF
 
 
 
