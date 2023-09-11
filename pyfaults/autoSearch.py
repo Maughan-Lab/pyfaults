@@ -9,6 +9,7 @@ import pandas as pd
 import re
 import os
 
+import matplotlib.pyplot as plt
 from matplotlib.pyplot import rc
 rc("text", usetex=True)
 rc("font", **{"family":"sans-serif","sans-serif":["Helvetica"]},size="14")
@@ -328,38 +329,71 @@ def displayResults(fitComp):
 
 
 #----------------------------------------------------------------------------------------
-def plotSearchResults(fitDiffList, peakQList, peakLabels, probList, sVecList, 
-                      sVecLabels, xSpacing, wl):
-    from pyfaults import plotXRD
-    
-    rows = len(fitDiffList)
-    cols = len(peakQList)
-    
-    diffQ = []
-    diffInts = []
-    
-    yMin = 0
-    yMax = 0
-    
-    for i in range(rows):
-        diffQ.append(fitDiffList[i][0])
-        diffInts.append(fitDiffList[i][1])
+def plotSearchResults(fitDiffDF, peakDF, xSpacing, wl, yLim):
+    from pyfaults.plotXRD import gradientGen2D
 
-        if np.max(fitDiffList[i][1]) > yMax:
-            yMax = fitDiffList[i][1]
-        if np.min(fitDiffList[i][0]) < yMin:
-            yMin = fitDiffList[i][0]
-            
-    yLim = [yMin, yMax]
+    rows = len(fitDiffDF)-1
+    cols = len(peakDF)
+    
+    g = gradientGen2D(["#00C6BF", "#009AE1", "#5D7AD3", "#B430C2"], rows, cols)
+    
+    fig, (p) = plt.subplots(rows, cols, figsize=(rows*2, cols))
+    
+    Q = fitDiffDF["Expt vs. Model Q"][0]
+    
+    for r in range(rows):
+        for c in range(cols):
+            ints = fitDiffDF["UF vs. FLT Model"][r+1]
+            p[r][c].plot(Q, ints, color=g[r][c].hex)
         
     xLims = []
-    for i in range(cols):
-        xLims.append([peakQList[i]-xSpacing, peakQList[i]+xSpacing])
+    for i in peakDF.index:
+        qRange = peakDF["Peak Range"][i]
+        qMin = qRange[0] - xSpacing
+        qMax = qRange[1] + xSpacing
+        xLims.append([qMin, qMax])
+        
+    for r in range(rows):
+        for c in range(cols):
+            p[r][c].set_xlim(xLims[c][0], xLims[c][1])
+            p[r][c].set_ylim(yLim)
+            p[r][c].tick_params(axis="both", labelsize="14")
+            
+            if r != (rows-1):
+                p[r][c].get_xaxis().set_visible(False)
+            if c != 0:
+                p[r][c].get_yaxis().set_visible(False)
+            
+    xLabel = r"Q (\AA" r"$^{-1}$, $\lambda=$" + str(wl) + r" \AA)"
+    yLabel = r"Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts, normalized)"
     
-    ax1 = plotXRD.fitCompare(rows, cols, diffQ, diffInts, xLims, yLim, wl, 
-                             sVecLabels, peakLabels, rowLabelAdj=0.01)
+    fig.supxlabel(xLabel, fontsize=16)
+    fig.supylabel(yLabel, fontsize=16)
     
-    return ax1
+    yMid = ((yLim[1] - yLim[0]) / 2) + yLim[0]
+    xEnd = xLims[-1][1]
+    
+    rowLabels = []
+    for r in range(rows):
+        sVec = str(fitDiffDF["Stacking Vector"][r+1])
+        prob = str(fitDiffDF["Stacking Probability"][r+1])
+        label = "\n".join((sVec, prob))
+        rowLabels.append(label)
+    
+    colLabels = peakDF["Reflection"]
+    
+    for r in range(rows):
+        p[r][-1].text(xEnd, yMid, rowLabels[r], color=g[r][-1].hex, 
+                      fontsize="14", ha="left", va="center")
+        
+    for c in range(cols):
+        xMid = ((xLims[c][1] - xLims[c][0]) / 2) + xLims[c][0]
+        p[0][c].text(xMid, yLim[1], colLabels[c], color=g[0][c].hex, 
+                     fontsize="14", ha="center", va="bottom")
+        
+    plt.subplots_adjust(hspace=0.1, wspace=0.1)
+    
+    return(p)
 
 
 #----------------------------------------------------------------------------------------
