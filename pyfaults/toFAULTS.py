@@ -264,6 +264,7 @@ def toFAULTS(title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, ttMin,
                       bgCoeffStr,
                       bgCodeStr])
     
+    return lines
     
     
     
