@@ -28,6 +28,7 @@ import pyfaults.simXRD
 import pyfaults.plotXRD
 import pyfaults.vectorGen
 import pyfaults.autoSearch
+import pyfaults.toFAULTS
 
 # top level methods ---------------------------------------------------------------------
 
@@ -184,3 +185,4 @@ assert pyfaults.simXRD
 assert pyfaults.plotXRD
 assert pyfaults.vectorGen
 assert pyfaults.autoSearch
+assert pyfaults.toFAULTS
