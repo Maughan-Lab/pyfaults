@@ -120,6 +120,11 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
         if unitcell.layers[i].layerName == fltLyr:
             lyrList.append(unitcell.layers[i].layerName + "_FLT")
             
+            if a.element == "Li+":
+                elem = "Li1+"
+            else:
+                elem = a.element
+            
             fltLyrAtoms = []
             for j in range(len(unitcell.layers[i].atoms)):
                 a = unitcell.layers[i].atoms[j]
@@ -128,7 +133,7 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
                 newY = "%.6g" % (a.y + sVec[1])
                 newZ = "%.6g" % (a.z + sVec[2])
                 
-                fltAVals = [a.element, newX, newY, newZ, str(a.occupancy)]
+                fltAVals = [elem, newX, newY, newZ, str(a.occupancy)]
                 fltLyrAtoms.append(fltAVals)
                 
             atomCol.append(fltLyrAtoms)
