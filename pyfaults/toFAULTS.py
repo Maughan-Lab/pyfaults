@@ -210,7 +210,7 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
                 lines.extend(["LT 0.0 0.0 0.0 0.0 0.0",
                               " 0.0 0.0 0.0 0.0 0.0",
                               "FW 0.0 0.0 0.0 0.0 0.0 0.0",
-                              " 0.0 0.0 0.0 0.0 0.0 0.0])
+                              " 0.0 0.0 0.0 0.0 0.0 0.0"])
             elif df["Layer Name"][j] == nextFromFLT:
                 sxn = "%.6g" % (-1 * sVec[0])
                 syn = "%.6g" % (-1 * sVec[1])
