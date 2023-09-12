@@ -50,8 +50,8 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
         " " + Dg + " " + Dl + " Trim"
     
     lines.extend(["Instrumental And Size Broadening",
-                  "Radiation \t X-Ray",
-                  "! \t\t lambda1 lambda2 ratio",
+                  "Radiation X-Ray",
+                  "!              lambda1 lambda2 ratio",
                   "Wavelength " + str(wl) + " 0.0 0.0",
                   "! Instrumental aberrations",
                   "Aberrations 0.0000 0.0000 0.0000",
@@ -218,22 +218,22 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
         if df["Layer Name"][i] == fltLyr:
             nextFromFLT = df["Layer Name"][i+1]
         
-        for j in df.index:
-            lines.extend(["! Layer " + str(len(df.index)) + " to layer " + str(j+1)])
+    for j in df.index:
+        lines.extend(["! Layer " + str(len(df.index)) + " to layer " + str(j+1)])
     
-            if df["Layer Name"][j] != nextFromFLT:
-                lines.extend(["LT 0.0 0.0 0.0 0.0 0.0",
-                              " 0.0 0.0 0.0 0.0 0.0",
-                              "FW 0.0 0.0 0.0 0.0 0.0 0.0",
-                              " 0.0 0.0 0.0 0.0 0.0 0.0"])
-            elif df["Layer Name"][j] == nextFromFLT:
-                sxn = "%.6g" % (-1 * sVec[0])
-                syn = "%.6g" % (-1 * sVec[1])
-                szn = "%.6g" % (-1 * sVec[2])
-                lines.extend(["LT 1.0 0.0 " + sxn + " " + syn + " " + szn,
-                              " 0.0 0.0 0.0 0.0 0.0",
-                              "FW 0.0 0.0 0.0 0.0 0.0 0.0",
-                              " 0.0 0.0 0.0 0.0 0.0 0.0"])
+        if df["Layer Name"][j] != nextFromFLT:
+            lines.extend(["LT 0.0 0.0 0.0 0.0 0.0",
+                          " 0.0 0.0 0.0 0.0 0.0",
+                          "FW 0.0 0.0 0.0 0.0 0.0 0.0",
+                          " 0.0 0.0 0.0 0.0 0.0 0.0"])
+        elif df["Layer Name"][j] == nextFromFLT:
+            sxn = "%.6g" % (-1 * sVec[0])
+            syn = "%.6g" % (-1 * sVec[1])
+            szn = "%.6g" % (-1 * sVec[2])
+            lines.extend(["LT 1.0 0.0 " + sxn + " " + syn + " " + szn,
+                          " 0.0 0.0 0.0 0.0 0.0",
+                          "FW 0.0 0.0 0.0 0.0 0.0 0.0",
+                          " 0.0 0.0 0.0 0.0 0.0 0.0"])
         
     lines.extend([""])
         
@@ -264,8 +264,8 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
         bgCoeffStr = ""
         bgCodeStr = ""
         for i in range(len(bgCoeff)):
-            bgCoeffStr = bgCoeffStr + "\t" + str(bgCoeff[i])
-            bgCodeStr = bgCodeStr + "\t 0.0"
+            bgCoeffStr = bgCoeffStr + " " + str(bgCoeff[i])
+            bgCodeStr = bgCodeStr + " 0.0"
     
         lines.extend(["Experimental",
                       "FILE " + exptFile + " 1.0 0.00",
