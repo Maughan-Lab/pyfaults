@@ -258,7 +258,7 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
                       "0.0 " + str(ttMin),
                       "FFORMAT XYSIGMA",
                       "! Polynomial number of coefficients",
-                      "Bgrcheb " + len(bgCoeff),
+                      "Bgrcheb " + str(len(bgCoeff)),
                       "! Polynomial coefficients",
                       bgCoeffStr,
                       bgCodeStr])
