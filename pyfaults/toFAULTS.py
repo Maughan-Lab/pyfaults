@@ -206,11 +206,11 @@ def toFAULTS(title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, ttMin,
         for j in df.index:
             lines.extend(["! Layer " + str(len(df.index)) + " to layer " + str(j+1)])
     
-        if df["Layer Name"][j] != nextFromFLT:
-            lines.extend(["LT \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                          "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                          "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                          "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+            if df["Layer Name"][j] != nextFromFLT:
+                lines.extend(["LT \t 0.0 \t 0.0 \t 0.0 \t 0.0",
+                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
+                              "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
+                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
             elif df["Layer Name"][j] == nextFromFLT:
                 sxn = "%.6g" % (-1 * sVec[0])
                 syn = "%.6g" % (-1 * sVec[1])
