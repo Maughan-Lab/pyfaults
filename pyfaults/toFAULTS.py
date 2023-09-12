@@ -173,12 +173,12 @@ def toFAULTS(title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, ttMin,
                 if df["Layer Name"][j] == fltLyr:
                     lines.extend(["LT \t" + str(1-fltProb) + "\t 0.0 \t 0.0 \t 0.0",
                                   "\t" + str(i+1) + str(j+1) + "\t 0.0 \t 0.0 \t 0.0"])
-                    else:
-                        lines.extend(["LT \t 1 \t 0.0 \t 0.0 \t 0.0",
-                                      "\t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                else:
+                    lines.extend(["LT \t 1 \t 0.0 \t 0.0 \t 0.0",
+                                  "\t 0.0 \t 0.0 \t 0.0 \t 0.0"])
                     
-                    lines.extend(["FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                                  "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                lines.extend(["FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
+                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
     
         # layer i to faulted layer
         lines.extend(["! Layer " + str(i+1) + " to layer 3"])
