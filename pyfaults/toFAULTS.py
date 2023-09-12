@@ -140,12 +140,11 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
     df["Layer Name"] = lyrList
     df["Atoms"] = atomCol
     
-    lines.extend(["! Atom name  num  x y z Biso Occ"])
-    
     for i in df.index:
         lines.extend(["Layer " + str(i+1),
                       "! Layer symmetry",
-                      "LYSM none"])
+                      "LYSM none",
+                      "! Atom name  num  x y z Biso Occ"])
         
         for a in range(len(df["Atoms"][i])):
             atom = df["Atoms"][i][a]
