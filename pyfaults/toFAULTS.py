@@ -188,8 +188,8 @@ def toFAULTS(title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, ttMin,
                           "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
                           "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
                           "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
-            else:
-                sx = "%.6g" % (sVec[0])
+        else:
+            sx = "%.6g" % (sVec[0])
             sy = "%.6g" % (sVec[1])
             sz = "%.6g" % (sVec[2])
             lines.extend(["LT \t" + str(fltProb) + "\t" + sx + "\t" + sy + "\t" + sz,
