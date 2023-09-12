@@ -267,7 +267,7 @@ def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t,
     # export to .flts file ---------------------------------------------------------------
     with open(path + title + ".flts", "w") as f:
         for l in lines:
-            f.write(l)
+            f.write(l + "\n")
     f.close()
     
     return lines
