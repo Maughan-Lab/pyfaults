@@ -76,7 +76,6 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
                   "SPGR " + spgr,
                   "!    a    b    c     alpha beta gamma",
                   "Avercell " + lattStr,
-                  " 0.0 0.0 0.0 0.0 0.0 0.0",
                   "!    a    b    c    gamma",
                   "Cell " + cellStr,
                   " 0.0 0.0 0.0 0.0"])
