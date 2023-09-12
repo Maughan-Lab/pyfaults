@@ -9,12 +9,12 @@ def toXYSigma(path, fn, Q, ints):
     with open(path + fn + ".dat", "w") as f:
         f.write("XYSIGMA \n fn \n -----------------------------------")
         for (Q, ints) in zip(Q, ints):
-            f.write("{0} {1} 0.0 \n").format(Q, ints)
+            f.write("{0} {1} 0.0 \n".format(Q, ints))
     f.close()
     
 
-def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, 
-             ttMin, exptFile=None, bgCoeff=None):
+def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb, 
+             t, ttMin, exptFile=None, bgCoeff=None):
     # instBroad = [type, u, v, w, x, Dg, Dl]
     # t= layer order
     
@@ -46,19 +46,19 @@ def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t,
         Dg = str(instBroad[5])
         Dl = str(instBroad[6])
     
-    instBroadStr = instBroad[0] + "\t" + u + "\t" + v + "\t" + w + "\t" + x +\
-        "\t" + Dg + "\t" + Dl + "\t Trim"
+    instBroadStr = instBroad[0] + " " + u + " " + v + " " + w + " " + x +\
+        " " + Dg + " " + Dl + " Trim"
     
     lines.extend(["Instrumental And Size Broadening",
                   "Radiation \t X-Ray",
-                  "! \t\t lambda1 \t lambda2 \t ratio",
-                  "Wavelength \t" + str(wl) + "\t 0.0 \t\t 0.0",
+                  "! \t\t lambda1 lambda2 ratio",
+                  "Wavelength " + str(wl) + " 0.0 0.0",
                   "! Instrumental aberrations",
-                  "Aberrations \t 0.0000 \t 0.0000 \t 0.0000",
-                  "\t \t 0.00 \t\t 0.00 \t\t 0.00",
-                  "! Broadening \t u \t v \t w \t x \t Dg \t Dl",
+                  "Aberrations 0.0000 0.0000 0.0000",
+                  " 0.00 0.00 0.00",
+                  "! Broadening u    v    w    x    Dg    Dl",
                   instBroadStr,
-                  "\t \t 0.00 \t 0.00 \t 0.00 \t 0.00 \t 0.00 \t 0.00",
+                  " 0.00 0.00 0.00 0.00 0.00 0.00",
                   ""])
     
     # structural section ----------------------------------------------------------------
@@ -69,14 +69,14 @@ def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t,
     beta = "%.6g" % (unitcell.lattice.beta)
     gamma = "%.6g" % (unitcell.lattice.gamma)
     
-    lattStr = a + "\t" + b + "\t" + c + "\t" + alpha + "\t" + beta + "\t" + gamma
-    cellStr = a + "\t" + b + "\t" + c + "\t" + gamma
+    lattStr = a + " " + b + " " + c + " " + alpha + " " + beta + " " + gamma
+    cellStr = a + " " + b + " " + c + " " + gamma
     
     lines.extend(["Structural",
-                  "SPGR \t P1",
-                  "! \t a \t b \t c \t alpha \t beta \t gamma",
+                  "SPGR " + spgr,
+                  "!    a    b    c     alpha beta gamma",
                   "Avercell " + lattStr,
-                  "! \t a \t b \t c \t gamma",
+                  "!    a    b    c    gamma",
                   "Cell " + cellStr])
     
     numLayerTypes = len(unitcell.layers)
@@ -132,12 +132,12 @@ def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t,
         
         for a in range(len(df["Atoms"][i])):
             atom = df["Atoms"][i][a]
-            aStr = atom[0] + "\t" + str(a) + "\t" + atom[1] + "\t" + atom[2] +\
-                "\t" + atom[3] + "\t" + "2.0" + "\t" + atom[4]
+            aStr = atom[0] + " " + str(a) + " " + atom[1] + " " + atom[2] +\
+                " " + atom[3] + " 2.0 " + atom[4]
             
-            lines.extend(["! Atom name \t num \t x \t y \t z \t Biso \t Occ",
+            lines.extend(["! Atom name  num  x    y    z     Biso    Occ",
                           "Atom " + aStr,
-                          "\t \t \t 0.00 \t 0.00 \t 0.00 \t 0.00 \t 0.00"])
+                          " 0.00 0.00 0.00 0.00 0.00"])
             
         lines.extend([""])
         
@@ -164,38 +164,38 @@ def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t,
             lines.extend(["! Layer " + str(i+1) + " to layer " + str(j+1)])
         
             if df["Layer Name"][j] == df["Layer Name"][i]:
-                lines.extend(["LT \t 0 \t 0.0 \t 0.0 \t 0.0",
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                lines.extend(["LT 0 0.0 0.0 0.0",
+                              " 0.0 0.0 0.0 0.0",
+                              "FW 0.0 0.0 0.0 0.0 0.0 0.0",
+                              " 0.0 0.0 0.0 0.0 0.0 0.0"])
             
             if df["Layer Name"][j] == df["Layer Name"][nextLyr]:
                 if df["Layer Name"][j] == fltLyr:
-                    lines.extend(["LT \t" + str(1-fltProb) + "\t 0.0 \t 0.0 \t 0.0",
-                                  "\t" + str(i+1) + str(j+1) + "\t 0.0 \t 0.0 \t 0.0"])
+                    lines.extend(["LT " + str(1-fltProb) + " 0.0 0.0 0.0",
+                                  " " + str(i+1) + str(j+1) + "0.0 0.0 0.0"])
                 else:
-                    lines.extend(["LT \t 1 \t 0.0 \t 0.0 \t 0.0",
-                                  "\t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                    lines.extend(["LT 1 0.0 0.0 0.0",
+                                  " 0.0 0.0 0.0 0.0"])
                     
-                lines.extend(["FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                lines.extend(["FW 0.0 0.0 0.0 0.0 0.0 0.0",
+                              " 0.0 0.0 0.0 0.0 0.0 0.0"])
     
         # layer i to faulted layer
         lines.extend(["! Layer " + str(i+1) + " to layer 3"])
     
         if df["Layer Name"][i] == fltLyr:
-            lines.extend(["LT \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                          "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                          "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                          "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+            lines.extend(["LT 0.0 0.0 0.0 0.0",
+                          "0.0 0.0 0.0 0.0",
+                          "FW 0.0 0.0 0.0 0.0 0.0 0.0",
+                          " 0.0 0.0 0.0 0.0 0.0 0.0"])
         else:
             sx = "%.6g" % (sVec[0])
             sy = "%.6g" % (sVec[1])
             sz = "%.6g" % (sVec[2])
-            lines.extend(["LT \t" + str(fltProb) + "\t" + sx + "\t" + sy + "\t" + sz,
-                          "\t" + str(i+1) + "3 \t 0.0 \t 0.0 \t 0.0"])
-            lines.extend(["FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                          "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+            lines.extend(["LT " + str(fltProb) + " " + sx + " " + sy + " " + sz,
+                          " " + str(i+1) + "3 0.0 0.0 0.0 0.0"])
+            lines.extend(["FW 0.0 0.0 0.0 0.0 0.0 0.0",
+                          " 0.0 0.0 0.0 0.0 0.0 0.0"])
         
     # faulted layer transitions
     nextFromFLT = ""
@@ -207,19 +207,18 @@ def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t,
             lines.extend(["! Layer " + str(len(df.index)) + " to layer " + str(j+1)])
     
             if df["Layer Name"][j] != nextFromFLT:
-                lines.extend(["LT \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                lines.extend(["LT 0.0 0.0 0.0 0.0 0.0",
+                              " 0.0 0.0 0.0 0.0 0.0",
+                              "FW 0.0 0.0 0.0 0.0 0.0 0.0",
+                              " 0.0 0.0 0.0 0.0 0.0 0.0])
             elif df["Layer Name"][j] == nextFromFLT:
                 sxn = "%.6g" % (-1 * sVec[0])
                 syn = "%.6g" % (-1 * sVec[1])
                 szn = "%.6g" % (-1 * sVec[2])
-                lines.extend(["LT \t 1.0 \t 0.0 \t" + "\t" + sxn + "\t" + syn +\
-                              "\t" + szn,
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                lines.extend(["LT 1.0 0.0 " + sxn + " " + syn + " " + szn,
+                              " 0.0 0.0 0.0 0.0 0.0",
+                              "FW 0.0 0.0 0.0 0.0 0.0 0.0",
+                              " 0.0 0.0 0.0 0.0 0.0 0.0"])
         
     lines.extend([""])
         
@@ -236,12 +235,12 @@ def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t,
         lines.extend(["Calculation",
                       "LMA",
                       "! Maximum correlation parameter",
-                      "Corrmax \t 30",
+                      "Corrmax 30",
                       "! Maximum number of function evaluations",
-                      "Maxfun \t 2400",
+                      "Maxfun 2400",
                       "! Tolerance",
-                      "Tol \t 0.1E-04",
-                      "Nprint \t 0",
+                      "Tol 0.1E-04",
+                      "Nprint 0",
                       "Replace_Files",
                       ""])
     
@@ -254,9 +253,9 @@ def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t,
             bgCodeStr = bgCodeStr + "\t 0.0"
     
         lines.extend(["Experimental",
-                      "FILE " + exptFile + "\t 1.0 \t 0.00",
+                      "FILE " + exptFile + " 1.0 0.00",
                       "Excluded_Regions 1",
-                      "\t 0.0 \t" + str(ttMin),
+                      "0.0 " + str(ttMin),
                       "FFORMAT XYSIGMA",
                       "! Polynomial number of coefficients",
                       "Bgrcheb " + len(bgCoeff),
