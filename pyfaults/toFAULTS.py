@@ -134,7 +134,7 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
         
         for a in range(len(df["Atoms"][i])):
             atom = df["Atoms"][i][a]
-            aStr = atom[0] + " " + str(a) + " " + atom[1] + " " + atom[2] +\
+            aStr = atom[0] + " " + str(a+1) + " " + atom[1] + " " + atom[2] +\
                 " " + atom[3] + " 2.0 " + atom[4]
             
             lines.extend(["! Atom name  num  x    y    z     Biso    Occ",
