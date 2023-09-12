@@ -248,7 +248,7 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
     if exptFile is not None:
         bgCoeffStr = ""
         bgCodeStr = ""
-        for i in len(bgCoeff):
+        for i in range(len(bgCoeff)):
             bgCoeffStr = bgCoeffStr + "\t" + str(bgCoeff[i])
             bgCodeStr = bgCodeStr + "\t 0.0"
     
