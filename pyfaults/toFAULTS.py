@@ -13,8 +13,8 @@ def toXYSigma(path, fn, Q, ints):
     f.close()
     
 
-def toFAULTS(title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, ttMin, 
-             exptFile=None, bgCoeff=None):
+def toFAULTS(path, title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, 
+             ttMin, exptFile=None, bgCoeff=None):
     # instBroad = [type, u, v, w, x, Dg, Dl]
     # t= layer order
     
@@ -263,6 +263,12 @@ def toFAULTS(title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, ttMin,
                       "! Polynomial coefficients",
                       bgCoeffStr,
                       bgCodeStr])
+        
+    # export to .flts file ---------------------------------------------------------------
+    with open(path + title + ".flts", "w") as f:
+        for l in lines:
+            f.write(l)
+    f.close()
     
     return lines
     
