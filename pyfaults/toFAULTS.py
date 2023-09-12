@@ -153,49 +153,49 @@ def toFAULTS(title, wl, instBroad, unitcell, fltLyr, sVec, fltProb, t, ttMin,
     lines.extend(["Transitions"])
     
     for i in range(len(df.index)-1):
-    iMax = len(df.index)-1
-    if (i+1) >= iMax:
-        nextLyr = ((i+1)-iMax)
-    else:
-        nextLyr = (i+1)
+        iMax = len(df.index)-1
+        if (i+1) >= iMax:
+            nextLyr = ((i+1)-iMax)
+        else:
+            nextLyr = (i+1)
         
-    # layer i to unfaulted layers
-    for j in range(len(df.index)-1):
-        lines.extend(["! Layer " + str(i+1) + " to layer " + str(j+1)])
+        # layer i to unfaulted layers
+        for j in range(len(df.index)-1):
+            lines.extend(["! Layer " + str(i+1) + " to layer " + str(j+1)])
         
-        if df["Layer Name"][j] == df["Layer Name"][i]:
-            lines.extend(["LT \t 0 \t 0.0 \t 0.0 \t 0.0",
+            if df["Layer Name"][j] == df["Layer Name"][i]:
+                lines.extend(["LT \t 0 \t 0.0 \t 0.0 \t 0.0",
+                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
+                              "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
+                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+            
+            if df["Layer Name"][j] == df["Layer Name"][nextLyr]:
+                if df["Layer Name"][j] == fltLyr:
+                    lines.extend(["LT \t" + str(1-fltProb) + "\t 0.0 \t 0.0 \t 0.0",
+                                  "\t" + str(i+1) + str(j+1) + "\t 0.0 \t 0.0 \t 0.0"])
+                    else:
+                        lines.extend(["LT \t 1 \t 0.0 \t 0.0 \t 0.0",
+                                      "\t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                    
+                    lines.extend(["FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
+                                  "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+    
+        # layer i to faulted layer
+        lines.extend(["! Layer " + str(i+1) + " to layer 3"])
+    
+        if df["Layer Name"][i] == fltLyr:
+            lines.extend(["LT \t 0.0 \t 0.0 \t 0.0 \t 0.0",
                           "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
                           "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
                           "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
-            
-        if df["Layer Name"][j] == df["Layer Name"][nextLyr]:
-            if df["Layer Name"][j] == fltLyr:
-                lines.extend(["LT \t" + str(1-fltProb) + "\t 0.0 \t 0.0 \t 0.0",
-                              "\t" + str(i+1) + str(j+1) + "\t 0.0 \t 0.0 \t 0.0"])
             else:
-                lines.extend(["LT \t 1 \t 0.0 \t 0.0 \t 0.0",
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0"])
-                    
+                sx = "%.6g" % (sVec[0])
+            sy = "%.6g" % (sVec[1])
+            sz = "%.6g" % (sVec[2])
+            lines.extend(["LT \t" + str(fltProb) + "\t" + sx + "\t" + sy + "\t" + sz,
+                          "\t" + str(i+1) + "3 \t 0.0 \t 0.0 \t 0.0"])
             lines.extend(["FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                              "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
-    
-    # layer i to faulted layer
-    lines.extend(["! Layer " + str(i+1) + " to layer 3"])
-    
-    if df["Layer Name"][i] == fltLyr:
-        lines.extend(["LT \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                      "\t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                      "FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                      "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
-    else:
-        sx = "%.6g" % (sVec[0])
-        sy = "%.6g" % (sVec[1])
-        sz = "%.6g" % (sVec[2])
-        lines.extend(["LT \t" + str(fltProb) + "\t" + sx + "\t" + sy + "\t" + sz,
-                      "\t" + str(i+1) + "3 \t 0.0 \t 0.0 \t 0.0"])
-        lines.extend(["FW \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0",
-                      "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
+                          "\t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0 \t 0.0"])
         
     # faulted layer transitions
     nextFromFLT = ""
