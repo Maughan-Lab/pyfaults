@@ -112,7 +112,7 @@ def toFAULTS(path, title, wl, instBroad, unitcell, spgr, fltLyr, sVec, fltProb,
             y = "%.6g" % (a.y)
             z = "%.6g" % (a.z)
             
-            aVals = [a.element, x, y, z, str(a.occupancy)]
+            aVals = [elem, x, y, z, str(a.occupancy)]
             lyrAtoms.append(aVals)
         atomCol.append(lyrAtoms)
         
