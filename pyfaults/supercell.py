@@ -1,97 +1,84 @@
-#########################################################################################
-# pyfaults.supercell
+##################################################################################
 # Author: Sinclair R. Combs
-#########################################################################################
+##################################################################################
 
 import copy as cp
 import numpy as np
 import random as r
+import pandas as pd
+import os
 
-''' Supercell object class -- Stores supercell properties '''
-#----------------------------------------------------------------------------------------
-
-class Supercell(object):
-    '''
-    Parameters
-    ----------
-    unitcell : Unitcell
-        Base unit cell
-    nStacks : int
-        Number of stacks / unit cells in supercell
-    fltLayer : str, optional
-        Name of faulted layer. The default is None.
-    stackVec : nparray, optional
-        Stacking vector relative to ideal position. The default is None.
-    stackProb : float, optional
-        Stacking probability. The default is None.
-    '''
+''' SUPERCELL CLASS '''
+#---------------------------------------------------------------------------------
+class Supercell(object):    
+    # properties -----------------------------------------------------------------
+    unitcell =\
+        property(lambda self: self._unitcell,
+                 doc='Unitcell : base unit cell')
     
-    # properties ------------------------------------------------------------------------
-    unitcell = property(lambda self: self._unitcell)
+    lattice =\
+        property(lambda self: self._lattice,
+                 doc='Lattice : unit cell lattice parameters')
     
-    lattice = property(lambda self: self._lattice)
+    nStacks =\
+        property(lambda self: self._nStacks, 
+                 lambda self, val: self.setParam(nStacks=val),
+                 doc='int : number of stacks in supercell')
     
-    nStacks = property(lambda self: self._nStacks, 
-                       lambda self, val: self.setParam(nStacks=val))
+    layers =\
+        property(lambda self: self._layers, 
+                 lambda self, val: self.setLayers(layers=val),
+                 doc='list (Layer) : layers contained in supercell')
     
-    layers = property(lambda self: self._layers, 
-                      lambda self, val: self.setLayers(layers=val))
+    fltLayer =\
+        property(lambda self: self._fltLayer,
+                 lambda self, val: self.setParam(fltLayer=val),
+                 doc='fltLayer [optional] : faulted layer name')
     
-    fltLayer = property(lambda self: self._fltLayer,
-                        lambda self, val: self.setParam(fltLayer=val))
+    stackVec =\
+        property(lambda self: self._stackVec, 
+                 lambda self, val: self.setParam(stackVec=val),
+                 doc='nparray [optional] : stacking vector')
     
-    stackVec = property(lambda self: self._stackVec, 
-                    lambda self, val: self.setParam(stackVec=val))
+    stackProb =\
+        property(lambda self: self._stackProb, 
+                 lambda self, val: self.setParam(stackProb=val),
+                 doc='float [optional] : stacking probability')
     
-    stackProb = property(lambda self: self._stackProb, 
-                    lambda self, val: self.setParam(stackProb=val))
-    
-    # creates instance of Supercell object ----------------------------------------------
-    def __init__(self, unitcell, nStacks, fltLayer=None, stackVec=None, stackProb=None):
+    # creates instance of Supercell object ---------------------------------------
+    def __init__(self, unitcell, nStacks, 
+                 fltLayer=None, stackVec=None, stackProb=None):
         from pyfaults.lattice import Lattice
-
         # initialize parameters
         self._unitcell = unitcell
-        
         newLatt = Lattice(unitcell.lattice.a,
                           unitcell.lattice.b,
                           (unitcell.lattice.c * nStacks),
                           unitcell.lattice.alpha,
                           unitcell.lattice.beta,
                           unitcell.lattice.gamma)
-        
         self._lattice = newLatt
-        
         self._nStacks = None
         self._layers = None
-        
         self._fltLayer = None
         self._stackVec = None
         self._stackProb = None
-        
         self.setParam(nStacks)
         self.setLayers(unitcell, fltLayer, stackVec, stackProb)
-        
         return
     
-    # set cell parameters ---------------------------------------------------------------
+    # set cell parameters --------------------------------------------------------
     def setParam(self, nStacks=None):
-        
         if nStacks is not None:
             self._nStacks = nStacks
-            
         return
     
-    # define layers of supercell --------------------------------------------------------
+    # set supercell layers --------------------------------------------------------
     def setLayers(self, unitcell, fltLayer=None, stackVec=None, stackProb=None):
-        
         newLayers = []
-        
         for lyr in self.unitcell.layers:
-            
             for n in range(self.nStacks):
-                
-                tag = "_n" + str(n+1)
+                tag = '_n' + str(n+1)
                 p = r.randint(0,100)
                 
                 if fltLayer is not None:
@@ -108,44 +95,126 @@ class Supercell(object):
                 newLyr = cp.deepcopy(lyr)
                 
                 if isFlt == True:
-                    newLayerName = lyr.layerName + tag + "_fault"
-                    newLyr.setParam(layerName=newLayerName, lattice=self.lattice)
-                    
+                    newLayerName = lyr.layerName + tag + '_fault'
+                    newLyr.setParam(layerName=newLayerName, 
+                                    lattice=self.lattice)
                     for atom in newLyr.atoms:
-                        alabel = atom.atomLabel.split("_")
-                        
-                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                        alabel = atom.atomLabel.split('_')
+                        newXYZ = [atom.x, 
+                                  atom.y, 
+                                  ((atom.z + n) / self.nStacks)]
                         fltXYZ = np.add(newXYZ, stackVec)
-                        
                         atom.setParam(layerName=newLayerName, 
-                                      atomLabel=alabel[0], xyz=fltXYZ, 
+                                      atomLabel=alabel[0], 
+                                      xyz=fltXYZ, 
                                       lattice=self.lattice)
                 if isFlt == False:
                     newLayerName = lyr.layerName + tag
-                    newLyr.setParam(layerName=newLayerName, lattice=self.lattice)
-                    
+                    newLyr.setParam(layerName=newLayerName, 
+                                    lattice=self.lattice)
                     for atom in newLyr.atoms:
-                        alabel = atom.atomLabel.split("_")
-                        
-                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
-                        
+                        alabel = atom.atomLabel.split('_')
+                        newXYZ = [atom.x, 
+                                  atom.y, 
+                                  ((atom.z + n) / self.nStacks)]
                         atom.setParam(layerName=newLayerName, 
-                                      atomLabel=alabel[0], xyz=newXYZ, 
+                                      atomLabel=alabel[0], 
+                                      xyz=newXYZ, 
                                       lattice=self.lattice)
                 
                 newLayers.append(newLyr)
-        
-                
         self._layers = newLayers
-        
         return
     
-    # prints layer names ----------------------------------------------------------------
+    # prints layer names ---------------------------------------------------------
     def layer_info(self):
         for i in self.layers:
             print(i.layerName)
-            
+    
+    # prints names of faulted layers ---------------------------------------------
     def show_faults(self):
         for lyr in self.layers:
             if "fault" in lyr.layerName:
                 print(lyr.layerName) 
+                
+''' SUPERCELL GENERATOR METHOD '''                
+#---------------------------------------------------------------------------------
+# generates supercells within search parameter grid ------------------------------
+#---------------------------------------------------------------------------------
+def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
+    '''
+    Parameters
+    ----------
+    unitcell
+        Unitcell : base unit cell stack
+    nStacks
+        int : number of stacks per supercell
+    fltLayer
+        str : name of faulted layer
+    probList
+        list (float) : stacking fault probabilities to search
+    sVecList
+        list (nparray) : stacking vectors to search
+    path
+        str : CIF file save directory
+
+    Returns
+    -------
+    df
+        DataFrame : tabulated supercell data, includes the following as columns
+            'Model' -- unique identifier
+            'Stacking Vector' -- stacking vector in string format
+            'Stacking Probability' -- stacking fault probability in str format
+            'S_x' -- x-component of stacking vector
+            'S_y' -- y-component of stacking vector
+            'S_z' -- z-component of stacking vector
+            'P' -- fault probability (0 to 1)
+    '''
+    from pyfaults import toCif, formatStr
+    # create 'CIFs' folder in file directory
+    if os.path.exists(path + 'CIFs/') == False:
+        os.mkdir(path + 'CIFs/')
+    
+    df = pd.DataFrame()
+    cellList = []
+    probStrList, sVecStrList = formatStr(probList, sVecList)
+    
+    # generate unfaulted supercell
+    UF = Supercell(unitcell, nStacks)
+    cellList.append([UF, 'Unfaulted'])
+    modelCol = ['Unfaulted']
+    sVecTxtCol = [np.nan]
+    probTxtCol = [np.nan]
+    sxCol = [np.nan]
+    syCol = [np.nan]
+    szCol = [np.nan]
+    probCol = [np.nan]
+    
+    # generate each faulted supercell
+    for p in range(len(probList)):
+        for s in range(len(sVecList)):
+            FLT = Supercell(unitcell, nStacks, fltLayer=fltLayer, 
+                            stackVec=sVecList[s], stackProb=probList[p])
+            cellTag = 'S' + str(s+1) + '_P' + str(int(probList[p]*100))
+            cellList.append([FLT, cellTag])
+            modelCol.append(cellTag)
+            sVecTxtCol.append(sVecStrList[s])
+            probTxtCol.append(probStrList[p])
+            sxCol.append(sVecList[s][0])
+            syCol.append(sVecList[s][1])
+            szCol.append(sVecList[s][2])
+            probCol.append(probList[p])
+    
+    # export CIF for each supercell
+    for c in range(len(cellList)):
+        toCif((cellList[c][0]), path, cellList[c][1])
+    
+    # add entry for each supercell
+    df['Model'] = modelCol
+    df['Stacking Vector'] = sVecTxtCol
+    df['Stacking Probability'] = probTxtCol
+    df['S_x'] = sxCol
+    df['S_y'] = syCol
+    df['S_z'] = szCol
+    df['P'] = probCol
+    return df               

@@ -1,63 +1,58 @@
-#########################################################################################
-# pyfaults.layerAtom
+##################################################################################
 # Author: Sinclair R. Combs
-#########################################################################################
+##################################################################################
 
-''' LayerAtom object class -- Stores properties of atom in specific layer '''
-#----------------------------------------------------------------------------------------
-
-class LayerAtom(object):
-    '''
-    Parameters
-    ----------
-    layerName : str
-        Unique identifier for layer in which atom resides
-    atomLabel : str
-        Unique identifier for LayerAtom object
-    element : str
-        Atomic element and oxidation state if applicable
-    xyz : nparray
-        Atomic position in fractional coordinates
-    occupancy : float
-        Crystallographic site occupancy
-    lattice : Lattice
-        Unit cell lattice parameters
-    '''
+''' LAYERATOM CLASS'''
+#---------------------------------------------------------------------------------
+class LayerAtom(object):   
+    # properties -----------------------------------------------------------------
+    layerName =\
+        property(lambda self: self._layerName,
+                 lambda self, val: self.setParam(layerName=val),
+                 doc='str : unique identifier for resident layer')
         
-    # properties ------------------------------------------------------------------------
-    layerName = property(lambda self: self._layerName,
-                         lambda self, val: self.setParam(layerName=val))
+    atomLabel =\
+        property(lambda self: self._atomLabel,
+                 lambda self, val: self.setParam(atomLabel=val),
+                 doc='str : unique identifier for LayerAtom instance')
         
-    atomLabel = property(lambda self: self._atomLabel,
-                         lambda self, val: self.setParam(atomLabel=val))
+    element =\
+        property(lambda self: self._element,
+                 lambda self, val: self.setParam(element=val),
+                 doc='str : atomic element and oxidation state')
         
-    element = property(lambda self: self._element,
-                       lambda self, val: self.setParam(element=val))
+    xyz =\
+        property(lambda self: self._xyz,
+                 lambda self, val: self.setParam(xyz=val),
+                 doc='nparray : atomic position in fractional coordinates')
         
-    xyz = property(lambda self: self._xyz,
-                   lambda self, val: self.setParam(xyz=val))
-        
-    x = property(lambda self: self._xyz[0],
+    x =\
+        property(lambda self: self._xyz[0],
                  lambda self, val: self.setParam(0, val),
-                 doc="float : fractional coordinate x")
+                 doc='float : x-component of atomic position')
         
-    y = property(lambda self: self._xyz[1],
+    y =\
+        property(lambda self: self._xyz[1],
                  lambda self, val: self.setParam(1, val),
-                 doc="float : fractional coordinate y")
+                 doc='float : y-component of atomic position')
         
-    z = property(lambda self: self._xyz[2],
+    z =\
+        property(lambda self: self._xyz[2],
                  lambda self, val: self.setParam(2, val),
-                 doc="float : fractional coordinate z")
+                 doc='float : z-component of atomic position')
         
-    occupancy = property(lambda self: self._occupancy,
-                         lambda self, val: self.setParam(occupancy=val))
+    occupancy =\
+        property(lambda self: self._occupancy,
+                 lambda self, val: self.setParam(occupancy=val),
+                 doc='float : site occupancy, values from 0 to 1')
         
-    lattice = property(lambda self: self._lattice,
-                       lambda self, val: self.setParam(lattice=val))
+    lattice =\
+        property(lambda self: self._lattice,
+                 lambda self, val: self.setParam(lattice=val),
+                 doc='Lattice : unit cell lattice parameters')
     
-    # creates instance of LayerAtom object ----------------------------------------------
+    # creates instance of LayerAtom object ---------------------------------------
     def __init__(self, layerName, atomLabel, element, xyz, occupancy, lattice):
-        
         # initialize parameters
         self._layerName = None
         self._atomLabel = None
@@ -68,19 +63,16 @@ class LayerAtom(object):
         self._z = None
         self._lattice = None
         self._occupancy = None
-        
         self.setParam(layerName, atomLabel, element, xyz, lattice, occupancy)
-        
         return
     
-    # sets atom parameters --------------------------------------------------------------
-    def setParam(self, layerName=None, atomLabel=None, element=None, xyz=None,
+    # sets parameters ------------------------------------------------------------
+    def setParam(self, layerName=None, atomLabel=None, element=None, xyz=None, 
                  lattice=None, occupancy=None):
-        
         if layerName is not None:
             self._layerName = layerName
         if atomLabel is not None:
-            self._atomLabel = atomLabel + "_" + layerName
+            self._atomLabel = atomLabel + '_' + layerName
         if element is not None:
             self._element = element
         if xyz is not None:
@@ -95,11 +87,10 @@ class LayerAtom(object):
         
         return
     
-    # prints atom layer, name, element, position, and occupancy -------------------------
+    # prints atom information ----------------------------------------------------
     def display(self):
-        a = "\n".join(("Layer Name: " + self.layerName, 
-                       "Atom Label: " + self.atomLabel,
-                       "Element: " + self.element,
-                       "Atomic Position: " + str(self.xyz),
-                       "Occupancy: " + str(self.occupancy)))
-        print(a)
+        print('\n'.join(('Layer Name: ' + self.layerName, 
+                       'Atom Label: ' + self.atomLabel,
+                       'Element: ' + self.element,
+                       'Atomic Position: ' + str(self.xyz),
+                       'Occupancy: ' + str(self.occupancy))))
