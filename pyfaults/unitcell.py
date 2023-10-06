@@ -100,7 +100,7 @@ def genUnitCell(cellName, path, csvFile, lattice, layerList, stackDir,
             
             for j in layers:
                 if j.layerName == parent:
-                    childLayer = lyr.j.genChildLayer(name, vec)
+                    childLayer = j.genChildLayer(name, vec)
                     layers.append(childLayer)
                     
     # new Unitcell instance
