@@ -94,9 +94,9 @@ def genUnitCell(cellName, path, csvFile, lattice, layerList, stackDir,
     # generate child layers if applicable
     if childLayers is not None:
         for i in range(len(childLayers)):
-            name = childLayerList[i][0]
-            parent = childGenVecList[i][1]
-            vec = childGenVecList[i][2]
+            name = childLayers[i][0]
+            parent = childLayers[i][1]
+            vec = childLayers[i][2]
             
             for j in layers:
                 if j.layerName == parent:
