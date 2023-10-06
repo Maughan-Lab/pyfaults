@@ -58,7 +58,7 @@ class Unitcell(object):
 # generates new unit cell from CSV -----------------------------------------------
 #---------------------------------------------------------------------------------
 def genUnitCell(cellName, path, csvFile, lattice, layerList, stackDir, 
-                childLayerList=None, childGenVecList=None):
+                childLayers=None):
     '''
     Parameters
     ----------
@@ -74,12 +74,10 @@ def genUnitCell(cellName, path, csvFile, lattice, layerList, stackDir,
         list (str) : unique layer names defined in CSV
     stackDir
         str : stacking direction ('a', 'b', or 'c')
-    childLayerList
-        list (str) [optional] : child layer names 
-        The default is None
-    childGenVecList
-        list (str, nparray) [optional] : child layer parameters, format as
-        [parent name, translation vector]
+    childLayers
+        list (str, nparray) [optional] : child layer parameters,
+        format each list entry as
+        [child name, parent name, translation vector]
         The default is None.
 
     Returns
@@ -94,11 +92,11 @@ def genUnitCell(cellName, path, csvFile, lattice, layerList, stackDir,
     layers = lyr.getLayers(csv, lattice, layerList, stackDir)
     
     # generate child layers if applicable
-    if childLayerList is not None:
-        for i in childLayerList:
-            name = childLayerList[i]
-            parent = childGenVecList[i][0]
-            vec = childGenVecList[i][1]
+    if childLayers is not None:
+        for i in range(len(childLayers)):
+            name = childLayerList[i][0]
+            parent = childGenVecList[i][1]
+            vec = childGenVecList[i][2]
             
             for j in layers:
                 if j.layerName == parent:
