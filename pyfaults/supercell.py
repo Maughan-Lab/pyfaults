@@ -82,6 +82,9 @@ class Supercell(object):
                 p = r.randint(0,100)
                 
                 if fltLayer is not None:
+                    self._fltLayer = fltLayer
+                    self._stackVec = stackVec
+                    self._stackProb = stackProb
                     if lyr.layerName == fltLayer:
                         if p <= (stackProb * 100):
                             isFlt = True
