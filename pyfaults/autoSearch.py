@@ -122,14 +122,14 @@ def autoSearch(savePath, unitcell, expt, nStacks, fltLayer,
     peakDF = pd.DataFrame()
     peakRanges = []
     # determine minimum and maximum Q for each peak
-    for i in range(len(labels)):
-        qMin = float('%.3f'%(qVals[i] - (pw/2)))
-        qMax = float('%.3f'%(qVals[i] + (pw/2)))
+    for i in range(len(peakLabels)):
+        qMin = float('%.3f'%(peakQ[i] - (calcPW/2)))
+        qMax = float('%.3f'%(peakQ[i] + (calcPW/2)))
         qRange = [qMin, qMax]
         peakRanges.append(qRange)
     # add entry for each peak
-    peakDF['Reflection'] = labels
-    peakDF['Q'] = qVals
+    peakDF['Reflection'] = peakLabels
+    peakDF['Q'] = peakQ
     peakDF['Peak Range'] = peakRanges
     print('Finished setting peak parameters')
     
