@@ -161,7 +161,7 @@ def stackedPlot(num, qVals, intsVals, xLim, yLim, wl, expt=None,
             p[i].get_xaxis().set_visible(False)
     
     # set x-axis label
-    x_label = r'Q (\AA" r"$^{-1}$, $\lambda=$' + str(wl) + r' \AA)'
+    x_label = r'Q (\AA' r'$^{-1}$, $\lambda=$' + str(wl) + r' \AA)'
     p[-1].set_xlabel(x_label, fontsize=16)
     
     # set y-axis label
