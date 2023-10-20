@@ -210,7 +210,7 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
     
     # export CIF for each supercell
     for c in range(len(cellList)):
-        toCif((cellList[c][0]), path, cellList[c][1])
+        toCif((cellList[c][0]), path + 'CIFs/', cellList[c][1])
     
     # add entry for each supercell
     df['Model'] = modelCol
