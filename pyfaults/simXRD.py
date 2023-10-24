@@ -8,7 +8,7 @@ import os
 
 ''' XRD SIMULATION METHODS '''
 #---------------------------------------------------------------------------------
-# simulates XRD pattern ----------------------------------------------------------
+# simulates XRD pattern, returns normalized intensity values ---------------------
 #---------------------------------------------------------------------------------
 def fullSim(path, cif, wl, tt_max, pw=None, bg=None):
     '''
@@ -32,6 +32,8 @@ def fullSim(path, cif, wl, tt_max, pw=None, bg=None):
     q : nparray
     ints : nparray
     '''
+    from pyfaults import norm
+    
     # load cif
     struct = df.Crystal(path + cif + '.cif')
     
@@ -49,28 +51,16 @@ def fullSim(path, cif, wl, tt_max, pw=None, bg=None):
                                              peak_width=pw, 
                                              background=bg, 
                                              powder_average=True)
-    return q, ints
-
-#---------------------------------------------------------------------------------
-# saves simulation as text file --------------------------------------------------
-#---------------------------------------------------------------------------------
-def saveSim(path, fn, q, ints):
-    '''
-    Parameters
-    ----------
-    path
-        str : file save directory
-    fn
-        str : file save name
-    q
-        nparray : calculated Q values
-    ints
-        nparray : calculated intensity values
-    '''
-    with open(path + fn + '.txt', 'w') as f:
-        for (q, ints) in zip(q, ints):
-            f.write('{0} {1}\n'.format(q, ints))
-    f.close()    
+    
+    norm_ints = norm(ints)
+    
+    # save simulation data
+    with open(path + cif + '_sim.txt', 'w') as f:
+        for (q, norm_ints) in zip(q, norm_ints):
+            f.write('{0} {1}\n'.format(q, norm_ints))
+    f.close() 
+    
+    return q, norm_ints  
     
 #---------------------------------------------------------------------------------
 # calculates simulated diffraction pattern for DataFrame of supercells -----------
@@ -130,37 +120,3 @@ def calcSims(df, path, wl, maxTT, pw):
     simDF['Simulated Q'] = simQList
     simDF['Simulated Intensity'] = simDiffList
     return simDF
-
-#---------------------------------------------------------------------------------
-# calculates (hkl) reflections ---------------------------------------------------
-#---------------------------------------------------------------------------------
-def hklSim(path, cif, wl, tt_max):
-    '''
-    Parameters
-    ----------
-    path
-        str : CIF file directory
-    cif
-        str : CIF file name
-    wl
-        float : instrument wavelength (A)
-    tt_max
-        float : maximum 2theta (degrees)
-
-    Returns
-    -------
-    reflections
-        nparray : (hkl) reflections, 2theta, and intensity values
-    '''
-    struct = df.Crystal(path + cif + '.cif')
-    
-    # setup diffraction parameters
-    e_kev = df.fc.wave2energy(wl)
-    struct.Scatter.setup_scatter(scattering_type='xray', 
-                                 energy_kev=e_kev, 
-                                 min_twotheta=0, 
-                                 max_twotheta=tt_max)
-    
-    # generate (hkl) reflections
-    reflections = struct.Scatter.print_all_reflections(min_intensity=0.1)
-    return reflections

@@ -51,6 +51,11 @@ class Unitcell(object):
         for i in self.layers:
             for j in i.atoms:
                 print(i.layerName + ", " + j.atomLabel + ", " + str(j.xyz))
+                
+    # generates CIF of layer -----------------------------------------------------
+    def toCif(self, path):
+        from pyfaults import toCif
+        toCif(self, path, 'Unitcell_' + self.name + '_CIF')
 
 
 ''' UNIT CELL GENERATOR METHOD ''' 

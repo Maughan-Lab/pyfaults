@@ -140,6 +140,12 @@ class Supercell(object):
             if "fault" in lyr.layerName:
                 print(lyr.layerName) 
                 
+    # generates CIF of layer -----------------------------------------------------
+    def toCif(self, path):
+        from pyfaults import toCif
+        name = self.unitcell.name
+        toCif(self, path, 'Supercell_' + name + '_N' + str(self.nStacks) + '_CIF')
+                
 ''' SUPERCELL GENERATOR METHOD '''                
 #---------------------------------------------------------------------------------
 # generates supercells within search parameter grid ------------------------------

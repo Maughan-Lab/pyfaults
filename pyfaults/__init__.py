@@ -90,6 +90,42 @@ def toCif(cell, path, fn):
     cif.close()
 
 #---------------------------------------------------------------------------------
+# converts 2theta values to Q ----------------------------------------------------
+#---------------------------------------------------------------------------------
+def tt_to_q(twotheta, wavelength):
+    '''
+    Parameters
+    ----------
+    twotheta
+        nparray : 2theta values (degrees)
+    wavelength
+        float : instrument wavelength (A)
+
+    Returns
+    -------
+    Q : nparray
+    '''
+    Q = 4 * np.pi * np.sin((twotheta * np.pi)/360) / wavelength
+    return Q
+
+#---------------------------------------------------------------------------------
+# normalizes intensity values ----------------------------------------------------
+#---------------------------------------------------------------------------------
+def norm(ints):
+    '''
+    Parameters
+    ----------
+    ints
+        nparray : intensity values
+
+    Returns
+    -------
+    norm_ints : nparray
+    '''
+    norm_ints = (ints / np.max(ints))
+    return norm_ints
+
+#---------------------------------------------------------------------------------
 # imports atomic parameters from CSV file ---------------------------------------- 
 #---------------------------------------------------------------------------------       
 def importCSV(path, fn):
@@ -111,7 +147,7 @@ def importCSV(path, fn):
 #---------------------------------------------------------------------------------
 # imports text file with XRD data ------------------------------------------------
 #---------------------------------------------------------------------------------
-def importSim(path, fn):
+def importFile(path, fn):
     '''
     Parameters
     ----------
@@ -127,61 +163,6 @@ def importSim(path, fn):
     '''
     q, ints = np.loadtxt(path + fn + '.txt', unpack=True, dtype=float)
     return q, ints
-
-#---------------------------------------------------------------------------------
-# converts 2theta values to Q ----------------------------------------------------
-#---------------------------------------------------------------------------------
-def tt_to_q(twotheta, wavelength):
-    '''
-    Parameters
-    ----------
-    twotheta
-        nparray : 2theta values (degrees)
-    wavelength
-        float : instrument wavelength (A)
-
-    Returns
-    -------
-    Q : nparray
-    '''
-    Q = 4 * np.pi * np.sin((twotheta * np.pi)/360) / wavelength
-    return Q
-
-#---------------------------------------------------------------------------------
-# converts Q values to 2theta ----------------------------------------------------
-#---------------------------------------------------------------------------------
-def q_to_tt(q, wavelength):
-    '''
-    Parameters
-    ----------
-    q
-        nparray : Q values (A^-1)
-    wavelength
-        float : instrument wavelength (A)
-
-    Returns
-    -------
-     twotheta: nparray
-    '''
-    twotheta = 360 * np.pi * np.arcsin((q * wavelength) / (4 * np.pi))
-    return twotheta
-
-#---------------------------------------------------------------------------------
-# normalizes intensity values ----------------------------------------------------
-#---------------------------------------------------------------------------------
-def norm(ints):
-    '''
-    Parameters
-    ----------
-    ints
-        nparray : intensity values
-
-    Returns
-    -------
-    norm_ints : nparray
-    '''
-    norm_ints = (ints / np.max(ints))
-    return norm_ints
     
 #---------------------------------------------------------------------------------
 # import experimental XRD and adjusts 2theta range to match simulated XRD --------
@@ -207,7 +188,7 @@ def importExpt(path, fn, wl, maxTT):
         nparray : normalized intensity values
     '''
     # import experimental data
-    exptTT, exptInts = importSim(path, fn)
+    exptTT, exptInts = importFile(path, fn)
     
     # truncate 2theta range according to maxTT
     truncTT = []

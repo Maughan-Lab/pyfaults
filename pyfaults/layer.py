@@ -48,6 +48,11 @@ class Layer(object):
         print('\n'.join(('Layer Name: ' + self.layerName)))
         for i in self.atoms:
             print(i.atomLabel + ', ' + str(i.xyz))
+            
+    # generates CIF of layer -----------------------------------------------------
+    def toCif(self, path):
+        from pyfaults import toCif
+        toCif(self, path, 'Layer_' + self.layerName + '_CIF')
     
     # generates a child layer ----------------------------------------------------
     def genChildLayer(self, childName, transVec):

@@ -17,23 +17,6 @@ rc('text.latex',preamble=r'\usepackage{sfmath}')
 
 ''' XRD PLOTTING METHODS '''
 #---------------------------------------------------------------------------------
-# saves to PNG -------------------------------------------------------------------
-#---------------------------------------------------------------------------------
-def saveFig(plot, path, fn):
-    '''
-    Parameters
-    ----------
-    plot
-        Figure : unique identifier for plot
-    path
-        str : file save directory
-    fn
-        str : file name
-    '''
-    save = path + fn + '.png'
-    plot.savefig(save, bbox_inches='tight', pad_inches=0.2, dpi=1000)
-
-#---------------------------------------------------------------------------------
 # generates 1D color gradient ----------------------------------------------------
 #---------------------------------------------------------------------------------
 def gradientGen(startHex, endHex, num):
@@ -92,6 +75,73 @@ def gradientGen2D(cornerColors, rows, cols):
         currRowColors = list(c1.range_to(c2, cols))
         colorList.append(currRowColors)
     return colorList
+
+#---------------------------------------------------------------------------------
+# generates single plot ----------------------------------------------------------
+#---------------------------------------------------------------------------------
+def singlePlot(qVals, intsVals, xLim, yLim, wl, expt=None, color=None, 
+               label=None, normalized=False):
+    '''
+    Parameters
+    ----------
+    qVals
+        nparray : list of Q values (A^1)
+    intsVals
+        nparray : list of intensity values
+    xLim
+        list (float) : x-axis minimum and maximum, tuple
+    yLim
+        list (float) : y-axis minimum and maximum, tuple
+    wl
+        float : instrument wavelength (A)
+    expt
+        list (nparray) [optional] : experimental Q and intensity values
+    color
+        str [optional] : plot line color
+        The default is '#00C6BF'
+    label
+        str [optional] : plot line label for legend; no legend if set to None
+        The default is None
+    normalized
+        bool [optional] : set to True if intensity values are normalized
+        The default is False
+    '''
+    
+    fig, (p) = plt.subplots(1, figsize=(8, 8))
+    exptMin = np.min(expt[1])
+    
+    # set color
+    if color is None:
+        color = '#00C6BF'
+    
+    # plot experimental data
+    if expt is not None:
+        p.scatter(expt[0], expt[1], color='black', label='Observed', 
+                  marker='.', s=8)
+        
+    # plot stacked data
+    p.plot(qVals, intsVals+exptMin, color=color, linewidth='2.5', label=label)
+    
+    # set axis limits
+    p.set_xlim(xLim)
+    p.set_ylim(yLim)
+    p.tick_params(axis='both', labelsize='14')
+    
+    # set x-axis label
+    x_label = r'Q (\AA' r'$^{-1}$, $\lambda=$' + str(wl) + r' \AA)'
+    p.set_xlabel(x_label, fontsize=16)
+    
+    # set y-axis label
+    if normalized == True:
+        y_label = 'Intensity (counts, normalized)'
+    elif normalized == False:
+        y_label = 'Intensity (counts)'
+    p.set_ylabel(y_label, fontsize=16)
+    
+    if label is not None:
+        p.legend(handlelength=1, fontsize='16')
+    
+    return(p)
 
 #---------------------------------------------------------------------------------
 # generates stacked plot ---------------------------------------------------------
@@ -467,6 +517,109 @@ def fitCompare(rows, cols, diffQ, diffInts, xLims, yLim, wl,
                        color=g[0][col].hex, 
                        fontsize='16', ha='center', va='bottom')
         
+    plt.subplots_adjust(hspace=0.1, wspace=0.1)
+    return(p)
+
+#---------------------------------------------------------------------------------
+# plot results from autoSearch.fitCompare() --------------------------------------
+#---------------------------------------------------------------------------------
+def plotSearchResults(fitDiffDF, peakDF, xSpacing, wl, yLim, 
+                      rowAdj=0.0, colAdj=0.0, 
+                      xLabelAdj=0.0, yLabelAdj=0.0):
+    '''
+    Parameters
+    ----------
+    fitDiffDF
+        DataFrame : tabulated data returned from calcFitDiffs()
+    peakDF
+        DataFrame : tabulated data returned from makePeakDF()
+    xSpacing
+        float : adjustment parameter for spacing around peaks (x-axis units)
+    wl
+        float : instrument wavelength (A)
+    yLim
+        list (flaot) : y-axis minimum and maximum
+    rowAdj
+        float [optional] : adjustment parameter for row label x-axis positions
+        The default is 0.0
+    colAdj
+        float [optional] : adjustment parameter for col label y-axis positions
+        The default is 0.0
+    xLabelAdj
+        float [optional] : adjustment parameter for x-axis label position
+        The default is 0.0
+    yLabelAdj
+        float [optional] : adjustment parameter for y-axis label position
+        The default is 0.0
+
+    Returns
+    -------
+    p : Figure
+    '''
+    from pyfaults.plotXRD import gradientGen2D
+    
+    # set number of rows and columns
+    rows = len(fitDiffDF)-1
+    cols = len(peakDF)
+    
+    # generate color map
+    g = gradientGen2D(['#00C6BF', '#009AE1', '#5D7AD3', '#B430C2'], rows, cols)
+    
+    # create new Figure instance
+    fig, (p) = plt.subplots(rows, cols, figsize=(rows*2, cols))
+    # set Q values
+    Q = fitDiffDF['Expt vs. Model Q'][0]
+    
+    # plot fit difference curves
+    for r in range(rows):
+        for c in range(cols):
+            ints = fitDiffDF['UF vs. FLT Model'][r+1]
+            p[r][c].plot(Q, ints, color=g[r][c].hex)
+            
+    # set x-axis limits for each column (broadened peak)    
+    xLims = []
+    for i in peakDF.index:
+        qRange = peakDF['Peak Range'][i]
+        qMin = qRange[0] - xSpacing
+        qMax = qRange[1] + xSpacing
+        xLims.append([qMin, qMax])
+    # set y-axis limits
+    for r in range(rows):
+        for c in range(cols):
+            p[r][c].set_xlim(xLims[c][0], xLims[c][1])
+            p[r][c].set_ylim(yLim)
+            p[r][c].tick_params(axis='both', labelsize='14')
+            if r != (rows-1):
+                p[r][c].get_xaxis().set_visible(False)
+            if c != 0:
+                p[r][c].get_yaxis().set_visible(False)
+    
+    # add axis labels
+    xLabel = r'Q (\AA' r'$^{-1}$, $\lambda=$' + str(wl) + r' \AA)'
+    fig.supxlabel(xLabel, fontsize=16, y=xLabelAdj)
+    yLabel = r'Diff$_{\mathrm{UF}} -$ Diff$_{\mathrm{F}}$ (counts, normalized)'
+    fig.supylabel(yLabel, fontsize=16, x=yLabelAdj)
+    
+    # set row and column labels
+    rowLabels = []
+    for r in range(rows):
+        sVec = str(fitDiffDF['Stacking Vector'][r+1])
+        prob = str(fitDiffDF['Stacking Probability'][r+1])
+        label = '\n'.join((sVec, prob))
+        rowLabels.append(label)
+    colLabels = peakDF['Reflection']
+    
+    # add row and column labels
+    yMid = ((yLim[1] - yLim[0]) / 2) + yLim[0]
+    xEnd = xLims[-1][1]
+    for r in range(rows):
+        p[r][-1].text(xEnd+rowAdj, yMid, rowLabels[r], color=g[r][-1].hex, 
+                      fontsize='14', ha='left', va='center')
+    for c in range(cols):
+        xMid = ((xLims[c][1] - xLims[c][0]) / 2) + xLims[c][0]
+        p[0][c].text(xMid, yLim[1]+colAdj, colLabels[c], color=g[0][c].hex, 
+                     fontsize='14', ha='center', va='bottom')
+    
     plt.subplots_adjust(hspace=0.1, wspace=0.1)
     return(p)
 
