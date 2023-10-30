@@ -66,11 +66,11 @@ class Lattice(object):
     
     # prints lattice parameters --------------------------------------------------
     def display(self):
-        displayStr = '\n'.join(('a : ' + self.a, 
-                         'b : ' + self.b, 
-                         'c : ' + self.c,
-                         'alpha : ' + self.alpha, 
-                         'beta : ' + self.beta,
-                         'gamma : ' + self.gamma))
+        displayStr = '\n'.join(('a : ' + str(self.latt.a), 
+                         'b : ' + str(self.latt.b), 
+                         'c : ' + str(self.latt.c),
+                         'alpha : ' + str(self.latt.alpha), 
+                         'beta : ' + str(self.latt.beta),
+                         'gamma : ' + str(self.latt.gamma)))
         print(displayStr)
         return displayStr
