@@ -10,7 +10,7 @@ import os
 #---------------------------------------------------------------------------------
 # simulates XRD pattern, returns normalized intensity values ---------------------
 #---------------------------------------------------------------------------------
-def fullSim(path, cif, wl, tt_max, pw=None, bg=None):
+def fullSim(path, cif, wl, tt_max, pw=None, bg=None, norm=False):
     '''
     Parameters
     ----------
@@ -26,6 +26,9 @@ def fullSim(path, cif, wl, tt_max, pw=None, bg=None):
         float (optional) : peak width (A^-1)
     bg
         float (optional) : average of normal background
+    norm
+        bool (optional) : set to True if intensities are to be normalized
+        The d
 
     Returns
     -------
