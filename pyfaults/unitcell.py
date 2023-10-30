@@ -43,14 +43,11 @@ class Unitcell(object):
     # prints layer names ---------------------------------------------------------
     def layer_info(self):
         layerList = self.layers
+        layerStr = []
         for i in range(len(layerList)):
+            layerStr.append(layerList[i].layerName)
             print(layerList[i].layerName)
-    
-    # prints atom labels and positions for each layer ----------------------------
-    def atom_info(self):
-        for i in self.layers:
-            for j in i.atoms:
-                print(i.layerName + ", " + j.atomLabel + ", " + str(j.xyz))
+        return
                 
     # generates CIF of layer -----------------------------------------------------
     def toCif(self, path):
