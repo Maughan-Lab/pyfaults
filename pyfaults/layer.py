@@ -45,9 +45,10 @@ class Layer(object):
     
     # prints layer information ---------------------------------------------------
     def display(self):
-        print('\n'.join(('Layer Name: ' + self.layerName)))
+        print(self.layerName)
         for i in self.atoms:
             print(i.atomLabel + ', ' + str(i.xyz))
+        return 
             
     # generates CIF of layer -----------------------------------------------------
     def toCif(self, path):
