@@ -86,11 +86,3 @@ class LayerAtom(object):
             self._occupancy = occupancy
         
         return
-    
-    # prints atom information ----------------------------------------------------
-    def display(self):
-        print('\n'.join(('Layer Name: ' + self.layerName, 
-                       'Atom Label: ' + self.atomLabel,
-                       'Element: ' + self.element,
-                       'Atomic Position: ' + str(self.xyz),
-                       'Occupancy: ' + str(self.occupancy))))
