@@ -129,16 +129,12 @@ class Supercell(object):
         self._layers = newLayers
         return
     
-    # prints layer names ---------------------------------------------------------
-    def layer_info(self):
-        for i in self.layers:
-            print(i.layerName)
-    
     # prints names of faulted layers ---------------------------------------------
     def show_faults(self):
         for lyr in self.layers:
             if "fault" in lyr.layerName:
-                print(lyr.layerName) 
+                print(lyr.layerName)
+        return
                 
     # generates CIF of layer -----------------------------------------------------
     def toCif(self, path):
