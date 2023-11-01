@@ -1,0 +1,5 @@
+﻿Layer,Atom,Element,x,y,z,Occupancy
+A,Sc1,Sc3+,0,0,0,1
+A,Sc2,Sc3+,0.5,0.5,0,1
+B,Li1,Li+,0.5,0,0.5,1
+B,Li2,Li+,0,0.5,0.5,1
