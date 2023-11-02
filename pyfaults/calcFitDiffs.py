@@ -27,7 +27,7 @@ def calcFitDiffs(simPath, diffPath):
         removeExt = f.split('.')
         fn = removeExt[0].split('\\')
         
-        if fn[-1] is not 'Unfaulted_sim_exptDiff':
+        if fn[-1] != 'Unfaulted_sim_exptDiff':
             faultedDiffQ, faultedDiff = pf.importFile(diffPath, fn[-1])
             fitDiff = np.subtract(unfaultedDiff, faultedDiff)
             
