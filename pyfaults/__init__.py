@@ -274,7 +274,7 @@ assert pyfaults.genSupercells
 assert pyfaults.simXRD
 assert pyfaults.calcSims
 assert pyfaults.plotXRD
-assert pyfaults.diffCalc
+assert pyfaults.diffCurve
 assert pyfaults.calcDiffs
 assert pyfaults.calcFitDiffs
 assert pyfaults.compareFits
