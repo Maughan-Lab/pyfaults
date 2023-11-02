@@ -45,21 +45,10 @@ def compareFits(fitDiffPath, peaksPath, peaksName):
     ----------
     fitDiffPath
         str : fit difference curve data file directory
-    fitDiffCSV
-        str : file name of metadata CSV generated from calcFitDiffs method
     peaksPath
         str : peak info file directory
     peaksName
         str : file name of peak info CSV generated from peakParams
-
-    Returns
-    -------
-    compareFits
-        DataFrame : tabulated fit comparison data, includes the following as columns
-            'Model' -- unique identifier
-            '(hkl)' -- (hkl) plane corresponding to reflection
-            'Peak Index (Q)' -- Q indexes (A^-1)
-            'Faulted Model Fit' -- result of fit comparison for each peak
     '''
     import pyfaults as pf
     import glob
@@ -114,7 +103,7 @@ def compareFits(fitDiffPath, peaksPath, peaksName):
     compareFits['Peak Index (Q)'] = peakQvals
     compareFits['Faulted Model Fit'] = fitResults
     
-    compareFits.to_csv(fitDiffPath + 'compareFitResults.csv')
+    compareFits.to_csv(fitDiffPath + 'compareFitResults.csv', index=False)
     
     return compareFits
 
