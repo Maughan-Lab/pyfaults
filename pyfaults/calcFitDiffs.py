@@ -11,6 +11,7 @@ def calcFitDiffs(simPath, diffPath):
     diffPath
         str : difference curve data file directory
     '''
+    import pyfaults as pf
     import os, glob
     import numpy as np
     

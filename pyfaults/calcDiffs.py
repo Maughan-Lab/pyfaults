@@ -17,6 +17,7 @@ def calcDiffs(exptPath, exptName, simPath, wl, maxTT):
     maxTT
         float : maximum 2theta value (degrees)
     '''
+    import pyfaults as pf
     import os, glob
     
     # create 'diffCurves' folder in file directory
