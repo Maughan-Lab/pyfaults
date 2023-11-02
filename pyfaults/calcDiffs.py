@@ -17,9 +17,7 @@ def calcDiffs(exptPath, exptName, simPath, wl, maxTT):
     maxTT
         float : maximum 2theta value (degrees)
     '''
-    import pyfaults as pf
     import os, glob
-    import pandas as pd
     
     # create 'diffCurves' folder in file directory
     if os.path.exists(simPath + 'diffCurves/') == False:
@@ -31,15 +29,18 @@ def calcDiffs(exptPath, exptName, simPath, wl, maxTT):
     exptQ, exptInts = pf.importExpt(exptPath, exptFile[0], wl, maxTT, ext=ext)
     
     # import simulation data
-    sims = glob.glob(simPath + '/.txt')
+    sims = glob.glob(simPath + '/*.txt')
     
     for f in sims:
+        removeExt = f.split('.')
+        fn = removeExt[0].split('\\')
+        
         # calculate expt vs model difference
-        q, ints = pf.importFile(simPath, f)
-        diffQ, diffInts = pf.diffcurve.diffCurve(exptQ, q, exptInts, ints)
+        q, ints = pf.importFile(simPath, fn[-1])
+        diffQ, diffInts = pf.diffCurve.diffCurve(exptQ, q, exptInts, ints)
         
         # save difference curve
-        with open(simPath + 'diffCurves/' + f + '_exptDiff.txt', 'w') as x:
+        with open(simPath + 'diffCurves/' + fn[-1] + '_exptDiff.txt', 'w') as x:
             for (q, ints) in zip(diffQ, diffInts):
                 x.write('{0} {1}\n'.format(q, ints))
             x.close()
