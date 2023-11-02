@@ -34,8 +34,8 @@ def calcFitDiffs(simPath, diffPath):
             
             saveName = fn[-1].split('_exptDiff')
             with open(simPath + 'fitDiffCurves/' + saveName[0] + '_fitDiff.txt', 'w') as x:
-                for (d) in fitDiff:
-                    x.write('{0} \n'.format(d))
+                for (q, ints) in zip(faultedDiffQ, fitDiff):
+                    x.write('{0} {1} \n'.format(q, ints))
                 x.close()
                 
     return
