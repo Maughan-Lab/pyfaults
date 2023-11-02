@@ -9,7 +9,7 @@ import pandas as pd
 # automated parameter grid searching -----------------------------------
 #-----------------------------------------------------------------------
 def autoSearch(savePath, unitcell, nStacks, fltLayer, probList, sVecList,
-               wl, maxTT, simPW, exptPath, exptName, peaksPath, peaksName):
+               wl, maxTT, simPW, exptPath, exptName, peaksCSVPath, peakCSVName):
     
     import pyfaults as pf
     
@@ -19,31 +19,21 @@ def autoSearch(savePath, unitcell, nStacks, fltLayer, probList, sVecList,
     print('Finished generating supercell CIFs')
     
     # simulate XRD -----------------------------------------------------
-    simData = pf.calcSims.calcSims(savePath + 'supercell_CIFs/', 'model_info',
-                                   wl, maxTT, simPW, savePath)
+    pf.calcSims.calcSims(savePath + 'supercell_CIFs/', 'model_info', wl, maxTT, 
+                         simPW, savePath)
     print('Finished simulating XRD patterns')
     
     # calculate difference curves --------------------------------------
-    diffData = pf.calcDiffs.calcDiffs(exptPath, exptName, savePath + 'sims/',
-                                      'sim_info', wl, maxTT)
+    pf.calcDiffs.calcDiffs(exptPath, exptName, savePath + 'sims/', wl, maxTT)
     print('Finished calculating difference curves')
     
     # calculate fit differences ----------------------------------------
-    fitDiffData = pf.calcFitDiffs.calcFitDiffs(savePath + 'sims/',
-                                               savePath + 'diffCurves/', 
-                                               'diffCurve_info')
+    pf.calcFitDiffs.calcFitDiffs(savePath + 'sims/', savePath + 'sims/diffCurves/')
     print('Finished calculating fit difference curves')
     
     # compare peak fits ------------------------------------------------
-    compareFits = pf.compareFits.compareFits(savePath + 'fitDiffCurves/',
-                                             'fitDiff_info', peaksPath, peaksName)
-    print('Finished comparison of model fits')
-    
-    # display results --------------------------------------------------
-    for i in compareFits.index:
-        print(compareFits['Model'][i] + ' -- ' + compareFits['(hkl)'][i] +\
-              '(' + compareFits['Peak Index (Q)'] + ' A^-1)' +\
-              ' -- ' + compareFits['Faulted Model Fit'])
+    pf.compareFits.compareFits(savePath + 'sims/fitDiffCurves/',
+                               peaksCSVPath, peaksCSVName)
     
     return
 
