@@ -49,7 +49,7 @@ def calcSims(CIFPath, CSVName, wl, maxTT, pw, savePath):
         simDiffList.append(pf.norm(ints))
     
     # store all simulations in data frame
-    simData = pd.dataFrame()
+    simData = pd.DataFrame()
     simData['Model'] = df['Model']
     simData['Sim Q'] = simQList
     simData['Sim Norm Intensity'] = simDiffList
