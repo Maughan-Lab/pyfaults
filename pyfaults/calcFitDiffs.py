@@ -32,7 +32,7 @@ def calcFitDiffs(simPath, diffPath):
             fitDiff = np.subtract(unfaultedDiff, faultedDiff)
             
             
-            saveName = fn[-1].split('_')
+            saveName = fn[-1].split('_exptDiff')
             with open(simPath + 'fitDiffCurves/' + saveName[0] + '_fitDiff.txt', 'w') as x:
                 for (d) in fitDiff:
                     x.write('{0} \n'.format(d))
