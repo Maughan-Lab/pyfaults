@@ -92,7 +92,7 @@ def compareFits(fitDiffPath, peaksPath, peaksName):
             elif diffArea[-1] == 0:
                 result = 'No Change'
                 
-            modelNames.append(saveName)
+            modelNames.append(saveName[0])
             peakNames.append(peaks['(hkl)'][p])
             peakQvals.append(peaks['Q'][p])
             fitResults.append(result)
