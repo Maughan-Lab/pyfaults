@@ -49,7 +49,7 @@ class Unitcell(object):
             print(layerList[i].layerName)
         return
                 
-    # generates CIF of layer -----------------------------------------------------
+    # generates CIF of unit cell -------------------------------------------------
     def toCif(self, path):
         from pyfaults import toCif
         toCif(self, path, 'Unitcell_' + self.name + '_CIF')

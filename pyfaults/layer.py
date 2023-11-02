@@ -101,7 +101,7 @@ class Layer(object):
 #---------------------------------------------------------------------------------
 # import layers from dataframe ---------------------------------------------------
 #---------------------------------------------------------------------------------
-def getLayers(df, lattice, layerNames, stackDir):
+def getLayers(df, lattice, layerNames):
     
     '''
     Parameters
@@ -112,8 +112,6 @@ def getLayers(df, lattice, layerNames, stackDir):
         Lattice : unit cell lattice parameters
     layerNames
         list (str) : layer names as documented in imported csv
-    stackDir
-        str : lattice vector orthogonal to layers
 
     Returns
     -------
@@ -122,23 +120,7 @@ def getLayers(df, lattice, layerNames, stackDir):
     from pyfaults.layerAtom import LayerAtom
     from pyfaults.lattice import Lattice
     
-    # converts Lattice so stacking direction is along c
-    if stackDir == 'a':
-        newLatt = Lattice(a=lattice.c, 
-                          b=lattice.b, 
-                          c=lattice.a,
-                          alpha=lattice.gamma, 
-                          beta=lattice.beta, 
-                          gamma=lattice.alpha)
-    elif stackDir == 'b':
-        newLatt = Lattice(a=lattice.a, 
-                          b=lattice.c, 
-                          c=lattice.b,
-                          alpha=lattice.alpha, 
-                          beta=lattice.gamma, 
-                          gamma=lattice.beta)
-    elif stackDir == 'c':
-        newLatt = Lattice(a=lattice.a, 
+    newLatt = Lattice(a=lattice.a, 
                           b=lattice.b, 
                           c=lattice.c,
                           alpha=lattice.alpha, 
@@ -150,13 +132,7 @@ def getLayers(df, lattice, layerNames, stackDir):
         alist = []
         for index, row in df.iterrows():
             if row['Layer'] == layerNames[i]:
-                # sets [x,y,z] coordinates relative to stacking direction
-                if stackDir == 'a':
-                    xyz = [row['z'], row['y'], row['x']]
-                elif stackDir == 'b':
-                    xyz = [row['x'], row['z'], row['y']]
-                elif stackDir == 'c':
-                    xyz = [row['x'], row['y'], row['z']]
+                xyz = [row['x'], row['y'], row['z']]
                     
                 # create new LayerAtom instance
                 newAtom = LayerAtom(layerNames[i], 
