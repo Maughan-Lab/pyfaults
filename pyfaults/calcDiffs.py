@@ -2,7 +2,7 @@
 # Author: Sinclair R. Combs
 ##################################################################################
 
-def calcDiffs(exptPath, exptName, simPath, CSVName, wl, maxTT):
+def calcDiffs(exptPath, exptName, simPath, wl, maxTT):
     '''
     Parameters
     ----------
@@ -12,8 +12,6 @@ def calcDiffs(exptPath, exptName, simPath, CSVName, wl, maxTT):
         str : file name of experimental data, including extension
     simPath
         str : simulation data file directory
-    CSVName
-        str : file name of metadata CSV generated from calcSims method
     wl
         float : instrument wavelength (A)
     maxTT
@@ -29,42 +27,30 @@ def calcDiffs(exptPath, exptName, simPath, CSVName, wl, maxTT):
             experimental XRD and simulated XRD
     '''
     import pyfaults as pf
-    import os
+    import os, glob
     import pandas as pd
     
     # create 'diffCurves' folder in file directory
     if os.path.exists(simPath + 'diffCurves/') == False:
         os.mkdir(simPath + 'diffCurves/')
-        
+    
+    # import experimental data
     exptFile = exptName.split('.')
     ext = '.' + exptFile[1]
-    
     exptQ, exptInts = pf.importExpt(exptPath, exptFile[0], wl, maxTT, ext=ext)
     
-    simDF = pd.read_csv(simPath + CSVName + '.csv')
-
-    exptDiffQ = []
-    exptDiffInts = []
-    # calculate experimental vs model difference for each supercell
-    for row in simDF.index:
-        name = simDF['Model'][row]
-        simQ = simDF['Sim Q'][row]
-        simInts = simDF['Sim Norm Intensity'][row]
-        diffQ, diffInts = pf.diffCurve.diffCurve(exptQ, simQ, exptInts, simInts)
-        exptDiffQ.append(diffQ)
-        exptDiffInts.append(diffInts)
-        # save difference data
-        with open(simPath + 'diffCurves/' + name + '_exptDiff.txt', 'w') as f:
-            for (q, ints) in zip(diffQ, diffInts):
-                f.write('{0} {1}\n'.format(q, ints))
-        f.close()
-        
-    # store difference curve values in data frame
-    diffData = pd.dataFrame()
-    diffData['Model'] = simDF['Model']
-    diffData['Expt vs. Model Diff Q'] = exptDiffQ
-    diffData['Expt vs. Model Diff Intensity'] = exptDiffInts
+    # import simulation data
+    sims = glob.glob(simPath + '/.txt')
     
-    diffData.to_csv(simPath + 'diffCurves/diffCurve_info.csv')
+    for f in sims:
+        # calculate expt vs model difference
+        q, ints = pf.importFile(simPath, f)
+        diffQ, diffInts = pf.diffcurve.diffCurve(exptQ, q, exptInts, ints)
+        
+        # save difference curve
+        with open(simPath + 'diffCurves/' + f + '_exptDiff.txt', 'w') as x:
+            for (q, ints) in zip(diffQ, diffInts):
+                x.write('{0} {1}\n'.format(q, ints))
+            x.close()
     
     return diffData
