@@ -16,15 +16,6 @@ def calcDiffs(exptPath, exptName, simPath, wl, maxTT):
         float : instrument wavelength (A)
     maxTT
         float : maximum 2theta value (degrees)
-
-    Returns
-    -------
-    diffData
-        DataFrame : tabulated diff curve data, includes the following as columns
-            'Model' -- unique identifier
-            'Expt vs. Model Diff Q' -- difference curve Q values
-            'Expt vs. Model Diff Intensity' -- intensity differences between
-            experimental XRD and simulated XRD
     '''
     import pyfaults as pf
     import os, glob
@@ -53,4 +44,4 @@ def calcDiffs(exptPath, exptName, simPath, wl, maxTT):
                 x.write('{0} {1}\n'.format(q, ints))
             x.close()
     
-    return diffData
+    return
