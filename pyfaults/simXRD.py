@@ -10,7 +10,7 @@ import os
 #---------------------------------------------------------------------------------
 # simulates XRD pattern, returns normalized intensity values ---------------------
 #---------------------------------------------------------------------------------
-def fullSim(path, cif, wl, tt_max, pw=None, bg=None, norm=False):
+def fullSim(path, cif, wl, tt_max, savePath, pw=None, bg=None):
     '''
     Parameters
     ----------
@@ -22,13 +22,12 @@ def fullSim(path, cif, wl, tt_max, pw=None, bg=None, norm=False):
         float : instrument wavelength (A)
     tt_max
         float : maximum 2theta (degrees)
+    savePath
+        str : file directory to save simulation data
     pw
         float (optional) : peak width (A^-1)
     bg
         float (optional) : average of normal background
-    norm
-        bool (optional) : set to True if intensities are to be normalized
-        The d
 
     Returns
     -------
@@ -58,7 +57,7 @@ def fullSim(path, cif, wl, tt_max, pw=None, bg=None, norm=False):
     norm_ints = norm(ints)
     
     # save simulation data
-    with open(path + cif + '_sim.txt', 'w') as f:
+    with open(savePath + cif + '_sim.txt', 'w') as f:
         for (q, norm_ints) in zip(q, norm_ints):
             f.write('{0} {1}\n'.format(q, norm_ints))
     f.close() 

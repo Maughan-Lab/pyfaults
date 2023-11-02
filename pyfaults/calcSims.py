@@ -48,8 +48,8 @@ def calcSims(CIFPath, CSVName, wl, maxTT, pw, savePath):
         simDiffList.append(pf.norm(ints))
         # save simulation data
         with open(savePath + 'sims/' + name + '_sim.txt', 'w') as f:
-            for i in range(len(q)):
-                f.write('{0} {1}\n'.format(q[i], ints[i]))
+            for (x, y) in zip(q, ints):
+                f.write('{0} {1}\n'.format(x, y))
         f.close()
     
     # store all simulations in data frame
