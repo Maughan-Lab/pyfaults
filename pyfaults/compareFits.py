@@ -51,6 +51,7 @@ def compareFits(fitDiffPath, peaksPath, peaksName):
         str : file name of peak info CSV generated from peakParams
     '''
     import pyfaults as pf
+    import pandas as pd
     import glob
     import numpy as np
     
