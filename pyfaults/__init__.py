@@ -18,10 +18,16 @@ from pyfaults.supercell import Supercell
 
 import pyfaults.layer
 import pyfaults.unitcell
+import pyfaults.genUnitCell
 import pyfaults.supercell
+import pyfaults.genSupercells
 import pyfaults.simXRD
+import pyfaults.calcSims
 import pyfaults.plotXRD
-import pyfaults.diffCalc
+import pyfaults.diffCurve
+import pyfaults.calcDiffs
+import pyfaults.calcFitDiffs
+import pyfaults.compareFits
 import pyfaults.autoSearch
 
 
@@ -147,7 +153,7 @@ def importCSV(path, fn):
 #---------------------------------------------------------------------------------
 # imports text file with XRD data ------------------------------------------------
 #---------------------------------------------------------------------------------
-def importFile(path, fn):
+def importFile(path, fn, ext=None):
     '''
     Parameters
     ----------
@@ -155,19 +161,25 @@ def importFile(path, fn):
         str : directory of text file
     fn
         str : file name
+    ext
+        str [optional] : file extension if not '.txt'
 
     Returns
     -------
     q : nparray
     ints : nparray
     '''
-    q, ints = np.loadtxt(path + fn + '.txt', unpack=True, dtype=float)
+    
+    if ext is None:
+        q, ints = np.loadtxt(path + fn + '.txt', unpack=True, dtype=float)
+    if ext is not None:
+        q, ints = np.loadtxt(path + fn + ext, unpack=True, dtype=float)
     return q, ints
     
 #---------------------------------------------------------------------------------
 # import experimental XRD and adjusts 2theta range to match simulated XRD --------
 #---------------------------------------------------------------------------------
-def importExpt(path, fn, wl, maxTT):
+def importExpt(path, fn, wl, maxTT, ext=None):
     '''
     Parameters
     ----------
@@ -179,6 +191,8 @@ def importExpt(path, fn, wl, maxTT):
         float : instrument wavelength (A)
     maxTT
         float : maximum 2theta value (degrees)
+    ext
+        str [optional] : file extension if not '.txt'
 
     Returns
     -------
@@ -188,7 +202,7 @@ def importExpt(path, fn, wl, maxTT):
         nparray : normalized intensity values
     '''
     # import experimental data
-    exptTT, exptInts = importFile(path, fn)
+    exptTT, exptInts = importFile(path, fn, ext=ext)
     
     # truncate 2theta range according to maxTT
     truncTT = []
@@ -254,8 +268,14 @@ assert Supercell
 
 assert pyfaults.layer
 assert pyfaults.unitcell
+assert pyfaults.genUnitCell
 assert pyfaults.supercell
+assert pyfaults.genSupercells
 assert pyfaults.simXRD
+assert pyfaults.calcSims
 assert pyfaults.plotXRD
 assert pyfaults.diffCalc
+assert pyfaults.calcDiffs
+assert pyfaults.calcFitDiffs
+assert pyfaults.compareFits
 assert pyfaults.autoSearch
