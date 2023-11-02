@@ -43,14 +43,10 @@ def calcSims(CIFPath, CSVName, wl, maxTT, pw, savePath):
     # simulate XRD pattern for each supercell in directory
     for i in df.index:
         name = df['Model'][i]
-        q, ints = pf.simXRD.fullSim(CIFPath, name, wl, maxTT, pw=pw)
+        q, ints = pf.simXRD.fullSim(CIFPath, name, wl, maxTT, pw=pw, 
+                                    savePath=savePath + 'sims/')
         simQList.append(q)
         simDiffList.append(pf.norm(ints))
-        # save simulation data
-        with open(savePath + 'sims/' + name + '_sim.txt', 'w') as f:
-            for (x, y) in zip(q, ints):
-                f.write('{0} {1}\n'.format(x, y))
-        f.close()
     
     # store all simulations in data frame
     simData = pd.dataFrame()
