@@ -5,8 +5,6 @@
 import copy as cp
 import numpy as np
 import random as r
-import pandas as pd
-import os
 
 ''' SUPERCELL CLASS '''
 #---------------------------------------------------------------------------------
