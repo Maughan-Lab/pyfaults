@@ -1,7 +1,6 @@
 ########################################################################
 # Author: Sinclair R. Combs
 ########################################################################
-import pandas as pd
 
 def peakParams(labels, Qvals, savePath, pw=None):
     '''
@@ -15,16 +14,9 @@ def peakParams(labels, Qvals, savePath, pw=None):
         str : file directory to export peak info as CSV
     pw
         float [optional] : broadened peak width (A^-1), default is 0.01
-
-    Returns
-    -------
-    peaks
-        DataFrame : tabulated peak data, includes the following as columns
-            '(hkl)' -- (hkl) plane corresponding to reflection
-            'Q' -- Q indexes (A^-1)
-            'Q min' -- lower Q limit of broadened peak
-            'Q max' -- upper Q limit of broadened peak
     '''
+    import pandas as pd
+    
     peaks = pd.DataFrame()
     if pw is None:
         pw = 0.01
@@ -33,8 +25,8 @@ def peakParams(labels, Qvals, savePath, pw=None):
     Q_max = []
     # determine minimum and maximum Q for each peak
     for i in range(len(labels)):
-        qMin = float('%.3f'%(peakQ[i] - (pw/2)))
-        qMax = float('%.3f'%(peakQ[i] + (pw/2)))
+        qMin = float('%.3f'%(Qvals[i] - (pw/2)))
+        qMax = float('%.3f'%(Qvals[i] + (pw/2)))
         Q_min.append(qMin)
         Q_max.append(qMax)
         
@@ -43,9 +35,9 @@ def peakParams(labels, Qvals, savePath, pw=None):
     peaks['Q min'] = Q_min
     peaks['Q max'] = Q_max
     
-    peaks.to_csv(savePath + 'peak_info.csv')
+    peaks.to_csv(savePath + 'peak_info.csv', index=False)
     
-    return peaks
+    return
 
 def compareFits(fitDiffPath, peaksPath, peaksName):
     '''
