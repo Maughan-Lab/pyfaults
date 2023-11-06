@@ -153,7 +153,7 @@ def importCSV(path, fn):
 #---------------------------------------------------------------------------------
 # imports text file with XRD data ------------------------------------------------
 #---------------------------------------------------------------------------------
-def importFile(path, fn, ext=None):
+def importFile(path, fn, ext=None, norm=True):
     '''
     Parameters
     ----------
@@ -163,6 +163,8 @@ def importFile(path, fn, ext=None):
         str : file name
     ext
         str [optional] : file extension if not '.txt'
+    norm
+        bool [optional] : normalizes imported y data if True (default)
 
     Returns
     -------

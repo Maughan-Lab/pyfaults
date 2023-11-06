@@ -62,4 +62,4 @@ def fullSim(path, cif, wl, tt_max, savePath, pw=None, bg=None):
             f.write('{0} {1}\n'.format(q, norm_ints))
     f.close() 
     
-    return q, norm_ints  
+    return q, norm_ints 

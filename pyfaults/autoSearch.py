@@ -2,14 +2,12 @@
 # Author: Sinclair R. Combs
 ########################################################################
 
-import numpy as np
-import pandas as pd
 
 #-----------------------------------------------------------------------
 # automated parameter grid searching -----------------------------------
 #-----------------------------------------------------------------------
 def autoSearch(savePath, unitcell, nStacks, fltLayer, probList, sVecList,
-               wl, maxTT, simPW, exptPath, exptName, peaksCSVPath, peakCSVName):
+               wl, maxTT, simPW, exptPath, exptName, peaksCSVPath, peaksCSVName):
     
     import pyfaults as pf
     
@@ -35,7 +33,7 @@ def autoSearch(savePath, unitcell, nStacks, fltLayer, probList, sVecList,
     pf.compareFits.compareFits(savePath + 'sims/fitDiffCurves/',
                                peaksCSVPath, peaksCSVName)
     
-    return
+    return supercells
 
 
 
