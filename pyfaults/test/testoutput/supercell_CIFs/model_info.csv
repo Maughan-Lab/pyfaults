@@ -1,0 +1,6 @@
+,Model,Stacking Vector,Stacking Probability,S_x,S_y,S_z,P
+0,Unfaulted,None,None,0.0,0.0,0,0.0
+1,S1_P10,"$\vec{S}_1 = \left[ 0.25, 0, z \right]$",$P = 10 \%$,0.25,0.0,0,0.1
+2,S2_P10,"$\vec{S}_2 = \left[ 0, 0.25, z \right]$",$P = 10 \%$,0.0,0.25,0,0.1
+3,S1_P20,"$\vec{S}_1 = \left[ 0.25, 0, z \right]$",$P = 20 \%$,0.25,0.0,0,0.2
+4,S2_P20,"$\vec{S}_2 = \left[ 0, 0.25, z \right]$",$P = 20 \%$,0.0,0.25,0,0.2
