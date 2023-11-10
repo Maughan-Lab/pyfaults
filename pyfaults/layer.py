@@ -89,7 +89,7 @@ class Layer(object):
                               pAtom.element, 
                               newPos, 
                               pAtom.occupancy,
-                              pAtom.Biso,
+                              pAtom.biso,
                               self.lattice)
             childAtoms.append(cAtom)
             

@@ -46,10 +46,10 @@ class LayerAtom(object):
                  lambda self, val: self.setParam(occupancy=val),
                  doc='float : site occupancy, values from 0 to 1')
         
-    Biso =\
+    biso =\
         property(lambda self: self._Biso,
-                 lambda self, val: self.setParam(Biso=val),
-                 doc='float : atomic parameter displacement Biso')
+                 lambda self, val: self.setParam(biso=val),
+                 doc='float : atomic parameter displacement B_iso')
         
     lattice =\
         property(lambda self: self._lattice,
@@ -57,7 +57,7 @@ class LayerAtom(object):
                  doc='Lattice : unit cell lattice parameters')
     
     # creates instance of LayerAtom object ---------------------------------------
-    def __init__(self, layerName, atomLabel, element, xyz, occupancy, Biso, lattice):
+    def __init__(self, layerName, atomLabel, element, xyz, occupancy, biso, lattice):
         # initialize parameters
         self._layerName = None
         self._atomLabel = None
@@ -68,13 +68,13 @@ class LayerAtom(object):
         self._z = None
         self._lattice = None
         self._occupancy = None
-        self._Biso
-        self.setParam(layerName, atomLabel, element, xyz, lattice, occupancy, Biso)
+        self._biso
+        self.setParam(layerName, atomLabel, element, xyz, lattice, occupancy, biso)
         return
     
     # sets parameters ------------------------------------------------------------
     def setParam(self, layerName=None, atomLabel=None, element=None, xyz=None, 
-                 lattice=None, occupancy=None, Biso=None):
+                 lattice=None, occupancy=None, biso=None):
         if layerName is not None:
             self._layerName = layerName
         if atomLabel is not None:
@@ -90,7 +90,7 @@ class LayerAtom(object):
             self._lattice = lattice
         if occupancy is not None:
             self._occupancy = occupancy
-        if Biso is not None:
-            self._Biso = Biso
+        if biso is not None:
+            self._biso = biso
         
         return
