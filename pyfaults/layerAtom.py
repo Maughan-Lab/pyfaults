@@ -68,7 +68,7 @@ class LayerAtom(object):
         self._z = None
         self._lattice = None
         self._occupancy = None
-        self._biso
+        self._biso = None
         self.setParam(layerName, atomLabel, element, xyz, lattice, occupancy, biso)
         return
     
