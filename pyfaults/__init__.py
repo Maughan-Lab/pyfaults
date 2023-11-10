@@ -93,9 +93,9 @@ def toCif(cell, path, fn):
             y = a.y
             z = a.z
             occ = a.occupancy
-            Biso = a.Biso
+            biso = a.biso
             aline = ' %-5s %-3s %11.6f %11.6f %11.6f %11.6f %-5s %.4f' % (
-                label, elem, x, y, z, Biso, 'Biso', occ)
+                label, elem, x, y, z, biso, 'Biso', occ)
             lines.append(aline)
 
     with open(path + fn + '.cif', 'w') as cif:
