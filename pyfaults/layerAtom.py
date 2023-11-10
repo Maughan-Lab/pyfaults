@@ -47,7 +47,7 @@ class LayerAtom(object):
                  doc='float : site occupancy, values from 0 to 1')
         
     biso =\
-        property(lambda self: self._Biso,
+        property(lambda self: self._biso,
                  lambda self, val: self.setParam(biso=val),
                  doc='float : atomic parameter displacement B_iso')
         
