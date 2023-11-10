@@ -88,7 +88,8 @@ class Layer(object):
                               splitLabel[0], 
                               pAtom.element, 
                               newPos, 
-                              pAtom.occupancy, 
+                              pAtom.occupancy,
+                              pAtom.Biso,
                               self.lattice)
             childAtoms.append(cAtom)
             
@@ -139,7 +140,8 @@ def getLayers(df, lattice, layerNames):
                                     row['Atom'], 
                                     row['Element'], 
                                     xyz, 
-                                    row['Occupancy'], 
+                                    row['Occupancy'],
+                                    row['Biso'],
                                     newLatt)
                 alist.append(newAtom)
                 

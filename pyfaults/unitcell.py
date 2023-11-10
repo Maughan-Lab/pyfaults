@@ -52,4 +52,4 @@ class Unitcell(object):
     # generates CIF of unit cell -------------------------------------------------
     def toCif(self, path):
         from pyfaults import toCif
-        toCif(self, path, 'Unitcell_' + self.name + '_CIF')
+        toCif(self, path, self.name + '_unitcell')
