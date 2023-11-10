@@ -65,6 +65,13 @@ def toCif(cell, path, fn):
         '%-31s %.6g' % ('_cell_angle_gamma', cell.lattice.gamma),
         ''])
     
+    # symmetry operations
+    lines.extend([
+        'loop_',
+        '_space_group_symop_operation_xyz',
+        '  \'x, y, z\' ',
+        ''])
+    
     # loop info
     lines.extend([
         'loop_',
@@ -73,7 +80,7 @@ def toCif(cell, path, fn):
         '  _atom_site_fract_x',
         '  _atom_site_fract_y',
         '  _atom_site_fract_z',
-        '  _atom_site_U_iso_or_equiv',
+        '  _atom_site_B_iso_or_equiv',
         '  _atom_site_adp_type',
         '  _atom_site_occupancy' ])
 
@@ -86,8 +93,9 @@ def toCif(cell, path, fn):
             y = a.y
             z = a.z
             occ = a.occupancy
+            Biso = a.Biso
             aline = ' %-5s %-3s %11.6f %11.6f %11.6f %11.6f %-5s %.4f' % (
-                label, elem, x, y, z, 2.0, 'Uiso', occ)
+                label, elem, x, y, z, Biso, 'Biso', occ)
             lines.append(aline)
 
     with open(path + fn + '.cif', 'w') as cif:
