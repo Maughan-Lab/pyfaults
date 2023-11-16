@@ -2,6 +2,13 @@
 # Author: Sinclair R. Combs
 ##################################################################################
 
+import os
+import glob
+import numpy as np
+
+#---------------------------------------------------------------------------------
+# calculates difference of fit residuals for all models in directory -------------
+#---------------------------------------------------------------------------------
 def calcFitDiffs(simPath, diffPath):
     '''
     Parameters
@@ -12,8 +19,6 @@ def calcFitDiffs(simPath, diffPath):
         str : difference curve data file directory
     '''
     import pyfaults as pf
-    import os, glob
-    import numpy as np
     
     # create 'fitDiffCurves' folder in file directory
     if os.path.exists(simPath + 'fitDiffCurves/') == False:
@@ -27,11 +32,12 @@ def calcFitDiffs(simPath, diffPath):
         removeExt = f.split('.')
         fn = removeExt[0].split('\\')
         
+        # calculate difference of fit residuals
         if fn[-1] != 'Unfaulted_sim_exptDiff':
             faultedDiffQ, faultedDiff = pf.importFile(diffPath, fn[-1])
             fitDiff = np.subtract(unfaultedDiff, faultedDiff)
             
-            
+            # save calculated curve
             saveName = fn[-1].split('_exptDiff')
             with open(simPath + 'fitDiffCurves/' + saveName[0] + '_fitDiff.txt', 'w') as x:
                 for (q, ints) in zip(faultedDiffQ, fitDiff):

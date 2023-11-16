@@ -2,8 +2,10 @@
 # Author: Sinclair R. Combs
 ##################################################################################
 
-def genUnitCell(CSVPath, CSVName, lattParams, parentLyrNames,
-                childLyrs=None):
+#---------------------------------------------------------------------------------
+# generates unit cell from CSV of atomic parameters ------------------------------
+#---------------------------------------------------------------------------------
+def genUnitCell(CSVPath, CSVName, lattParams, parentLyrNames, childLyrs=None):
     '''
     Parameters
     ----------

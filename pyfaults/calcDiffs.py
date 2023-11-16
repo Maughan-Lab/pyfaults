@@ -2,6 +2,12 @@
 # Author: Sinclair R. Combs
 ##################################################################################
 
+import os
+import glob
+
+#---------------------------------------------------------------------------------
+# calculates observed vs model fit residuals for all PXRD simulations in directory
+#---------------------------------------------------------------------------------
 def calcDiffs(exptPath, exptName, simPath, wl, maxTT):
     '''
     Parameters
@@ -18,7 +24,6 @@ def calcDiffs(exptPath, exptName, simPath, wl, maxTT):
         float : maximum 2theta value (degrees)
     '''
     import pyfaults as pf
-    import os, glob
     
     # create 'diffCurves' folder in file directory
     if os.path.exists(simPath + 'diffCurves/') == False:

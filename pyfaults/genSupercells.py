@@ -2,6 +2,12 @@
 # Author: Sinclair R. Combs
 ##################################################################################
 
+import os
+import pandas as pd
+
+#---------------------------------------------------------------------------------
+# generates all supercell models within a given parameter space ------------------
+#---------------------------------------------------------------------------------
 def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
     '''
     Parameters
@@ -24,16 +30,14 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList, path):
     df
         DataFrame : tabulated supercell data, includes the following as columns
             'Model' -- unique identifier
-            'Stacking Vector' -- stacking vector in string format
-            'Stacking Probability' -- stacking fault probability in str format
+            'Stacking Vector' -- stacking vector in string format (TeX math mode)
+            'Stacking Probability' -- stacking fault probability in str format (TeX math mode)
             'S_x' -- x-component of stacking vector
             'S_y' -- y-component of stacking vector
             'S_z' -- z-component of stacking vector
             'P' -- fault probability (0 to 1)
     '''
     import pyfaults as pf
-    import os
-    import pandas as pd
     
     # create 'supercell_CIFs' folder in file directory
     if os.path.exists(path + 'supercell_CIFs/') == False:

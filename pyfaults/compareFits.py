@@ -1,7 +1,14 @@
-########################################################################
+##################################################################################
 # Author: Sinclair R. Combs
-########################################################################
+##################################################################################
 
+import pandas as pd
+import glob
+import numpy as np
+
+#---------------------------------------------------------------------------------
+# generates a CSV file with information about broadened reflections --------------
+#---------------------------------------------------------------------------------
 def peakParams(labels, Qvals, savePath, pw=None):
     '''
     Parameters
@@ -15,7 +22,6 @@ def peakParams(labels, Qvals, savePath, pw=None):
     pw
         float [optional] : broadened peak width (A^-1), default is 0.01
     '''
-    import pandas as pd
     
     peaks = pd.DataFrame()
     if pw is None:
@@ -39,6 +45,9 @@ def peakParams(labels, Qvals, savePath, pw=None):
     
     return
 
+#---------------------------------------------------------------------------------
+# calculates area under difference of fit residuals curve to compare models ------
+#---------------------------------------------------------------------------------
 def compareFits(fitDiffPath, peaksPath, peaksName):
     '''
     Parameters
@@ -49,11 +58,18 @@ def compareFits(fitDiffPath, peaksPath, peaksName):
         str : peak info file directory
     peaksName
         str : file name of peak info CSV generated from peakParams
+        
+    Returns
+    -------
+    compareFits
+        DataFrame : tabulated data of fit comparisons, includes the following as columns
+            'Model' -- supercell model
+            '(hkl)' -- broadened reflection
+            'Peak Index (Q)' -- Q (A^-1) index for reflection
+            'Faulted Model Fit' -- fit comparison of faulted model to unfaulted model, 
+                either 'improved', 'worsened', or 'no change'
     '''
     import pyfaults as pf
-    import pandas as pd
-    import glob
-    import numpy as np
     
     peaks = pd.read_csv(peaksPath + peaksName + '.csv')
     

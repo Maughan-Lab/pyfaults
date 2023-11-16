@@ -7,7 +7,7 @@ import numpy as np
 #---------------------------------------------------------------------------------
 # calculates difference curve ----------------------------------------------------
 #---------------------------------------------------------------------------------
-def diffCurve(q1, q2, ints1, ints2): 
+def diffCurve(q1, q2, ints1, ints2, save=False, savePath=None, saveName=None): 
     '''
     Parameters
     ----------
@@ -19,6 +19,13 @@ def diffCurve(q1, q2, ints1, ints2):
         nparray : dataset 1 intensity values
     ints2
         nparray : dataset 2 intensity values
+    save
+        bool (optional) : saves text file with difference curve if True;
+        default is False
+    savePath
+        str : file directory to save text file
+    saveName
+        str : file name to save text file
 
     Returns
     -------
@@ -36,25 +43,11 @@ def diffCurve(q1, q2, ints1, ints2):
                 diff_ints_list.append(ints1[i]-ints2[j])
     diff_q = np.array(diff_q_list)
     diff_ints = np.array(diff_ints_list)
+    
+    if save==True:
+        with open(savePath + saveName + '.txt', 'w') as f:
+            for (q, ints) in zip(diff_q, diff_ints):
+                f.write('{0} {1}\n'.format(q, ints))
+        f.close()
+        
     return diff_q, diff_ints
-
-#---------------------------------------------------------------------------------
-# saves difference curve as text file --------------------------------------------
-#---------------------------------------------------------------------------------
-def saveDiffCurve(q, ints, path, fn):
-    '''
-    Parameters
-    ----------
-    q
-        nparray : Q values (A^-1)
-    ints
-        nparray : intensity difference values
-    path
-        str : file save directory
-    fn
-        str : File name
-    '''
-    with open(path + fn + '.txt', 'w') as f:
-        for (q, ints) in zip(q, ints):
-            f.write('{0} {1}\n'.format(q, ints))
-    f.close()

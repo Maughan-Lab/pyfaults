@@ -2,6 +2,12 @@
 # Author: Sinclair R. Combs
 ##################################################################################
 
+import os
+import pandas as pd
+
+#---------------------------------------------------------------------------------
+# simulates PXRD patterns for all supercells in  ---------------------------------
+#---------------------------------------------------------------------------------
 def calcSims(CIFPath, CSVName, wl, maxTT, pw, savePath):
     '''
     Parameters
@@ -20,8 +26,6 @@ def calcSims(CIFPath, CSVName, wl, maxTT, pw, savePath):
         str : file directory to save 'sims' folder
     '''
     import pyfaults as pf
-    import os
-    import pandas as pd
     
     # create 'sims' folder in file directory
     if os.path.exists(savePath + 'sims/') == False:
@@ -32,7 +36,6 @@ def calcSims(CIFPath, CSVName, wl, maxTT, pw, savePath):
     # simulate XRD pattern for each supercell in directory
     for i in df.index:
         name = df['Model'][i]
-        q, ints = pf.simXRD.fullSim(CIFPath, name, wl, maxTT, pw=pw, 
-                                    savePath=savePath + 'sims/')
+        q, ints = pf.simXRD.fullSim(CIFPath, name, wl, maxTT, pw=pw, savePath=savePath + 'sims/')
     
     return

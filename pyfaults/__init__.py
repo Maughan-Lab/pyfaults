@@ -1,5 +1,4 @@
 ##################################################################################
-# pyfaults
 # Author: Sinclair R. Combs
 ##################################################################################
 
@@ -94,8 +93,7 @@ def toCif(cell, path, fn):
             z = a.z
             occ = a.occupancy
             biso = a.biso
-            aline = ' %-5s %-3s %11.6f %11.6f %11.6f %11.6f %-5s %.4f' % (
-                label, elem, x, y, z, biso, 'Biso', occ)
+            aline = ' %-5s %-3s %11.6f %11.6f %11.6f %11.6f %-5s %.4f' % (label, elem, x, y, z, biso, 'Biso', occ)
             lines.append(aline)
 
     with open(path + fn + '.cif', 'w') as cif:
