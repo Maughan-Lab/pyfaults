@@ -9,10 +9,10 @@ from pyfaults.unitcell import Unitcell
 class TestSupercell(unittest.TestCase):
     
     latt = Lattice(1.0, 1.0, 1.0, 90, 90, 90)
-    Sc1 = LayerAtom('A', 'Sc1', 'Sc3+', [0,0,0], 1.0, latt)
-    Sc2 = LayerAtom('A', 'Sc2', 'Sc3+', [0.5,0.5,0], 1.0, latt)
-    Li1 = LayerAtom('B', 'Li1', 'Li+', [0.5,0,0.5], 1.0, latt)
-    Li2 = LayerAtom('B', 'Li2', 'Li+', [0,0.5,0.5], 1.0, latt)
+    Sc1 = LayerAtom('A', 'Sc1', 'Sc3+', [0,0,0], 1.0, 1.5, latt)
+    Sc2 = LayerAtom('A', 'Sc2', 'Sc3+', [0.5,0.5,0], 1.0, 1.5, latt)
+    Li1 = LayerAtom('B', 'Li1', 'Li+', [0.5,0,0.5], 1.0, 1.5, latt)
+    Li2 = LayerAtom('B', 'Li2', 'Li+', [0,0.5,0.5], 1.0, 1.5, latt)
     
     A = Layer([Sc1, Sc2], latt, 'A')
     B = Layer([Li1, Li2], latt, 'B')

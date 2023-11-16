@@ -6,7 +6,7 @@ from pyfaults.lattice import Lattice
 class TestLayer(unittest.TestCase):
     
     latt = Lattice(1.0, 2.0, 3.0, 80, 90, 100)
-    a = LayerAtom('A', 'a', 'H+', [0,0,0], 1.0, latt)
+    a = LayerAtom('A', 'a', 'H+', [0,0,0], 1.0, 1.5, latt)
     lyr = Layer([a], latt, 'A')
     lyr2 = lyr.genChildLayer('A2', [0.5, 0.5, 0.5])
     
@@ -33,7 +33,7 @@ class TestLayer(unittest.TestCase):
         from pyfaults import importCSV
 
         data = importCSV('./testdata/', 'testGetLayers')
-        self.assertIsNotNone(getLayers(data, self.latt, ['A', 'B'], 'c'))
+        self.assertIsNotNone(getLayers(data, self.latt, ['A', 'B']))
 
 if __name__=='__main__':
     unittest.main()

@@ -6,7 +6,7 @@ from pyfaults.lattice import Lattice
 class TestLayerAtom(unittest.TestCase):
     
     latt = Lattice(1.0, 1.0, 1.0, 90, 90, 90)
-    a = LayerAtom('A', 'H1', 'H+', [0,0,0], 1.0, latt)
+    a = LayerAtom('A', 'H1', 'H+', [0,0,0], 1.0, 1.5, latt)
     
     def test__init__(self):
         self.assertIsNotNone(self.a.layerName)
@@ -14,6 +14,7 @@ class TestLayerAtom(unittest.TestCase):
         self.assertIsNotNone(self.a.element)
         self.assertIsNotNone(self.a.xyz)
         self.assertIsNotNone(self.a.occupancy)
+        self.assertIsNotNone(self.a.biso)
         self.assertIsNotNone(self.a.lattice)
         
     def test_setParam(self):
@@ -22,6 +23,7 @@ class TestLayerAtom(unittest.TestCase):
         self.assertEqual('H+', self.a.element)
         self.assertEqual([0,0,0], self.a.xyz)
         self.assertEqual(1.0, self.a.occupancy)
+        self.assertEqual(1.5, self.a.biso)
         self.assertEqual(self.latt, self.a.lattice)
         
 if __name__=='__main__':

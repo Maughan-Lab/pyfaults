@@ -8,7 +8,7 @@ from pyfaults import toCif
 class TestUnitcell(unittest.TestCase):
     
     latt = Lattice(1.0, 1.0, 1.0, 90, 90, 90)
-    a = LayerAtom('A', 'H1', 'H+', [0,0,0], 1.0, latt)
+    a = LayerAtom('A', 'H1', 'H+', [0,0,0], 1.0, 1.5, latt)
     lyr1 = Layer([a], latt, 'A')
     lyr2 = lyr1.genChildLayer('A2', [0.5, 0.5, 0.5])
     
