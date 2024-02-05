@@ -7,9 +7,7 @@ Installation:
 ```python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git```
 
 
-Requirements: 
-
-Python 2.7+/3+ with packages: numpy, pandas, Dans_Diffraction, matplotlib
+Requirements: Python 2.7+/3+ with packages: numpy, pandas, Dans_Diffraction, matplotlib
 
 
 GitHub Repo: https://github.com/Maughan-Lab/pyfaults
