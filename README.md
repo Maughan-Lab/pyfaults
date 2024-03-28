@@ -12,16 +12,9 @@ Requirements: Python 2.7+/3+ with packages: numpy, pandas, Dans_Diffraction, mat
 
 GitHub Repo: https://github.com/Maughan-Lab/pyfaults
 
-Citation DOI: TBD
+Copyright 2023 Colorado School of Mines
 
-By Sinclair Combs
-
-Colorado School of Mines
-
-National Renewable Energy Laboratory
-
-2023
-
+Author: Sinclair Combs
 
 Version 1.1.4
 
