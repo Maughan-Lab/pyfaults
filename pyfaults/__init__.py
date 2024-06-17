@@ -274,16 +274,16 @@ assert Layer
 assert Unitcell
 assert Supercell
 
-assert pyfaults.layer
-assert pyfaults.unitcell
-assert pyfaults.genUnitCell
-assert pyfaults.supercell
-assert pyfaults.genSupercells
-assert pyfaults.simXRD
-assert pyfaults.calcSims
-assert pyfaults.plotXRD
-assert pyfaults.diffCurve
-assert pyfaults.calcDiffs
-assert pyfaults.calcFitDiffs
-assert pyfaults.compareFits
-assert pyfaults.autoSearch
+# assert pyfaults.layer
+# assert pyfaults.unitcell
+# assert pyfaults.genUnitCell
+# assert pyfaults.supercell
+# assert pyfaults.genSupercells
+# assert pyfaults.simXRD
+# assert pyfaults.calcSims
+# assert pyfaults.plotXRD
+# assert pyfaults.diffCurve
+# assert pyfaults.calcDiffs
+# assert pyfaults.calcFitDiffs
+# assert pyfaults.compareFits
+# assert pyfaults.autoSearch
