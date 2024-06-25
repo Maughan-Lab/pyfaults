@@ -134,7 +134,14 @@ def norm(ints):
     -------
     norm_ints : nparray
     '''
-    norm_ints = (ints / np.max(ints))
+    norm_ints = []
+    for i in ints:
+        if i != 0:
+            norm_ints.append(i / np.max(ints))
+        elif i == 0:
+            norm_ints.append(0)
+            
+    norm_ints = np.array(norm_ints)
     return norm_ints
 
 #---------------------------------------------------------------------------------
@@ -274,16 +281,16 @@ assert Layer
 assert Unitcell
 assert Supercell
 
-# assert pyfaults.layer
-# assert pyfaults.unitcell
-# assert pyfaults.genUnitCell
-# assert pyfaults.supercell
-# assert pyfaults.genSupercells
-# assert pyfaults.simXRD
-# assert pyfaults.calcSims
-# assert pyfaults.plotXRD
-# assert pyfaults.diffCurve
-# assert pyfaults.calcDiffs
-# assert pyfaults.calcFitDiffs
-# assert pyfaults.compareFits
-# assert pyfaults.autoSearch
+assert pyfaults.layer
+assert pyfaults.unitcell
+assert pyfaults.genUnitCell
+assert pyfaults.supercell
+assert pyfaults.genSupercells
+assert pyfaults.simXRD
+assert pyfaults.calcSims
+assert pyfaults.plotXRD
+assert pyfaults.diffCurve
+assert pyfaults.calcDiffs
+assert pyfaults.calcFitDiffs
+assert pyfaults.compareFits
+assert pyfaults.autoSearch
