@@ -237,10 +237,3 @@ assert LayerAtom
 assert Layer
 assert Unitcell
 assert Supercell
-
-assert pyfaults.layer
-assert pyfaults.unitcell
-assert pyfaults.genUnitCell
-assert pyfaults.supercell
-assert pyfaults.genSupercells
-assert pyfaults.simXRD
