@@ -27,14 +27,21 @@ def simulate(filePath):
             structName = inputFile[i].split(':')[1]
             structName = structName.replace('\n', '')
         
-        # type of stacking fault system: displacement, transition matrix, or intercalation
+        # type of stacking fault system: Displacement, Transition Matrix, or Intercalation
         if inputFile[i].startswith('TYPE'):
             simType = inputFile[i].split(':')[1]
+            simType = simType.replace('\n', '')
+            
+        # grid search function: None, Step, or Random
+        if inputFile[i].startswith('GRID SEARCH'):
+            gridSearch = inputFile[i].split(':')[1]
+            gridSearch = gridSearch.replace('\n', '')
         
         # lattice parameters
         if inputFile[i].startswith('LATTICE'):
             removeVar = inputFile[i].split(':')[1]
             strLatt= removeVar.split(',')
+            strLatt[5] = strLatt[5].replace('\n', '')
             latt = pf.lattice.Lattice(a=float(strLatt[0]), 
                                       b=float(strLatt[1]), 
                                       c=float(strLatt[2]), 
@@ -45,6 +52,7 @@ def simulate(filePath):
         # number of unique layers defined
         if inputFile[i].startswith('NUM LAYERS'):
             numLyrs = inputFile[i].split(':')[1]
+            numLyrs = numLyrs.replace('\n', '')
       
     # generates layer name list (L1, L2, L3, etc.)
     for i in range(int(numLyrs)):
@@ -57,6 +65,7 @@ def simulate(filePath):
             if inputFile[i].startswith(l):
                 removeVar = inputFile[i].split(':')[1]
                 atomNames = removeVar.split(',')
+                atomNames[-1] = atomNames[-1].replace('\n', '')
                 lyrDict[l] = atomNames
     
     # generates dictionary of atomic parameters
@@ -67,6 +76,7 @@ def simulate(filePath):
                 if inputFile[i].startswith(a):
                     removeVar = inputFile[i].split(':')[1]
                     atom = removeVar.split(',')
+                    atom[-1] = atom[-1].replace('\n', '')
                     atomDict[a] = atom
     
     # generates LayerAtom and Layer objects
@@ -129,6 +139,77 @@ def simulate(filePath):
     # creates folder to store supercell CIFs
     if os.path.exists('./supercells/') == False:
             os.mkdir('./supercells/')
+            
+    #-----------------------------------------------------------------------------
+    gsProb = []
+    gsSVec = []
+    
+    if gridSearch.startswith('Step'):
+        pRange = []
+        sxRange = []
+        syRange = []
+        
+        for i in range(len(inputFile)):
+            if inputFile[i].startswith('P RANGE'):
+                removeVar = inputFile[i].split(':')[1]
+                pList = removeVar.split(',')
+                pList[-1] = pList[-1].replace('\n', '')
+                for j in pList:
+                    pRange.append(float(j))
+                
+                
+            if inputFile[i].startswith('SX RANGE'):
+                removeVar = inputFile[i].split(':')[1]
+                sxList = removeVar.split(',')
+                sxList[-1] = sxList[-1].replace('\n', '')
+                for j in sxList:
+                    sxRange.append(float(j))
+                
+            if inputFile[i].startswith('SY RANGE'):
+                removeVar = inputFile[i].split(':')[1]
+                syList = removeVar.split(',')
+                syList[-1] = syList[-1].replace('\n', '')
+                for j in syList:
+                    syRange.append(float(j))
+        
+        gsProb, gsSVec = pf.gridSearch.stepGridSearch(pRange, sxRange, syRange)
+        
+    if gridSearch.startswith('Random'):
+        pRange = []
+        sxRange = []
+        syRange = []
+        numVec = 0
+        
+        for i in range(len(inputFile)):
+            if inputFile[i].startswith('P RANGE'):
+                removeVar = inputFile[i].split(':')[1]
+                pList = removeVar.split(',')
+                pList[-1] = pList[-1].replace('\n', '')
+                for j in pList:
+                    pRange.append(float(j))
+                
+                
+            if inputFile[i].startswith('SX RANGE'):
+                removeVar = inputFile[i].split(':')[1]
+                sxList = removeVar.split(',')
+                sxList[-1] = sxList[-1].replace('\n', '')
+                for j in sxList:
+                    sxRange.append(float(j))
+                
+            if inputFile[i].startswith('SY RANGE'):
+                removeVar = inputFile[i].split(':')[1]
+                syList = removeVar.split(',')
+                syList[-1] = syList[-1].replace('\n', '')
+                for j in syList:
+                    syRange.append(float(j))
+                    
+            if inputFile[i].startswith('NUM VECTORS'):
+                numVec = inputFile[i].split(':')[1]
+                numVec = numVec.replace('\n', '')
+        
+        gsProb, gsSVec = pf.gridSearch.randGridSearch(pRange, sxRange, syRange, numVec)
+    
+    #-----------------------------------------------------------------------------
     
     # displacement type SFs
     if simType.startswith('Displacement'):
@@ -137,26 +218,43 @@ def simulate(filePath):
             # name of faulted layer
             if inputFile[i].startswith('FAULT LAYER:'):
                 fltLyr = inputFile[i].split(':')[1]
+                fltLyr = fltLyr.replace('\n', '')
             
             # number of stacks
             if inputFile[i].startswith('N:'):
                 numStacks = int(inputFile[i].split(':')[1])
             
             # list of fault probabilities to simulate
-            if inputFile[i].startswith('PROBABILITY:'):
-                removeVar = inputFile[i].split(':')[1]
-                pList = removeVar.split(',')
-                for j in pList:
-                    prob.append(float(j))
+            if gridSearch.startswith('None'):
+                if inputFile[i].startswith('PROBABILITY:'):
+                    removeVar = inputFile[i].split(':')[1]
+                    pList = removeVar.split(',')
+                    for j in pList:
+                        prob.append(float(j))
+            
+            if gridSearch.startswith('Step'):
+                prob = gsProb
+            if gridSearch.startswith('Random'):
+                prob = gsProb
             
             # list of displacement vectors to simulate
-            if inputFile[i].startswith('VECTOR:'):
-                removeVar = inputFile[i].split(':')[1]
-                sList = removeVar.split(';')
-                for j in sList:
-                    j.replace('[', '')
-                    j.replace(']', '')
-                    sVec.append(np.array(j))
+            if gridSearch.startswith('None'):
+                if inputFile[i].startswith('VECTOR:'):
+                    removeVar = inputFile[i].split(':')[1]
+                    sList = removeVar.split(';')
+                    sList[-1] = sList[-1].replace('\n', '')
+                    for vec in sList:
+                        vec = vec[1:-1].split(',')
+                        arrayVec = []
+                        for j in vec:
+                            j = float(j)
+                            arrayVec.append(j)
+                            sVec.append(arrayVec)
+                            
+            if gridSearch.startswith('Step'):
+                sVec = gsSVec
+            if gridSearch.startswith('Random'):
+                sVec = gsSVec
         
         # generates faultless supercell
         noFlt = pf.supercell.Supercell(unitcell, numStacks)
@@ -181,7 +279,16 @@ def simulate(filePath):
     #-----------------------------------------------------------------------------
     
     # intercalation type SFs
-    # if simType.startswith('Intercalation'):
+    if simType.startswith('Intercalation'):
+        
+        zAdj = 0
+        for i in range(len(inputFile)):
+            
+            if inputFile[i].startswith('Z ADJ:'):
+                zAdj = inputFile[i].split(':')[1]
+                
+            if inputFile[i].startswith('INTLAYER:'):
+                intLayer = inputFile[i].split(':')[1]
     
     #-----------------------------------------------------------------------------
                 
