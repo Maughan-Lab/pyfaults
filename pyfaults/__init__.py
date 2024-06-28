@@ -20,6 +20,10 @@ import pyfaults.unitCellFromCSV
 import pyfaults.supercell
 import pyfaults.genSupercells
 import pyfaults.simXRD
+import pyfaults.analyze
+import pyfaults.supercellAdjZ
+import pyfaults.gridSearch
+import pyfaults.simulate
 
 ''' TOP LEVEL METHODS '''
 #---------------------------------------------------------------------------------
