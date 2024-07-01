@@ -319,6 +319,14 @@ def simulate(filePath):
             d = {'Start Layer': tmStartLyr, 'Next Layer': tmNextLyr, 'P': tmProb,
                   'x': tmXvec, 'y': tmYvec, 'z': tmZvec}
             tm = pd.DataFrame(data=d)
+            
+            noFlt = pf.TMSupercell.TMSupercell(unitcell, numStacks, fltLyr, 0, tm)
+            supercells.append(['Faultless', noFlt])
+            
+            for p in prob:
+                newSupercell = pf.TMSupercell.TMSupercell(unitcell, numStacks, fltLyr, p, tm)
+                cellTag = 'P' + str(int(prob[p]*100))
+                supercells.append([cellTag, newSupercell])
         
     #-----------------------------------------------------------------------------
     
