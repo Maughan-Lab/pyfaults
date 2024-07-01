@@ -4,6 +4,7 @@
 
 import numpy as np
 import os, glob
+import pandas as pd
 
 #---------------------------------------------------------------------------------
 # generates simulated PXRD data from PyFaults input file -------------------------
@@ -111,7 +112,7 @@ def simulate(filePath):
             for atom in lyrDict[copyLyr[0]]:
                 for a in atomDict:
                     if a==atom:
-                        newAtom = pf.layerAtom.LayerAtom(layer, atom, atomDict[a][0], 
+                        newAtom = pf.layerAtom.LayerAtom(copyLyr[0], atom, atomDict[a][0], 
                                                      [float(atomDict[a][1]) + adj[0], 
                                                       float(atomDict[a][2]) + adj[1], 
                                                       float(atomDict[a][3]) + adj[2]], 
@@ -274,7 +275,50 @@ def simulate(filePath):
     #-----------------------------------------------------------------------------
             
     # transition matrix type SFs
-    # if simType.startswith('Transition'):
+    if simType.startswith('Transition'):
+        
+        tmStartLyr = []
+        tmNextLyr = []
+        tmProb = []
+        tmXvec = []
+        tmYvec = []
+        tmZvec = []
+        
+        tm = pd.DataFrame()
+        
+        for i in range(len(inputFile)):
+        
+            # number of stacks
+            if inputFile[i].startswith('N:'):
+                numStacks = int(inputFile[i].split(':')[1])
+                
+            # name of faulted layer
+            if inputFile[i].startswith('FAULT LAYER'):
+                fltLyr = inputFile[i].split(':')[1]
+                fltLyr = fltLyr.replace('\n', '')
+                
+            # list of fault probabilities to simulate
+            if inputFile[i].startswith('PROBABILITY'):
+                removeVar = inputFile[i].split(':')[1]
+                pList = removeVar.split(',')
+                for j in pList:
+                    prob.append(float(j))
+                
+            if inputFile[i].startswith('TM:'):
+                removeVar = inputFile[i].split(':')[1]
+                transParams = removeVar.split(',')
+                tmLyrs = transParams[0].split('-')
+                
+                tmStartLyr.append(tmLyrs[0])
+                tmNextLyr.append(tmLyrs[1])
+                tmProb.append(transParams[1])
+                tmXvec.append(float(transParams[2]))
+                tmYvec.append(float(transParams[3]))
+                tmZvec.append(float(transParams[4]))
+            
+            d = {'Start Layer': tmStartLyr, 'Next Layer': tmNextLyr, 'P': tmProb,
+                  'x': tmXvec, 'y': tmYvec, 'z': tmZvec}
+            tm = pd.DataFrame(data=d)
         
     #-----------------------------------------------------------------------------
     
@@ -284,11 +328,67 @@ def simulate(filePath):
         zAdj = 0
         for i in range(len(inputFile)):
             
+            # adjustment to z-coordinate of faulted layer
             if inputFile[i].startswith('Z ADJ:'):
                 zAdj = inputFile[i].split(':')[1]
                 
+            # name of faulted layer
+            if inputFile[i].startswith('FAULT LAYER:'):
+                fltLyr = inputFile[i].split(':')[1]
+                fltLyr = fltLyr.replace('\n', '')
+                
+            # number of stacks
+            if inputFile[i].startswith('N:'):
+                numStacks = int(inputFile[i].split(':')[1])
+            
+            # intercalation layer
             if inputFile[i].startswith('INTLAYER:'):
-                intLayer = inputFile[i].split(':')[1]
+                removeVar = inputFile[i].split(':')[1]
+                intLayerAtoms = removeVar.split(',')
+                intLayerAtoms[-1] = intLayerAtoms[-1].replace('\n', '')
+                lyrDict['I'] = intLayerAtoms
+                
+            for a in lyrDict['I']:
+                if inputFile[i].startswith(a):
+                    removeVar = inputFile[i].split(':')[1]
+                    atom = removeVar.split(',')
+                    atom[-1] = atom[-1].replace('\n', '')
+                    atomDict[a] = atom
+                    
+            lyrAtoms = []
+            for atom in lyrDict['I']:
+                for a in atomDict:
+                    if a==atom:
+                        newAtom = pf.layerAtom.LayerAtom(layer, atom, atomDict[a][0], 
+                                                         [float(atomDict[a][1]), 
+                                                          float(atomDict[a][2]), 
+                                                          float(atomDict[a][3])], 
+                                                         float(atomDict[a][4]), 
+                                                         float(atomDict[a][5]), latt)
+                        lyrAtoms.append(newAtom)
+            newLayer = pf.layer.Layer(lyrAtoms, latt, 'I')
+            lyrs.append(newLayer)
+            
+            # list of fault probabilities to simulate
+            if inputFile[i].startswith('PROBABILITY:'):
+                removeVar = inputFile[i].split(':')[1]
+                pList = removeVar.split(',')
+                for j in pList:
+                    prob.append(float(j))
+                
+            # generates faultless supercell
+            noFlt = pf.supercell.Supercell(unitcell, numStacks)
+            supercells.append(['Faultless', noFlt])
+            
+            # generates supercells with intercalation layer added
+            for p in range(len(prob)):
+                newSupercell = pf.supercellAdjZ.SupercellAdjZ(unitcell, numStacks, lyrs[-1], fltLyr, zAdj, prob)
+                cellTag = 'P' + str(int(prob[p]*100))
+                supercells.append([cellTag, newSupercell])
+                
+            # generates supercell CIFs
+            for i in range(len(supercells)):
+                pf.toCif(supercells[i][1], './supercells/', supercells[i][0])
     
     #-----------------------------------------------------------------------------
                 
@@ -303,15 +403,15 @@ def simulate(filePath):
     for i in range(len(inputFile)):
         
         # simulation wavelength
-        if inputFile[i].startswith('WAVELENGTH:'):
+        if inputFile[i].startswith('WAVELENGTH'):
             wl = float(inputFile[i].split(':')[1])
         
         # simulation maximum two theta in degrees
-        if inputFile[i].startswith('MAX TWO THETA:'):
+        if inputFile[i].startswith('MAX TWO THETA'):
             maxTT = float(inputFile[i].split(':')[1])
             
         # artificial broadening term
-        if inputFile[i].startswith('BROADENING:'):
+        if inputFile[i].startswith('BROADENING'):
             pw = float(inputFile[i].split(':')[1])
 
     fileList = glob.glob('./supercells/*')
@@ -322,5 +422,32 @@ def simulate(filePath):
     # PXRD simulation for each supercell
     for f in fileList:
         q, ints = pf.simXRD.fullSim('./supercells/', f, wl, maxTT, pw=pw, savePath='./simulations/')
+        
+    #-----------------------------------------------------------------------------
+    
+    # calculated R^2 values against experimental data if provided
+    exptPath = ''
+    exptFN = ''
+    exptWL = 0
+    
+    for i in range(len(inputFile)):
+        
+        # file directory
+        if inputFile[i].startswith('EXPT PATH'):
+            exptPath = inputFile[i].split(':')[1]
+            exptPath = exptPath.replace('\n', '')
+        
+        # experimental data file name
+        if inputFile[i].startswith('EXPT FILE NAME'):
+            exptFN = inputFile[i].split(':')[1]
+            exptFN = exptFN.replace('\n', '')
+        
+        # instrument wavelength
+        if inputFile[i].startswith('EXPT WAVELENGTH'):
+            exptWL = float(inputFile[i].split(':')[1])
+    
+    # calculates and prints to text file
+    if exptPath != '':
+        pf.analyze.simR2vals('./simulations/', exptPath, exptFN, exptWL, maxTT)
 
     return
