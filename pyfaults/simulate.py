@@ -14,6 +14,7 @@ def simulate(filePath):
 
     structName = ''
     simType = ''
+    gridSearch = ''
     latt = pf.lattice.Lattice(0,0,0,0,0,0)
     numLyrs = 0
     lyrNames = []
