@@ -24,6 +24,7 @@ import pyfaults.analyze
 import pyfaults.supercellAdjZ
 import pyfaults.gridSearch
 import pyfaults.simulate
+import pyfaults.TMSupercell
 
 ''' TOP LEVEL METHODS '''
 #---------------------------------------------------------------------------------
