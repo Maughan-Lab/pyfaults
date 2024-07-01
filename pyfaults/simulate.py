@@ -277,6 +277,7 @@ def simulate(filePath):
             
     # transition matrix type SFs
     if simType.startswith('Transition'):
+        import random as r
         
         tmStartLyr = []
         tmNextLyr = []
@@ -317,15 +318,85 @@ def simulate(filePath):
             
             d = {'Start Layer': tmStartLyr, 'Next Layer': tmNextLyr, 'P': tmProb,
                   'x': tmXvec, 'y': tmYvec, 'z': tmZvec}
-            tm = pd.DataFrame(data=d)
+            transMatrix = pd.DataFrame(data=d)
             
-            noFlt = pf.TMSupercell.TMSupercell(unitcell, numStacks, fltLyr, 0, tm)
-            supercells.append(['Faultless', noFlt])
+            for stackProb in prob:
             
-            for p in prob:
-                newSupercell = pf.TMSupercell.TMSupercell(unitcell, numStacks, fltLyr, p, tm)
-                cellTag = 'P' + str(int(prob[p]*100))
-                supercells.append([cellTag, newSupercell])
+                seq = []
+                seq.append(transMatrix['Start Layer'][0])
+                
+                numUCLyrs = len(lyrs)
+                
+                for n in range(numUCLyrs * numStacks):
+                    p = (r.randint(0,100) * 0.01)
+    
+                    possLyrIndex = []
+                    for i in range(len(transMatrix.index)):
+                        lyrName = transMatrix['Start Layer'][i]
+                        if lyrName == seq[-1]:
+                            possLyrIndex.append(i)
+                
+                    for l in possLyrIndex:
+                        isNext = False
+                    
+                        lyrProb = transMatrix['P'][l]
+                        
+                        if isinstance(lyrProb, str):
+                            if lyrProb == 'P' or lyrProb == 'p':
+                                if p <= stackProb:
+                                    isNext = True
+                                elif '-' in lyrProb:
+                                    sub = lyrProb.split('-')
+                                    if p > stackProb and p < float(sub[0]):
+                                        isNext = True
+                                elif float(lyrProb) == 1.0:
+                                    isNext = True
+                                
+                        if isNext == True:
+                            seq.append(transMatrix['Next Layer'][l])
+                            break
+                        
+                newTMLyrs = []
+                newTMLyrs.append(lyrs[0])
+            
+                for i in range(1, len(seq)):
+                    lyrName = seq[i]
+                    if lyrName == 'F':
+                        lyrName = fltLyr
+    
+                    if i%2 == 0:
+                        n = i/2
+                    elif i%2 != 0:
+                        n = (i+1)/2
+    
+                    adj = []
+                    for j in range(len(transMatrix.index)):
+                        if transMatrix['Start Layer'][j] == lyrName:
+                            if transMatrix['Next Layer'][j] == seq[i+1]:
+                                x = transMatrix['x'][j]
+                                y = transMatrix['y'][j]
+                                z = transMatrix['z'][j]
+                                adj = [x, y, z*n]
+                    
+                    newLyrAtoms = []
+                    for atom in lyrDict[lyrName]:
+                        for a in atomDict:
+                            if a==atom:
+                                newAtom = pf.layerAtom.LayerAtom(lyrName, atom, atomDict[a][0],
+                                                                 [float(atomDict[a][1]) + adj[0], 
+                                                                  float(atomDict[a][2]) + adj[1], 
+                                                                  float(atomDict[a][3]) + adj[2]], 
+                                                                 float(atomDict[a][4]), 
+                                                                 float(atomDict[a][5]), latt)
+                                newLyrAtoms.append(newAtom)
+                    newLyr = pf.layer.Layer(newLyrAtoms, latt, lyrName)
+                    newTMLyrs.append(newLyr)
+                    
+                    cellTag = 'P' + str(int(prob[p]*100))
+                    
+                    cell = pf.unitcell.Unitcell(cellTag, newTMLyrs, latt)
+                    supercell = pf.supercell.Supercell(cell, 1)
+                    supercells.append([cellTag, supercell])
         
     #-----------------------------------------------------------------------------
     
