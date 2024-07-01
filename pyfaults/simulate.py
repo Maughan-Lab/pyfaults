@@ -285,8 +285,6 @@ def simulate(filePath):
         tmYvec = []
         tmZvec = []
         
-        tm = pd.DataFrame()
-        
         for i in range(len(inputFile)):
         
             # number of stacks
