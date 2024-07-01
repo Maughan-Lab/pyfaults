@@ -72,6 +72,11 @@ class TMSupercell(object):
     # set supercell layers --------------------------------------------------------
     def setLayers(self, nStacks, fltLayer, stackProb, transMatrix):
         
+        self._nStacks = nStacks
+        self._fltLayer = fltLayer
+        self._stackProb = stackProb
+        self._transMatrix = transMatrix
+        
         seq = []
         seq.append(transMatrix['Start Layer'][0])
         
