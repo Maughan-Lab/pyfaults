@@ -2,7 +2,7 @@
 
 Stores unit cell layer properties
 
-Last updated: ADD
+Last updated: 08/05/2024
 
 ---
 class **pyfaults.layer.Layer**(builtins.object)
