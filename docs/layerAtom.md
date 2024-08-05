@@ -2,10 +2,6 @@
 
 Stores atomic properties
 
-By Sinclair R. Combs
-
-Copyright 2023 Colorado School of Mines
-
 Last updated: ADD
 
 ---
@@ -35,3 +31,8 @@ Initialization, defines LayerAtom defaults
 `setParam(self, layerName=None, atomLabel=None, element=None, xyz=None, lattice=None, occupancy=None, biso=None)`
 
 Sets parameters of LayerAtom
+
+---
+By Sinclair R. Combs
+
+Copyright 2023 Colorado School of Mines
