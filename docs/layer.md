@@ -56,7 +56,7 @@ Methods:
 
 &nbsp;&nbsp; **Parameters:**
 
-* **df** (*DataFrame*) --
+* **df** (*DataFrame*) -- atomic parameters
 * **lattice** (*Lattice*) -- unit cell lattice parameters
 * **layerNames** (*array_like*) -- defined layer names
 
