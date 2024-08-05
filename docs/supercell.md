@@ -22,17 +22,21 @@ class **pyfaults.supercell.Supercell**(builtins.object)
 ---
 Methods:
 
-`__init__(self, name, layers, lattice)`
+`__init__(self, unitcell, nStacks, fltLayer=None, stackVec=None, stackProb=None)`
 
-&nbsp;&nbsp; Initialization, defines Unitcell defaults
+&nbsp;&nbsp; Initialization, defines Supercell defaults
 
-`setParam(self, name=None, layers=None, lattice=None)`
+`setParam(self, nStacks=None)`
 
-&nbsp;&nbsp; Sets parameters of Unitcell
+&nbsp;&nbsp; Sets number of stacks in Supercell
 
-`layer_info(self)`
+`setLayers(self, unitcell, fltLayer=None, stackVec=None, stackProb=None)`
 
-&nbsp;&nbsp; Prints layer names in unit cell
+&nbsp;&nbsp; Constructs supercells layers
+
+`show_faults(self)`
+
+&nbsp;&nbsp; Prints names of faulted layers
 
 `toCif(self, path)`
 
