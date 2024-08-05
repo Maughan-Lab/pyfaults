@@ -1,15 +1,15 @@
 ### lattice.py
 
-Stores unit cell parameters
+Stores unit cell lattice parameters
 
 Last updated: ADD
 
 ---
-class **pyfaults.latticec.Lattice**(builtins.object)
+class **pyfaults.lattice.Lattice**(builtins.object)
 
 &nbsp;&nbsp; `Lattice(a, b, c, alpha, beta, gamma)`
 
-&nbsp;&nbsp; Stores unit cell parameters
+&nbsp;&nbsp; Stores unit cell lattice parameters
 
 &nbsp;&nbsp; **Parameters:**
 
