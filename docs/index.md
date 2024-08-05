@@ -32,9 +32,11 @@ python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git
 
 [*unitcell* class](unitcell.md)
 
-unitCellFromCSV
-
 [*supercell* class](supercell.md)
+
+[*importCSV* method](importCSV.md)
+
+[*importDataFrame* method](importDataFrame.md)
 
 supercellAdjZ
 
