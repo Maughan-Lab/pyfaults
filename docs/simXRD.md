@@ -17,31 +17,10 @@ Last updated: ADD
 * **pw** (*float*, optional) -- peak broadening term (Å<sup>-1</sup>)
 * **bg** (*float*, optional) -- average of normal background
 
+&nbsp;&nbsp; **Returns:**
 
-
-
----
-Methods:
-
-`__init__(self, name, layers, lattice)`
-
-&nbsp;&nbsp; Initialization, defines Unitcell defaults
-
-`setParam(self, name=None, layers=None, lattice=None)`
-
-&nbsp;&nbsp; Sets parameters of Unitcell
-
-`layer_info(self)`
-
-&nbsp;&nbsp; Prints layer names in unit cell
-
-`toCif(self, path)`
-
-&nbsp;&nbsp; Generates a CIF file of Layer
-
-&nbsp;&nbsp; **Parameters:**
-
-* **path** (*str*) -- file path
+* **q** (*array_like*) -- calculated *Q* values (Å<sup>-1</sup>)
+* **ints** (*array_like*) -- calculated intensity values, normalized
 
 ---
 By Sinclair R. Combs
