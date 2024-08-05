@@ -1,6 +1,6 @@
 ### simXRD.py
 
-Last updated: ADD
+Last updated: 08/05/2024
 
 ---
 `fullSim(path, cif, wl, tt_max, savePath, pw=None, bg=None)`
