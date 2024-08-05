@@ -11,7 +11,7 @@ GitHub: <https://github.com/Maughan-Lab/pyfaults>
 
 Citation DOI:
 
-Last Updated: 06/30/2024
+Last Updated: 08/05/2024
 
 ---
 **Installation:**
