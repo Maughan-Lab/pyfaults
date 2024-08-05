@@ -24,4 +24,3 @@ def importCSV(path, fn, lattParams, lyrNames):
     unitcell.toCif(CSVPath)
     
     return unitcell
-        
