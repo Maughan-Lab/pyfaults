@@ -2,7 +2,7 @@
 
 Stores supercell properties
 
-Last updated: ADD
+Last updated: 08/05/2024
 
 ---
 class **pyfaults.supercell.Supercell**(builtins.object)
