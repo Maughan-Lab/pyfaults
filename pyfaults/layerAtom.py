@@ -2,11 +2,20 @@
 # Author: Sinclair R. Combs
 ##################################################################################
 
-#---------------------------------------------------------------------------------
-# LayerAtom object class
-#---------------------------------------------------------------------------------
-class LayerAtom(object):   
-    # properties -----------------------------------------------------------------
+# LayerAtom object class ----------
+class LayerAtom(object):
+'''
+Parameters
+----------
+layerName (str) -- name of layer that atom resides in
+atomLabel (str) -- unique identifier for atomic position
+element (str) -- elemental species and oxidation state
+xyz (array_like) -- atomic position in fractional coordinates
+occupancy (float) -- site occupancy (0 to 1)
+biso (float) -- isotropic atomic displacement parameter
+lattice (Lattice) -- unit cell lattice parameters
+'''
+    # properties ----------
     layerName =\
         property(lambda self: self._layerName,
                  lambda self, val: self.setParam(layerName=val),
@@ -57,7 +66,7 @@ class LayerAtom(object):
                  lambda self, val: self.setParam(lattice=val),
                  doc='Lattice : unit cell lattice parameters')
     
-    # creates instance of LayerAtom object ---------------------------------------
+    # initialization, defines LayerAtom defaults ----------
     def __init__(self, layerName, atomLabel, element, xyz, occupancy, biso, lattice):
         # initialize parameters
         self._layerName = None
@@ -73,7 +82,7 @@ class LayerAtom(object):
         self.setParam(layerName, atomLabel, element, xyz, lattice, occupancy, biso)
         return
     
-    # sets parameters ------------------------------------------------------------
+    # sets parameters of LayerAtom ----------
     def setParam(self, layerName=None, atomLabel=None, element=None, xyz=None, 
                  lattice=None, occupancy=None, biso=None):
         if layerName is not None:
