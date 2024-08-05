@@ -4,17 +4,17 @@
 
 # LayerAtom object class ----------
 class LayerAtom(object):
-'''
-Parameters
-----------
-layerName (str) -- name of layer that atom resides in
-atomLabel (str) -- unique identifier for atomic position
-element (str) -- elemental species and oxidation state
-xyz (array_like) -- atomic position in fractional coordinates
-occupancy (float) -- site occupancy (0 to 1)
-biso (float) -- isotropic atomic displacement parameter
-lattice (Lattice) -- unit cell lattice parameters
-'''
+    '''
+    Parameters
+    ----------
+    layerName (str) -- name of layer that atom resides in
+    atomLabel (str) -- unique identifier for atomic position
+    element (str) -- elemental species and oxidation state
+    xyz (array_like) -- atomic position in fractional coordinates
+    occupancy (float) -- site occupancy (0 to 1)
+    biso (float) -- isotropic atomic displacement parameter
+    lattice (Lattice) -- unit cell lattice parameters
+    '''
     # properties ----------
     layerName =\
         property(lambda self: self._layerName,
