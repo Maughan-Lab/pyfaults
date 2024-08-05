@@ -34,7 +34,7 @@ python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git
 
 unitCellFromCSV
 
-supercell
+[*supercell* class](supercell.md)
 
 supercellAdjZ
 
