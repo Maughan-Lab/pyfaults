@@ -5,11 +5,16 @@
 import copy as cp
 import numpy as np
 
-#---------------------------------------------------------------------------------
-# Layer object class
-#---------------------------------------------------------------------------------
+# Layer object class ----------
 class Layer(object):
-    # properties -----------------------------------------------------------------
+'''
+Parameters
+----------
+atoms (array_like of LayerAtom) : list of atoms in layer
+lattice (Lattice) : unit cell lattice parameters
+layerName (str) : unique identifier for layer
+'''   
+    # properties ----------
     atoms =\
         property(lambda self: self._atoms,
                  lambda self, val: self.setParam(atoms=val),
@@ -25,16 +30,15 @@ class Layer(object):
                    lambda self, val: self.setParam(layerName=val),
                    doc='str : unique identifier for Layer instance')
     
-    # creates instance of Layer object -------------------------------------------
+    # initialization, defines Layer defaults ----------
     def __init__(self, atoms, lattice, layerName):
-        # initialize parameters
         self._layerName = None
         self._atoms = None
         self._lattice = None
         self.setParam(atoms, lattice, layerName)
         return
     
-    # sets parameters ------------------------------------------------------------
+    # sets parameters of Layer ----------
     def setParam(self, atoms=None, lattice=None, layerName=None):
         if atoms is not None:
             self._atoms = atoms
@@ -44,31 +48,34 @@ class Layer(object):
             self._layerName = layerName
         return
     
-    # prints layer information ---------------------------------------------------
+    # prints atoms in Layer ----------
     def display(self):
         print(self.layerName)
         for i in self.atoms:
             print(i.atomLabel + ', ' + str(i.xyz))
         return 
             
-    # generates CIF of layer -----------------------------------------------------
+    # generates CIF file of layer ----------
     def toCif(self, path):
+    '''
+    Parameters
+    ----------
+    path (str) : file path
+    '''
         from pyfaults import toCif
         toCif(self, path, 'Layer_' + self.layerName + '_CIF')
     
-    # generates a child layer ----------------------------------------------------
+    # creates a new Layer object that is a copy of the original Layer displaced by a given translation vector ----------
     def genChildLayer(self, childName, transVec):
         '''
         Parameters
         ----------
-        childName
-            str : unique identifier for child layer
-        transVec
-            nparray : translation vector [x, y, z] relative to parent
+        childName (str) : unique identifier for layer
+        transVec (array_like) : translation vector [x, y, z] relative to original/parent layer
 
         Returns
         -------
-        childLayer : Layer
+        childLayer (Layer) : new child layer
         '''
         from pyfaults.layerAtom import LayerAtom
         
@@ -98,25 +105,19 @@ class Layer(object):
         childLayer = Layer(childAtoms, self.lattice, childName)
         return childLayer
 
-
-#---------------------------------------------------------------------------------
-# import layers from dataframe ---------------------------------------------------
-#---------------------------------------------------------------------------------
+# imports layer information from a DataFrame ----------
 def getLayers(df, lattice, layerNames):
     
     '''
     Parameters
     ----------
-    df
-        dataframe : atomic parameters imported from csv file
-    lattice
-        Lattice : unit cell lattice parameters
-    layerNames
-        list (str) : layer names as documented in imported csv
+    df (DataFrame) : atomic parameters
+    lattice (Lattice) : unit cell lattice parameters
+    layerNames (array_like) : defined layer names
 
     Returns
     -------
-    layers : list (Layer)
+    layers (array_like) : list of Layer objects
     '''
     from pyfaults.layerAtom import LayerAtom
     from pyfaults.lattice import Lattice
