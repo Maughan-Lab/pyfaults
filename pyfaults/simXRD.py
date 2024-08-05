@@ -4,32 +4,23 @@
 
 import Dans_Diffraction as df
 
-#---------------------------------------------------------------------------------
-# simulates XRD pattern, returns normalized intensity values ---------------------
-#---------------------------------------------------------------------------------
+# simulates XRD pattern, returns normalized intensity values ----------
 def fullSim(path, cif, wl, tt_max, savePath, pw=None, bg=None):
     '''
     Parameters
     ----------
-    path
-        str : CIF file directory
-    cif
-        str : CIF file name
-    wl
-        float : instrument wavelength (A)
-    tt_max
-        float : maximum 2theta (degrees)
-    savePath
-        str : file directory to save simulation data
-    pw
-        float (optional) : peak width (A^-1)
-    bg
-        float (optional) : average of normal background
+    path (str) : CIF file location
+    cif (str) : CIF file name
+    wl (float) : instrument wavelength
+    tt_max (float) : maximum two theta
+    savePath (str) : location to save simulation data to
+    pw (float, optional) : peak broadening term
+    bg (float, optional) : average of normal background
 
     Returns
     -------
-    q : nparray
-    ints : nparray
+    q (array_like) : calculated Q values
+    ints (array_like) : calculated intensity values, normalized
     '''
     from pyfaults import norm
     
