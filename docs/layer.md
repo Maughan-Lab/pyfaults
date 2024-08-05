@@ -50,6 +50,21 @@ Methods:
 * **transVec** (*array_like*) -- translation vector [x, y, z] relative to original/parent layer
 
 ---
+`getLayers(df, lattice, layerNames)`
+
+&nbsp;&nbsp; Imports layer information from a dataframe, returns list of Layer objects
+
+&nbsp;&nbsp; **Parameters:**
+
+* **df** (*DataFrame*) --
+* **lattice** (*Lattice*) -- unit cell lattice parameters
+* **layerNames** (*array_like*) -- defined layer names
+
+&nbsp;&nbsp; **Returns:**
+
+* **layers** (*array_like*) -- list of Layer objects
+
+---
 By Sinclair R. Combs
 
 Copyright 2023 Colorado School of Mines
