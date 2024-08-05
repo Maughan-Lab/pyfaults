@@ -22,19 +22,19 @@ Methods:
 
 `__init__(self, atoms, lattice, layerName)`
 
-Initialization, defines Layer defaults
+&nbsp;&nbsp; Initialization, defines Layer defaults
 
 `setParam(self, atoms=None, lattice=None, layerName=None)`
 
-Sets parameters of Layer
+&nbsp;&nbsp; Sets parameters of Layer
 
 `display(self)`
 
-Prints atoms in Layer
+&nbsp;&nbsp; Prints atoms in Layer
 
 `toCif(self, path)`
 
-Generates a CIF file of Layer
+&nbsp;&nbsp; Generates a CIF file of Layer
 
 &nbsp;&nbsp; **Parameters:**
 
@@ -42,7 +42,7 @@ Generates a CIF file of Layer
 
 `genChildLayer(self, childName, transVec)`
 
-Creates a new Layer object that is a copy of the original Layer displaced by a given translation vector
+&nbsp;&nbsp; Creates a new Layer object that is a copy of the original Layer displaced by a given translation vector
 
 &nbsp;&nbsp; **Parameters:**
 
