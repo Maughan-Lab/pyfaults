@@ -10,19 +10,19 @@ Last updated: ADD
 ---
 class **pyfaults.layerAtom.LayerAtom**(builtins.object)
 
-&nbsp; `LayerAtom(layerName, atomLabel, element, xyz, occupancy, biso, lattice)`
+&nbsp;&nbsp; `LayerAtom(layerName, atomLabel, element, xyz, occupancy, biso, lattice)`
 
-&nbsp; Stores atomic properties
+&nbsp;&nbsp; Stores atomic properties
 
-&nbsp; **Parameters:**
+&nbsp;&nbsp; **Parameters:**
 
-&nbsp; - **layerName** (*str*) -- name of layer that atom resides in
-&nbsp; - **atomLabel** (*str*) -- unique identifier for atomic position
-&nbsp; - **element** (*str*) -- elemental species and oxidation state
-&nbsp; - **xyz** (*array_like*) -- atomic position in fractional coordinates
-&nbsp; - **occupancy** (*float*) -- site occupancy (0 to 1)
-&nbsp; - **biso** (*float*) -- isotropic atomic displacement parameter
-&nbsp; - **lattice** (*Lattice*) -- unit cell lattice parameters
+* **layerName** (*str*) -- name of layer that atom resides in
+* **atomLabel** (*str*) -- unique identifier for atomic position
+* **element** (*str*) -- elemental species and oxidation state
+* **xyz** (*array_like*) -- atomic position in fractional coordinates
+* **occupancy** (*float*) -- site occupancy (0 to 1)
+* **biso** (*float*) -- isotropic atomic displacement parameter
+* **lattice** (*Lattice*) -- unit cell lattice parameters
 
 ---
 Methods:
