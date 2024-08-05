@@ -42,7 +42,7 @@ TMsupercell
 
 genSupercells
 
-simXRD
+[*simXRD* method](simXRD.md)
 
 simulate
 
