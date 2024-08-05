@@ -7,7 +7,7 @@ Last updated: 08/05/2024
 ---
 class **pyfaults.supercell.Supercell**(builtins.object)
 
-&nbsp;&nbsp; `Supercell(unitcell, nStacks, fltLayer=None, stackVec=None, stackProb=None)`
+&nbsp;&nbsp; `Supercell(unitcell, nStacks, conType, fltLayer=None, stackVec=None, stackProb=None, zAdj=None, intLayer=None)`
 
 &nbsp;&nbsp; Stores supercell properties
 
@@ -15,24 +15,31 @@ class **pyfaults.supercell.Supercell**(builtins.object)
 
 * **unitcell** (*Unitcell*) -- base unit cell
 * **nStacks** (*int*) -- number of unit cell stacks in supercell
+* **conType** (*str*) -- type of supercell construction, can be 'Displacement' or 'Intercalation'
 * **fltLayer** (*str*, optional) -- faulted layer name
 * **stackVec** (*array_like*, optional) -- displacement vector \[x,y,z\] for faulted layer in fractional coordinates
 * **stackProb** (*float*, optional) -- stacking fault probability
+* **zAdj** (*float*, optional) -- z-direction displacement
+* **intLayer** (*Layer*, optional) -- added intercalation layer in unit cell
 
 ---
 Methods:
 
-`__init__(self, unitcell, nStacks, fltLayer=None, stackVec=None, stackProb=None)`
+`__init__(self, unitcell, nStacks, conType, fltLayer=None, stackVec=None, stackProb=None, zAdj=None, intLayer=None)`
 
 &nbsp;&nbsp; Initialization, defines Supercell defaults
 
-`setParam(self, nStacks=None)`
+`setParam(self, nStacks=None, conType=None)`
 
-&nbsp;&nbsp; Sets number of stacks in Supercell
+&nbsp;&nbsp; Sets number of stacks and construction type
 
-`setLayers(self, unitcell, fltLayer=None, stackVec=None, stackProb=None)`
+`setDisLayers(self, unitcell, fltLayer=None, stackVec=None, stackProb=None)`
 
-&nbsp;&nbsp; Constructs supercells layers
+&nbsp;&nbsp; Constructs displacement supercell layers
+
+`setIntLayers(self, unitcell, fltLayer=None, stackProb=None, zAdj=None, intLayer=None)`
+
+&nbsp;&nbsp; Constructs intercalation supercell layers
 
 `show_faults(self)`
 
