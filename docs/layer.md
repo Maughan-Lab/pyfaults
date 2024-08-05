@@ -13,7 +13,7 @@ class **pyfaults.layer.Layer**(builtins.object)
 
 &nbsp;&nbsp; **Parameters:**
 
-* **atoms** (*array_like*) -- list of atoms in layer (LayerAtom objects)
+* **atoms** (*array_like* of *LayerAtom*) -- list of atoms in layer
 * **lattice** (*Lattice*) -- unit cell lattice parameters
 * **layerName** (*str*) -- unique identifier for layer
 
