@@ -7,13 +7,13 @@ import numpy as np
 
 # Layer object class ----------
 class Layer(object):
-'''
-Parameters
-----------
-atoms (array_like of LayerAtom) : list of atoms in layer
-lattice (Lattice) : unit cell lattice parameters
-layerName (str) : unique identifier for layer
-'''   
+    '''
+    Parameters
+    ----------
+    atoms (array_like of LayerAtom) : list of atoms in layer
+    lattice (Lattice) : unit cell lattice parameters
+    layerName (str) : unique identifier for layer
+    '''   
     # properties ----------
     atoms =\
         property(lambda self: self._atoms,
