@@ -4,16 +4,16 @@
 
 # Lattice object class ----------
 class Lattice(object):
-'''
-Parameters
-----------
-a (float) : unit cell vector a
-b (float) : unit cell vector b
-c (float) : unit cell vector c
-alpha (float) : unit cell angle alpha
-beta (float) : unit cell angle beta
-gamma (float) : unit cell angle gamma
-'''
+    '''
+    Parameters
+    ----------
+    a (float) : unit cell vector a
+    b (float) : unit cell vector b
+    c (float) : unit cell vector c
+    alpha (float) : unit cell angle alpha
+    beta (float) : unit cell angle beta
+    gamma (float) : unit cell angle gamma
+    '''
     # properties ----------
     a =\
         property(lambda self: self._a,
