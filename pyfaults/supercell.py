@@ -6,11 +6,18 @@ import copy as cp
 import numpy as np
 import random as r
 
-#---------------------------------------------------------------------------------
-# Supercell object class
-#---------------------------------------------------------------------------------
-class Supercell(object):    
-    # properties -----------------------------------------------------------------
+# Supercell object class ----------
+class Supercell(object):
+'''
+Parameters
+----------
+unitcell (Unitcell) : base unit cell
+nStacks (int) : number of unit cell stacks in supercell
+fltLayer (str, optional) : faulted layer name
+stackVec (array_like, optional) : displacement vector [x,y,z] for faulted layer in fractional coordinates
+stackProb (float, optional) : stacking fault probability
+'''
+    # properties ----------
     unitcell =\
         property(lambda self: self._unitcell,
                  doc='Unitcell : base unit cell')
@@ -44,11 +51,10 @@ class Supercell(object):
                  lambda self, val: self.setParam(stackProb=val),
                  doc='float [optional] : stacking probability')
     
-    # creates instance of Supercell object ---------------------------------------
+    # initialization, defines Supercell defaults ----------
     def __init__(self, unitcell, nStacks, 
                  fltLayer=None, stackVec=None, stackProb=None):
         from pyfaults.lattice import Lattice
-        # initialize parameters
         self._unitcell = unitcell
         newLatt = Lattice(unitcell.lattice.a,
                           unitcell.lattice.b,
@@ -66,13 +72,13 @@ class Supercell(object):
         self.setLayers(unitcell, fltLayer, stackVec, stackProb)
         return
     
-    # set cell parameters --------------------------------------------------------
+    # sets number of stacks in Supercell ----------
     def setParam(self, nStacks=None):
         if nStacks is not None:
             self._nStacks = nStacks
         return
     
-    # set supercell layers --------------------------------------------------------
+    # constructs supercells layers ----------
     def setLayers(self, unitcell, fltLayer=None, stackVec=None, stackProb=None):
         newLayers = []
         for lyr in self.unitcell.layers:
@@ -128,14 +134,14 @@ class Supercell(object):
         self._layers = newLayers
         return
     
-    # prints names of faulted layers ---------------------------------------------
+    # prints names of faulted layers ----------
     def show_faults(self):
         for lyr in self.layers:
             if "fault" in lyr.layerName:
                 print(lyr.layerName)
         return
                 
-    # generates CIF of layer -----------------------------------------------------
+    # generates CIF of layer ----------
     def toCif(self, path):
         from pyfaults import toCif
         name = self.unitcell.name
