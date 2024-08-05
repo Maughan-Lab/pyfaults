@@ -2,7 +2,7 @@
 
 Stores atomic properties
 
-Last updated: ADD
+Last updated: 08/05/2024
 
 ---
 class **pyfaults.layerAtom.LayerAtom**(builtins.object)
