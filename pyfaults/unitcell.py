@@ -2,11 +2,16 @@
 # Author: Sinclair R. Combs
 #########################################################################################
 
-#---------------------------------------------------------------------------------
-# Unitcell object class
-#---------------------------------------------------------------------------------
+# Unitcell object class ----------
 class Unitcell(object):
-    # properties -----------------------------------------------------------------
+'''
+Parameters
+----------
+name (str) : unique identifier for unit cell
+layers (array_like of Layer) : list of layers in unit cell
+lattice (Lattice) : unit cell lattice parameters
+'''
+    # properties ----------
     name =\
         property(lambda self: self._name,
                  lambda self, val: self.setParam(name=val),
@@ -22,7 +27,7 @@ class Unitcell(object):
                  lambda self, val: self.setParam(lattice=val),
                  doc='Lattice : unit cell lattice parameters')
     
-    # creates instance of Unitcell object ----------------------------------------
+    # onitialization, defines Unitcell defaults ----------
     def __init__(self, name, layers, lattice):
         # initialize parameters
         self._name = None
@@ -31,7 +36,7 @@ class Unitcell(object):
         self.setParam(name, layers, lattice)
         return
     
-    # sets parameters -------------------------------------------------------------
+    # sets parameters of Unitcell ----------
     def setParam(self, name=None, layers=None, lattice=None):
         if name is not None:
             self._name = name
@@ -41,7 +46,7 @@ class Unitcell(object):
             self._lattice = lattice
         return
     
-    # prints layer names ---------------------------------------------------------
+    # prints layer names in unit cell ----------
     def layer_info(self):
         layerList = self.layers
         layerStr = []
@@ -50,7 +55,7 @@ class Unitcell(object):
             print(layerList[i].layerName)
         return
                 
-    # generates CIF of unit cell -------------------------------------------------
+    # generates CIF of unit cell ----------
     def toCif(self, path):
         from pyfaults import toCif
         toCif(self, path, self.name + '_unitcell')
