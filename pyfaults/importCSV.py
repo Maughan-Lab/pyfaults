@@ -2,11 +2,20 @@
 # Author: Sinclair R. Combs
 ##################################################################################
 
-#---------------------------------------------------------------------------------
-# generates unit cell from CSV of atomic parameters ------------------------------
-#---------------------------------------------------------------------------------
+# generates unit cell from CSV of atomic parameters ----------
 def importCSV(path, fn, lattParams, lyrNames):
-    
+'''
+Parameters
+----------
+path (str) : CSV file location
+fn (str) : CSV file name
+lattParams (array_like) : lattice parameters [a, b, c, alpha, beta, gamma]
+lyrNames (array_like) : defined layer names
+
+Returns
+----------
+unitcell (Unitcell) : new unit cell
+''' 
     import pyfaults as pf
 
     csv = pd.read_csv(path + fn + '.csv')
