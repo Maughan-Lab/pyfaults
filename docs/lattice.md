@@ -2,7 +2,7 @@
 
 Stores unit cell lattice parameters
 
-Last updated: ADD
+Last updated: 08/05/2024
 
 ---
 class **pyfaults.lattice.Lattice**(builtins.object)
