@@ -1,9 +1,9 @@
-### fromCSV.py
+### importCSV.py
 
 Last updated: 08/05/2024
 
 ---
-`fromCSV(path, fn, lattParams, lyrNames)`
+`importCSV(path, fn, lattParams, lyrNames)`
 
 &nbsp;&nbsp; Generates a Unitcell object from CSV file with atomic parameters
 
