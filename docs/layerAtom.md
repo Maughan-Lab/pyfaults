@@ -1,8 +1,9 @@
-layerAtom.py
+### layerAtom.py
 
 Stores atomic properties
 
 By Sinclair R. Combs
+
 Copyright 2023 Colorado School of Mines
 
 Last updated: ADD
