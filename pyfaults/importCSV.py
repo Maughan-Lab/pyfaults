@@ -5,27 +5,11 @@
 #---------------------------------------------------------------------------------
 # generates unit cell from CSV of atomic parameters ------------------------------
 #---------------------------------------------------------------------------------
-def unitCellFromCSV(CSVPath, CSVName, lattParams, lyrNames):
-    '''
-    Parameters
-    ----------
-    CSVPath
-        str : CSV file directory
-    CSVName
-        str : CSV file name
-    lattParams
-        nparray : lattice parameter values [a, b, c, alpha, beta, gamma]
-    lyrNames
-        list (str) : unique identifiers for each layer in unit cell
-
-    Returns
-    -------
-    unitcell
-        Unitcell : layered unit cell generated from CSV parameters
-    '''
-    import pyfaults as pf
+def importCSV(path, fn, lattParams, lyrNames):
     
-    csv = pf.importCSV(CSVPath, CSVName)
+    import pyfaults as pf
+
+    csv = pd.read_csv(path + fn + '.csv')
     
     latt = pf.lattice.Lattice(a=lattParams[0],
                               b=lattParams[1],
