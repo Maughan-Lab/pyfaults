@@ -4,13 +4,13 @@
 
 # Unitcell object class ----------
 class Unitcell(object):
-'''
-Parameters
-----------
-name (str) : unique identifier for unit cell
-layers (array_like of Layer) : list of layers in unit cell
-lattice (Lattice) : unit cell lattice parameters
-'''
+    '''
+    Parameters
+    ----------
+    name (str) : unique identifier for unit cell
+    layers (array_like of Layer) : list of layers in unit cell
+    lattice (Lattice) : unit cell lattice parameters
+    '''
     # properties ----------
     name =\
         property(lambda self: self._name,
