@@ -25,15 +25,15 @@ Methods:
 
 `__init__(self, a, b, c, alpha, beta, gamma)`
 
-Initialization, defines Lattice defaults
+&nbsp;&nbsp; Initialization, defines Lattice defaults
 
 `setParam(self, a=None, b=None, c=None, alpha=None, beta=None, gamma=None)`
 
-Sets parameters of Lattice
+&nbsp;&nbsp; Sets parameters of Lattice
 
 `display(self)`
 
-Prints lattice parameters
+&nbsp;&nbsp; Prints lattice parameters
 
 ---
 By Sinclair R. Combs
