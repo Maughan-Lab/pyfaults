@@ -26,11 +26,11 @@ Methods:
 
 `__init__(self, layerName, atomLabel, element, xyz, occupancy, biso, lattice)`
 
-Initialization, defines LayerAtom defaults
+&nbsp;&nbsp; Initialization, defines LayerAtom defaults
 
 `setParam(self, layerName=None, atomLabel=None, element=None, xyz=None, lattice=None, occupancy=None, biso=None)`
 
-Sets parameters of LayerAtom
+&nbsp;&nbsp; Sets parameters of LayerAtom
 
 ---
 By Sinclair R. Combs
