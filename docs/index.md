@@ -34,15 +34,11 @@ python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git
 
 [*supercell* class](supercell.md)
 
+[*TMSupercell* class](TMSupercell.md)
+
 [*importCSV* method](importCSV.md)
 
-[*importDataFrame* method](importDataFrame.md)
-
-supercellAdjZ
-
-TMsupercell
-
-genSupercells
+genSupercells method
 
 [*simXRD* method](simXRD.md)
 
