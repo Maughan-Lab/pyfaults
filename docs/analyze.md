@@ -62,7 +62,7 @@ Last updated: 08/05/2024
 * **exptWL** (*str*) -- instrument wavelength (Å)
 * **maxTT** (*str*) -- maximum 2θ (°)
 
-* &nbsp;&nbsp; **Returns:**
+&nbsp;&nbsp; **Returns:**
 
 * **r2vals** (*array_like*) -- list of R<sup>2</sup> values
 
