@@ -34,16 +34,14 @@ python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git
 
 [*supercell* class](supercell.md)
 
-[*TMSupercell* class](TMSupercell.md)
-
 [*importCSV* method](importCSV.md)
 
-genSupercells method
+[*genSupercells* method](genSupercells.md)
 
 [*simXRD* method](simXRD.md)
 
-simulate
+[*simulate* methods](simulate.md)
 
-gridSearch
+[*analyze* methods](analyze.md)
 
-analyze
+[*gridSearch* methods](gridSearch.md)
