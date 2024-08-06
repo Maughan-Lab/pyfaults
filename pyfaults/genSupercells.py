@@ -4,23 +4,16 @@
 
 import os
 
-#---------------------------------------------------------------------------------
-# generates all supercell models within a given parameter space ------------------
-#---------------------------------------------------------------------------------
+# generates all supercell models within a given parameter space ----------
 def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList):
     '''
     Parameters
     ----------
-    unitcell
-        Unitcell : base unit cell stack
-    nStacks
-        int : number of stacks per supercell
-    fltLayer
-        str : name of faulted layer
-    probList
-        list (float) : stacking fault probabilities
-    sVecList
-        list (nparray) : stacking vectors
+    unitcell (Unitcell) : base unit cell
+    nStacks (int) : number of unit cell stacks in supercell
+    fltLayer (str) : faulted layer name
+    probList (array_like) : list of stacking fault probabilities
+    sVecList (array_like) : list of displacement vectors [x,y,z] in fractional coordinates
     '''
     import pyfaults as pf
     
