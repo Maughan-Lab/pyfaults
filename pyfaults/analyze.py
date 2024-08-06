@@ -4,33 +4,20 @@
 
 import numpy as np
 
-#---------------------------------------------------------------------------------
-# analyzes simulated PXRD data from PyFaults input file -------------------------
-#---------------------------------------------------------------------------------
+# calculates a difference curve between two sets of PXRD data ----------
 def diffCurve(q1, q2, ints1, ints2):
     '''
     Parameters
     ----------
-    q1
-        nparray : dataset 1 Q values (A^-1)
-    q2
-        nparray : dataset 2 Q values (A^-1)
-    ints1
-        nparray : dataset 1 intensity values
-    ints2
-        nparray : dataset 2 intensity values
-    save
-        bool (optional) : saves text file with difference curve if True;
-        default is False
-    savePath
-        str : file directory to save text file
-    saveName
-        str : file name to save text file
+    q1 (array_like) : dataset 1 Q values (Å-1)
+    q2 (array_like) : dataset 2 Q values (Å-1)
+    ints1 (array_like) : dataset 1 intensity values
+    ints2 (array_like) : dataset 2 intensity values
 
     Returns
     -------
-    diff_q : nparray
-    diff_ints : nparray
+    diff_q (array_like) : Q values of difference curve
+    diff_ints (array_like) : intensity values of difference curve
     '''
     
     diff_q_list = []
@@ -47,7 +34,21 @@ def diffCurve(q1, q2, ints1, ints2):
         
     return diff_q, diff_ints
 
+# calculates R^2 value between two sets of PXRD data ----------
 def r2val(q1, q2, ints1, ints2):
+    '''
+    Parameters
+    ----------
+    q1 (array_like) : dataset 1 Q values (Å-1)
+    q2 (array_like) : dataset 2 Q values (Å-1)
+    ints1 (array_like) : dataset 1 intensity values
+    ints2 (array_like) : dataset 2 intensity values
+
+    Returns
+    -------
+    r2 (float) -- R^2 value
+    '''
+    
     import sklearn.metrics as skl
     
     q_list = []
@@ -68,12 +69,39 @@ def r2val(q1, q2, ints1, ints2):
 
     return r2
 
+# calculates difference between two difference curves ----------
 def fitDiff(diff_ints1, diff_ints2):
+    '''
+    Parameters
+    ----------
+    diff_ints1 (array_like) : dataset 1 difference in intensity values
+    diff_ints2 (array_like) : dataset 2 difference in intensity values
+
+    Returns
+    -------
+    fitDiff (array_like) : difference of differences intensities
+    '''
+    
     fitDiff = np.subtract(diff_ints1, diff_ints2)
     
     return fitDiff
 
+# calculates R^2 values for each PXRD simulation in a directory against experimental data and generates a text file ----------
 def simR2vals(simPath, exptPath, exptFN, exptWL, maxTT):
+    '''
+    Parameters
+    ----------
+    simPath (str) : file path of simulations directory
+    exptPath (str) : file path of experimental data
+    exptFN (str) : experimental data file name
+    exptWL (str) : instrument wavelength
+    maxTT (str) : maximum two theta
+
+    Returns
+    -------
+    r2vals (array_like) : list of R2 values
+    '''
+    
     import pyfaults as pf
     import glob
     
