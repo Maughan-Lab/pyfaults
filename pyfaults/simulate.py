@@ -10,6 +10,11 @@ import pandas as pd
 # generates simulated PXRD data from PyFaults input file -------------------------
 #---------------------------------------------------------------------------------
 def simulate(filePath):
+    '''
+    Parameters
+    ----------
+    filePath (str) : file path to input file 
+    '''
     import pyfaults as pf
 
     structName = ''
@@ -268,14 +273,11 @@ def simulate(filePath):
                 newSupercell = pf.supercell.Supercell(unitcell, numStacks, fltLyr, sVec[s], prob[p])
                 cellTag = 'S' + str(s+1) + '_P' + str(int(prob[p]*100))
                 supercells.append([cellTag, newSupercell])
-        
-        # generates supercell CIFs
-        for i in range(len(supercells)):
-            pf.toCif(supercells[i][1], './supercells/', supercells[i][0])
             
     #-----------------------------------------------------------------------------
             
     # transition matrix type SFs
+    transMatrix = []
     if simType.startswith('Transition'):
         import random as r
         
@@ -321,45 +323,73 @@ def simulate(filePath):
             transMatrix = pd.DataFrame(data=d)
             
             for stackProb in prob:
-            
                 seq = []
                 seq.append(transMatrix['Start Layer'][0])
                 
                 numUCLyrs = len(lyrs)
                 
+                # replace probability variables
+                numProb = []
+                numProbMin = []
+                numProbMax = []
+                for i in range(len(transMatrix.index)):
+                    lyrProb = transMatrix['P'][i]
+                    if isinstance(lyrProb, str):
+                        newProb = lyrProb
+                        newProb = newProb.replace('P', str(stackProb))
+                        newProb = newProb.replace('p', str(stackProb))
+
+                        if '-' in newProb:
+                            sub = newProb.split('-')
+                            newProb = float(sub[0])-float(sub[1])
+                            numProb.append(float(newProb))
+                            numProbMin.append(float(newProb))
+                            numProbMax.append(float(sub[0]))
+                        else:
+                            numProb.append(float(newProb))
+                            numProbMin.append(0.0)
+                            numProbMax.append(float(newProb))   
+                    else:
+                        numProb.append(float(newProb))
+                        numProbMin.append(0.0)
+                        numProbMax.append(newProb)
+                        
+                currP = 'P' + str(int(stackProb*100))
+                transMatrix[currP] = numProb
+                transMatrix[currP + '_min'] = numProbMin
+                transMatrix[currP + '_max'] = numProbMax
+                
                 for n in range(numUCLyrs * numStacks):
                     p = (r.randint(0,100) * 0.01)
-    
-                    possLyrIndex = []
+
+                    possibleTrans = []
                     for i in range(len(transMatrix.index)):
-                        lyrName = transMatrix['Start Layer'][i]
-                        if lyrName == seq[-1]:
-                            possLyrIndex.append(i)
-                
-                    for l in possLyrIndex:
-                        isNext = False
-                    
-                        lyrProb = transMatrix['P'][l]
+                        if transMatrix['Start Layer'][i] == seq[-1]:
+                            possibleTrans.append(i)
+
+                    nextLyr = []
+                    for i in possibleTrans:
+                        if transMatrix[currP][i] != 0.0:
+                            min = transMatrix[currP + '_min'][i]
+                            max = transMatrix[currP + '_max'][i]
                         
-                        if isinstance(lyrProb, str):
-                            if lyrProb == 'P' or lyrProb == 'p':
-                                if p <= stackProb:
-                                    isNext = True
-                                elif '-' in lyrProb:
-                                    sub = lyrProb.split('-')
-                                    if p > stackProb and p < float(sub[0]):
-                                        isNext = True
-                                elif float(lyrProb) == 1.0:
-                                    isNext = True
-                                
-                        if isNext == True:
-                            seq.append(transMatrix['Next Layer'][l])
-                            break
-                        
+                            if transMatrix[currP][i] == 1.0:
+                                nextLyr.append(transMatrix['Next Layer'][i])
+                            elif p >= min and p < max:
+                                nextLyr.append(transMatrix['Next Layer'][i])
+                            else:
+                                nextLyr.append('None')
+                        else:
+                            nextLyr.append('None')
+
+                    for i in nextLyr:
+                        if i != 'None':
+                            seq.append(i)
+                            
                 newTMLyrs = []
                 newTMLyrs.append(lyrs[0])
             
-                for i in range(1, len(seq)):
+                for i in range(1, len(seq)-1):
                     lyrName = seq[i]
                     if lyrName == 'F':
                         lyrName = fltLyr
@@ -368,35 +398,33 @@ def simulate(filePath):
                         n = i/2
                     elif i%2 != 0:
                         n = (i+1)/2
-    
+                    
                     adj = []
-                    for j in range(len(transMatrix.index)):
+                    for j in range(len(transMatrix.index)-1):
                         if transMatrix['Start Layer'][j] == lyrName:
                             if transMatrix['Next Layer'][j] == seq[i+1]:
                                 x = transMatrix['x'][j]
                                 y = transMatrix['y'][j]
                                 z = transMatrix['z'][j]
                                 adj = [x, y, z*n]
-                    
+                                
                     newLyrAtoms = []
                     for atom in lyrDict[lyrName]:
                         for a in atomDict:
                             if a==atom:
                                 newAtom = pf.layerAtom.LayerAtom(lyrName, atom, atomDict[a][0],
-                                                                 [float(atomDict[a][1]) + adj[0], 
-                                                                  float(atomDict[a][2]) + adj[1], 
-                                                                  float(atomDict[a][3]) + adj[2]], 
-                                                                 float(atomDict[a][4]), 
-                                                                 float(atomDict[a][5]), latt)
-                                newLyrAtoms.append(newAtom)
+                                                                     [float(atomDict[a][1]) + adj[0], 
+                                                                      float(atomDict[a][2]) + adj[1], 
+                                                                      float(atomDict[a][3]) + adj[2]], 
+                                                                     float(atomDict[a][4]), 
+                                                                     float(atomDict[a][5]), latt)
+                                newLyrAtoms.append(newAtom) 
                     newLyr = pf.layer.Layer(newLyrAtoms, latt, lyrName)
                     newTMLyrs.append(newLyr)
                     
-                    cellTag = 'P' + str(int(prob[p]*100))
-                    
-                    cell = pf.unitcell.Unitcell(cellTag, newTMLyrs, latt)
+                    cell = pf.unitcell.Unitcell(currP, newTMLyrs, latt)
                     supercell = pf.supercell.Supercell(cell, 1)
-                    supercells.append([cellTag, supercell])
+                    supercells.append([currP, supercell])
         
     #-----------------------------------------------------------------------------
     
@@ -463,10 +491,11 @@ def simulate(filePath):
                 newSupercell = pf.supercellAdjZ.SupercellAdjZ(unitcell, numStacks, lyrs[-1], fltLyr, zAdj, prob)
                 cellTag = 'P' + str(int(prob[p]*100))
                 supercells.append([cellTag, newSupercell])
-                
-            # generates supercell CIFs
-            for i in range(len(supercells)):
-                pf.toCif(supercells[i][1], './supercells/', supercells[i][0])
+    
+    #-----------------------------------------------------------------------------
+    # generates supercell CIFs
+    for i in range(len(supercells)):
+        pf.toCif(supercells[i][1], './supercells/', supercells[i][0])
     
     #-----------------------------------------------------------------------------
                 
