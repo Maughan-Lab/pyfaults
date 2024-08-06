@@ -45,7 +45,7 @@ Last updated: 08/05/2024
 * **diff_ints1** (*array_like*) -- dataset 1 difference in intensity values
 * **diff_ints2** (*array_like*) -- dataset 2 difference in intensity values
 
-* &nbsp;&nbsp; **Returns:**
+&nbsp;&nbsp; **Returns:**
 
 * **fitDiff** (*array_like*) -- difference of differences intensities
 
