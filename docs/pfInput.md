@@ -19,7 +19,7 @@ Last updated: 08/09/2024
 * **scDF** (*DataFrame*) -- DataFrame with supercell properties (faulted layer, probabilities, stacking vectors, number of stacks, z-component adjustment)
 * **simDF** (*DataFrame*) -- DataFrame with simulation properties (wavelength, maximum two theta, peak broadening term)
 
- ---
+---
 By Sinclair R. Combs
 
 Copyright 2023 Colorado School of Mines
