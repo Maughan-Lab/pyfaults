@@ -40,6 +40,12 @@ python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git
 
 [*simXRD* method](simXRD.md)
 
+[*pfInput* method](pfInput.md)
+
+[*pfInputGridSearch* method](pfInputGridSearch.md)
+
+[*pfInputTransMatrix* method](pfInputTransMatrix.md)
+
 [*simulate* methods](simulate.md)
 
 [*analyze* methods](analyze.md)
