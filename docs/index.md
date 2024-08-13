@@ -24,6 +24,8 @@ python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git
 ---
 ### Package Contents
 
+[top-level methods](topLevelMethods.md)
+
 [*layerAtom* class](layerAtom.md)
 
 [*layer* class](layer.md)
