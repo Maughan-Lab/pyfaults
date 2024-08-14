@@ -72,7 +72,7 @@ Last updated: 08/13/2024
 * **ints** (*array_like*) -- intensity values
 
 ---
-`mportExpt(path, fn, wl, maxTT, ext=None)`
+`importExpt(path, fn, wl, maxTT, ext=None)`
 
 &nbsp;&nbsp; Imports experimental X-ray diffraction data
 
