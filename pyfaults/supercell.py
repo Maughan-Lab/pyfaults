@@ -86,11 +86,7 @@ class Supercell(object):
         self._intLayer = None
         self.setParam(nStacks, conType)
         
-        if self.conType == 'Displacement':
-            self.setDisLayers(unitcell, fltLayer, stackVec, stackProb)
-            
-        if self.conType == 'Intercalation':
-            self.setIntLayers(unitcell, fltLayer, stackProb, zAdj, intLayer)
+        self.setLayers(unitcell, fltLayer, stackVec, stackProb, zAdj, intLayer)
         return
     
     # sets number of stacks and construction type ----------
@@ -101,8 +97,20 @@ class Supercell(object):
             self._conType = conType
         return
     
-    # constructs displacement supercell layers ----------
-    def setDisLayers(self, unitcell, fltLayer=None, stackVec=None, stackProb=None):
+    # constructs supercell layers ----------
+    def setLayers(self, unitcell, fltLayer=None, stackVec=None, stackProb=None, zAdj=None, intLayer=None):
+        if fltLayer is not None:
+            self._fltLayer = fltLayer
+        if stackVec is not None:
+            self._stackVec = stackVec
+        if stackProb is not None:
+            self._stackProb = stackProb
+        if zAdj is not None:
+            self._zAdj = zAdj
+        if intLayer is not None:
+            self._intLayer = intLayer
+        
+        
         newLayers = []
         for lyr in self.unitcell.layers:
             for n in range(self.nStacks):
@@ -110,9 +118,6 @@ class Supercell(object):
                 p = r.randint(0,100)
                 
                 if fltLayer is not None:
-                    self._fltLayer = fltLayer
-                    self._stackVec = stackVec
-                    self._stackProb = stackProb
                     if lyr.layerName == fltLayer:
                         if p <= (stackProb * 100):
                             isFlt = True
@@ -129,16 +134,26 @@ class Supercell(object):
                     newLayerName = lyr.layerName + tag + '_fault'
                     newLyr.setParam(layerName=newLayerName, 
                                     lattice=self.lattice)
+                    
                     for atom in newLyr.atoms:
                         alabel = atom.atomLabel.split('_')
-                        newXYZ = [atom.x, 
-                                  atom.y, 
-                                  ((atom.z + n) / self.nStacks)]
-                        fltXYZ = np.add(newXYZ, stackVec)
-                        atom.setParam(layerName=newLayerName, 
-                                      atomLabel=alabel[0], 
-                                      xyz=fltXYZ, 
-                                      lattice=self.lattice)
+                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                            
+                        if self.conType == 'Displacement':
+                            fltXYZ = np.add(newXYZ, stackVec)
+                        
+                        if self.conType == 'Intercalation':
+                            fltXYZ = np.add(newXYZ, [0,0,zAdj])
+                        
+                        atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
+                        
+                        if self.conType == 'Displacement':
+                            newLayers.append(newLyr)
+                        
+                        if self.conType == 'Intercalation':
+                            newLayers.append(intLayer)
+                    
+                    
                 if isFlt == False:
                     newLayerName = lyr.layerName + tag
                     newLyr.setParam(layerName=newLayerName, 
@@ -153,64 +168,8 @@ class Supercell(object):
                                       xyz=newXYZ, 
                                       lattice=self.lattice)
                 
-                newLayers.append(newLyr)
-        self._layers = newLayers
-        return
-
-    # constructs intercalation supercell layers ----------
-    def setIntLayers(self, unitcell, fltLayer=None, stackProb=None, zAdj=None, intLayer=None):
-        newLayers = []
-        for lyr in self.unitcell.layers:
-            for n in range(self.nStacks):
-                tag = '_n' + str(n+1)
-                p = r.randint(0,100)
-                
-                if fltLayer is not None:
-                    self._fltLayer = fltLayer
-                    self._zAdj = zAdj
-                    self._stackProb = stackProb
-                    if lyr.layerName == fltLayer:
-                        if p <= (stackProb * 100):
-                            isFlt = True
-                        elif p > (stackProb * 100):
-                            isFlt = False
-                    elif lyr.layerName != fltLayer:
-                        isFlt = False
-                elif fltLayer is None: 
-                    isFlt = False
-                
-                newLyr = cp.deepcopy(lyr)
-                
-                if isFlt == True:
-                    newLayerName = lyr.layerName + tag + '_fault'
-                    newLyr.setParam(layerName=newLayerName, 
-                                    lattice=self.lattice)
-                    for atom in newLyr.atoms:
-                        alabel = atom.atomLabel.split('_')
-                        newXYZ = [atom.x, 
-                                  atom.y, 
-                                  ((atom.z + n) / self.nStacks)]
-                        fltXYZ = np.add(newXYZ, [0,0,zAdj])
-                        atom.setParam(layerName=newLayerName, 
-                                      atomLabel=alabel[0], 
-                                      xyz=fltXYZ, 
-                                      lattice=self.lattice)
-                        newLayers.append(intLayer)
-                if isFlt == False:
-                    newLayerName = lyr.layerName + tag
-                    newLyr.setParam(layerName=newLayerName, 
-                                    lattice=self.lattice)
-                    for atom in newLyr.atoms:
-                        alabel = atom.atomLabel.split('_')
-                        newXYZ = [atom.x, 
-                                  atom.y, 
-                                  ((atom.z + n) / self.nStacks)]
-                        atom.setParam(layerName=newLayerName, 
-                                      atomLabel=alabel[0], 
-                                      xyz=newXYZ, 
-                                      lattice=self.lattice)
-                
-                newLayers.append(newLyr)
+                    newLayers.append(newLyr)
+                    
         self._layers = newLayers
         return
     
