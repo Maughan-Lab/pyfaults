@@ -21,6 +21,10 @@ import pyfaults.analyze
 import pyfaults.gridSearch
 import pyfaults.simulate
 import pyfaults.importCSV
+import pyfaults.pfInput
+import pyfaults.pfInputGridSearch
+import pyfaults.pfInputTransMatrix
+
 
 ''' TOP LEVEL METHODS '''
 # writes unit cell or supercell to CIF file ----------
