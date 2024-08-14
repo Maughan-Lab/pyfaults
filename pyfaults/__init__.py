@@ -5,9 +5,7 @@
 import pandas as pd
 import numpy as np
 
-#---------------------------------------------------------------------------------
-# submodules ---------------------------------------------------------------------
-#---------------------------------------------------------------------------------
+# submodules ----------
 from pyfaults.lattice import Lattice
 from pyfaults.layerAtom import LayerAtom
 from pyfaults.layer import Layer
@@ -16,30 +14,23 @@ from pyfaults.supercell import Supercell
 
 import pyfaults.layer
 import pyfaults.unitcell
-import pyfaults.unitCellFromCSV
 import pyfaults.supercell
 import pyfaults.genSupercells
 import pyfaults.simXRD
 import pyfaults.analyze
-import pyfaults.supercellAdjZ
 import pyfaults.gridSearch
 import pyfaults.simulate
-import pyfaults.TMSupercell
+import pyfaults.importCSV
 
 ''' TOP LEVEL METHODS '''
-#---------------------------------------------------------------------------------
-# writes unit cell or supercell to CIF file --------------------------------------
-#---------------------------------------------------------------------------------
+# writes unit cell or supercell to CIF file ----------
 def toCif(cell, path, fn):
     '''
     Parameters
     ----------
-    cell 
-        Unitcell or Supercell : structure to parse to cif file format
-    path
-        str : file save directory
-    fn
-        str : file name
+    cell (Unitcell or Supercell) : unit cell or supercell object
+    path (str) : CIF file location
+    fn (str) : CIF file name
     '''
     
     lines = []
@@ -97,38 +88,31 @@ def toCif(cell, path, fn):
             cif.write(i + '\n')
     cif.close()
 
-#---------------------------------------------------------------------------------
-# converts 2theta values to Q ----------------------------------------------------
-#---------------------------------------------------------------------------------
+# converts 2theta values to Q ----------
 def tt_to_q(twotheta, wavelength):
     '''
     Parameters
     ----------
-    twotheta
-        nparray : 2theta values (degrees)
-    wavelength
-        float : instrument wavelength (A)
+    twotheta (array_like) : two theta values
+    wavelength (float) : instrument wavelength
 
     Returns
     -------
-    Q : nparray
+    Q (array_like) : Q values
     '''
     Q = 4 * np.pi * np.sin((twotheta * np.pi)/360) / wavelength
     return Q
 
-#---------------------------------------------------------------------------------
-# normalizes intensity values ----------------------------------------------------
-#---------------------------------------------------------------------------------
+# normalizes intensity values ----------
 def norm(ints):
     '''
     Parameters
     ----------
-    ints
-        nparray : intensity values
+    ints (array_like) : intensity values
 
     Returns
     -------
-    norm_ints : nparray
+    norm_ints (array_like) : normalized intensity values
     '''
     norm_ints = []
     for i in ints:
@@ -140,45 +124,35 @@ def norm(ints):
     norm_ints = np.array(norm_ints)
     return norm_ints
 
-#---------------------------------------------------------------------------------
-# imports atomic parameters from CSV file ---------------------------------------- 
-#---------------------------------------------------------------------------------       
+# imports atomic parameters from CSV file ----------     
 def importCSV(path, fn):
     '''
     Parameters
     ----------
-    path
-        str : directory of CSV file
-    fn
-        str : file name
+    path (str) : CSV file path
+    fn (str) : CSV file name
 
     Returns
     -------
-    df : dataframe
+    df (DataFrame) : DataFrame containing atomic parameter information
     '''
     df = pd.read_csv(path + fn + '.csv')
     return df
 
-#---------------------------------------------------------------------------------
-# imports text file with XRD data ------------------------------------------------
-#---------------------------------------------------------------------------------
+# imports text file with XRD data ----------
 def importFile(path, fn, ext=None, norm=True):
     '''
     Parameters
     ----------
-    path
-        str : directory of text file
-    fn
-        str : file name
-    ext
-        str [optional] : file extension if not '.txt'
-    norm
-        bool [optional] : normalizes imported y data if True (default)
+    path (str) : file path
+    fn (str) : file name 
+    ext (str, optional) : file extension, defaults to '.txt'
+    norm (bool) : set to True to normalize intensity data, defaults to False
 
     Returns
     -------
-    q : nparray
-    ints : nparray
+    q (array_like) : Q values
+    ints (array_like) : intensity values
     '''
     
     if ext is None:
@@ -187,30 +161,21 @@ def importFile(path, fn, ext=None, norm=True):
         q, ints = np.loadtxt(path + fn + ext, unpack=True, dtype=float)
     return q, ints
     
-#---------------------------------------------------------------------------------
-# import experimental XRD and adjusts 2theta range to match simulated XRD --------
-#---------------------------------------------------------------------------------
+# import experimental XRD and adjusts 2theta range to match simulated XRD ----------
 def importExpt(path, fn, wl, maxTT, ext=None):
     '''
     Parameters
     ----------
-    path
-        str : experimental data file directory
-    fn
-        str : file name
-    wl
-        float : instrument wavelength (A)
-    maxTT
-        float : maximum 2theta value (degrees)
-    ext
-        str [optional] : file extension if not '.txt'
+    path (str) : file path
+    fn (str) : file name 
+    wl (float) : instrument wavelength
+    maxTT (float) : maximum two theta value
+    ext (str, optional) : file extension, defaults to '.txt'
 
     Returns
     -------
-    exptQ
-        nparray : Q values (A^-1)
-    exptNorm : nparray
-        nparray : normalized intensity values
+    exptQ (array_like) : Q values
+    exptNorm (array_like) : normalized intensity values
     '''
     # import experimental data
     exptTT, exptInts = importFile(path, fn, ext=ext)
@@ -233,10 +198,8 @@ def importExpt(path, fn, wl, maxTT, ext=None):
     
     return exptQ, exptNorm
 
-    
-#---------------------------------------------------------------------------------      
-# assert imports -----------------------------------------------------------------
-#---------------------------------------------------------------------------------
+          
+# assert imports ----------
 assert Lattice
 assert LayerAtom
 assert Layer
