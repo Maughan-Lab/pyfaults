@@ -12,21 +12,7 @@ from pyfaults.layer import Layer
 from pyfaults.unitcell import Unitcell
 from pyfaults.supercell import Supercell
 
-import pyfaults.layer
-import pyfaults.unitcell
-import pyfaults.supercell
-import pyfaults.genSupercells
-import pyfaults.simXRD
-import pyfaults.analyze
-import pyfaults.gridSearch
-import pyfaults.simulate
-import pyfaults.importCSV
-import pyfaults.pfInput
-import pyfaults.pfInputGridSearch
-import pyfaults.pfInputTransMatrix
 
-
-''' TOP LEVEL METHODS '''
 # writes unit cell or supercell to CIF file ----------
 def toCif(cell, path, fn):
     '''
@@ -91,6 +77,8 @@ def toCif(cell, path, fn):
         for i in lines:
             cif.write(i + '\n')
     cif.close()
+    
+    return
 
 # converts 2theta values to Q ----------
 def tt_to_q(twotheta, wavelength):
