@@ -57,11 +57,11 @@ class Layer(object):
             
     # generates CIF file of layer ----------
     def toCif(self, path):
-    '''
-    Parameters
-    ----------
-    path (str) : file path
-    '''
+        '''
+        Parameters
+        ----------
+        path (str) : file path
+        '''
         from pyfaults import toCif
         toCif(self, path, 'Layer_' + self.layerName + '_CIF')
     
