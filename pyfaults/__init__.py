@@ -12,6 +12,16 @@ from pyfaults.layer import Layer
 from pyfaults.unitcell import Unitcell
 from pyfaults.supercell import Supercell
 
+import pyfaults.analyze
+import pyfaults.genSupercells
+import pyfaults.gridSearch
+import pyfaults.importCSV
+import pyfaults.pfInput
+import pyfaults.pfInputGridSearch
+import pyfaults.pfInputTransMatrix
+import pyfaults.simXRD
+import pyfaults.simulate
+
 
 # writes unit cell or supercell to CIF file ----------
 def toCif(cell, path, fn):
