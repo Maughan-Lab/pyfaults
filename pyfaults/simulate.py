@@ -1,6 +1,6 @@
 import os, glob
 
-def simulateRev(path):
+def simulate(path):
     '''
     Parameters
     ----------
