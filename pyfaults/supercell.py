@@ -103,13 +103,13 @@ class Supercell(object):
             self._fltLayer = fltLayer
         if stackVec is not None:
             self._stackVec = stackVec
-        if stackVec is None:
+        else:
             self._stackVec = [0, 0, 0]
         if stackProb is not None:
             self._stackProb = stackProb
         if zAdj is not None:
             self._zAdj = zAdj
-        if zAdj is None:
+        else:
             self._zAdj = 0
         if intLayer is not None:
             self._intLayer = intLayer
