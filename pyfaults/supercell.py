@@ -103,10 +103,14 @@ class Supercell(object):
             self._fltLayer = fltLayer
         if stackVec is not None:
             self._stackVec = stackVec
+        if stackVec is None:
+            self._stackVec = [0, 0, 0]
         if stackProb is not None:
             self._stackProb = stackProb
         if zAdj is not None:
             self._zAdj = zAdj
+        if zAdj is None:
+            self._zAdj = 0
         if intLayer is not None:
             self._intLayer = intLayer
         
@@ -139,18 +143,14 @@ class Supercell(object):
                         alabel = atom.atomLabel.split('_')
                         newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
                             
-                        if self.conType == 'Displacement':
-                            fltXYZ = np.add(newXYZ, stackVec)
-                        
-                        if self.conType == 'Intercalation':
-                            fltXYZ = np.add(newXYZ, [0,0,zAdj])
+                        fltXYZ = np.add(newXYZ, stackVec)
+                        fltXYZ = np.add(fltXYZ, [0,0,zAdj])
                         
                         atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
                         
-                        if self.conType == 'Displacement':
-                            newLayers.append(newLyr)
-                        
-                        if self.conType == 'Intercalation':
+                        newLayers.append(newLyr)
+
+                        if self.intLayer is not None:
                             newLayers.append(intLayer)
                     
                     
