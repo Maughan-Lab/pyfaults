@@ -13,7 +13,6 @@ class Supercell(object):
     ----------
     unitcell (Unitcell) : base unit cell
     nStacks (int) : number of unit cell stacks in supercell
-    conType (str) : type of supercell construction, can be 'Displacement' or 'Intercalation'
     fltLayer (str, optional) : faulted layer name
     stackVec (array_like, optional) : displacement vector [x,y,z] for faulted layer in fractional coordinates
     stackProb (float, optional) : stacking fault probability
@@ -32,10 +31,6 @@ class Supercell(object):
     nStacks =\
         property(lambda self: self._nStacks,
                  doc='int : number of stacks in supercell')
-    
-    conType =\
-        property(lambda self: self._conType,
-                 doc='str : Displacement, Transition Matrix, or Intercalation')
     
     layers =\
         property(lambda self: self._layers, 
@@ -65,7 +60,7 @@ class Supercell(object):
                  doc='list (Layer) : inserted intercalation layer')
     
     # initialization, defines Supercell defaults ----------
-    def __init__(self, unitcell, nStacks, conType, fltLayer=None, stackVec=None, stackProb=None, zAdj=None, intLayer=None):
+    def __init__(self, unitcell, nStacks, fltLayer=None, stackVec=None, stackProb=None, zAdj=None, intLayer=None):
         
         from pyfaults.lattice import Lattice
         self._unitcell = unitcell
@@ -77,24 +72,21 @@ class Supercell(object):
                           unitcell.lattice.gamma)
         self._lattice = newLatt
         self._nStacks = None
-        self._conType = None
         self._layers = None
         self._fltLayer = None
         self._stackVec = None
         self._stackProb = None
         self._zAdj = None
         self._intLayer = None
-        self.setParam(nStacks, conType)
+        self.setParam(nStacks)
         
         self.setLayers(unitcell, fltLayer, stackVec, stackProb, zAdj, intLayer)
         return
     
     # sets number of stacks and construction type ----------
-    def setParam(self, nStacks=None, conType=None):
+    def setParam(self, nStacks=None):
         if nStacks is not None:
             self._nStacks = nStacks
-        if conType is not None:
-            self._conType = conType
         return
     
     # constructs supercell layers ----------
@@ -103,14 +95,10 @@ class Supercell(object):
             self._fltLayer = fltLayer
         if stackVec is not None:
             self._stackVec = stackVec
-        else:
-            self._stackVec = [0, 0, 0]
         if stackProb is not None:
             self._stackProb = stackProb
         if zAdj is not None:
             self._zAdj = zAdj
-        else:
-            self._zAdj = 0
         if intLayer is not None:
             self._intLayer = intLayer
         
@@ -142,16 +130,21 @@ class Supercell(object):
                     for atom in newLyr.atoms:
                         alabel = atom.atomLabel.split('_')
                         newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
-                            
-                        fltXYZ = np.add(newXYZ, stackVec)
-                        fltXYZ = np.add(fltXYZ, [0,0,zAdj])
+
+                        fltXYZ = [0, 0, 0]
+
+                        if stackVec is not None:
+                            fltXYZ = np.add(newXYZ, stackVec)
+
+                        if zAdj is not None:
+                            fltXYZ = np.add(fltXYZ, [0,0,zAdj])
                         
                         atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
                         
-                        newLayers.append(newLyr)
+                    newLayers.append(newLyr)
 
-                        if self.intLayer is not None:
-                            newLayers.append(intLayer)
+                    if self.intLayer is not None:
+                        newLayers.append(intLayer)
                     
                     
                 if isFlt == False:
