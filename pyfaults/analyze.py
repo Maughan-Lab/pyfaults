@@ -4,6 +4,56 @@
 
 import numpy as np
 
+# get parameters for normalization ----------
+def getNormVals(q, ints):
+    
+    intsMax = 0
+    maxIndex = 0
+    
+    for i in range(len(ints)):
+        if ints[i] > intsMax:
+            intsMax = ints[i]
+            maxIndex = i
+            
+    qAtIntsMax = q[maxIndex]
+    
+    intsMin = np.min(ints)
+    
+    return intsMax, qAtIntsMax, maxIndex, intsMin
+
+
+# normalize PXRD to experimental data ----------
+def normalizeToExpt(exptQ, exptInts, q, ints):
+    
+    intsMax, qAtIntsMax, maxIndex, intsMin = getNormVals(exptQ, exptInts)
+    
+    normInts = []
+    
+    for i in range(len(ints)):
+        if i !=0:
+            normInts.append((ints[i] - intsMin) / (intsMax - intsMin))
+        elif i == 0:
+            normInts.append(0)
+            
+    return normInts
+    
+    
+# normalize PXRD to faultless supercell data ----------
+def normalizeToCalc(nofaultQ, nofaultInts, q, ints):
+    
+    intsMax, qAtIntsMax, maxIndex, intsMin = getNormVals(nofaultQ, nofaultInts)
+    
+    normInts = []
+    
+    for i in range(len(ints)):
+        if i !=0:
+            normInts.append((ints[i] - intsMin) / (intsMax - intsMin))
+        elif i == 0:
+            normInts.append(0)
+            
+    return normInts
+
+
 # calculates a difference curve between two sets of PXRD data ----------
 def diffCurve(q1, q2, ints1, ints2):
     '''

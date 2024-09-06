@@ -22,7 +22,6 @@ def fullSim(path, cif, wl, tt_max, savePath, pw=None, bg=None):
     q (array_like) : calculated Q values
     ints (array_like) : calculated intensity values, normalized
     '''
-    from pyfaults import norm
     
     # load cif
     struct = df.Crystal(path + cif + '.cif')
@@ -42,12 +41,10 @@ def fullSim(path, cif, wl, tt_max, savePath, pw=None, bg=None):
                                              background=bg, 
                                              powder_average=True)
     
-    norm_ints = norm(ints)
-    
     # save simulation data
     with open(savePath + cif + '_sim.txt', 'w') as f:
-        for (q, norm_ints) in zip(q, norm_ints):
-            f.write('{0} {1}\n'.format(q, norm_ints))
+        for (q, ints) in zip(q, ints):
+            f.write('{0} {1}\n'.format(q, ints))
     f.close() 
     
-    return q, norm_ints 
+    return q, ints 
