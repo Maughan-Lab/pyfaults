@@ -105,27 +105,6 @@ def tt_to_q(twotheta, wavelength):
     Q = 4 * np.pi * np.sin((twotheta * np.pi)/360) / wavelength
     return Q
 
-# normalizes intensity values ----------
-def norm(ints):
-    '''
-    Parameters
-    ----------
-    ints (array_like) : intensity values
-
-    Returns
-    -------
-    norm_ints (array_like) : normalized intensity values
-    '''
-    norm_ints = []
-    for i in ints:
-        if i != 0:
-            norm_ints.append(i / np.max(ints))
-        elif i == 0:
-            norm_ints.append(0)
-            
-    norm_ints = np.array(norm_ints)
-    return norm_ints
-
 # imports atomic parameters from CSV file ----------     
 def importCSV(path, fn):
     '''
@@ -194,11 +173,8 @@ def importExpt(path, fn, wl, maxTT, ext=None):
     
     # convert to Q
     exptQ = tt_to_q(truncTT, wl)
-    # normalize intensities
-    exptIntsMin = truncInts - np.min(truncInts)
-    exptNorm = norm(exptIntsMin)
     
-    return exptQ, exptNorm
+    return exptQ, truncInts
 
           
 # assert imports ----------
