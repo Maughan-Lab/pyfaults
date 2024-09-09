@@ -27,11 +27,19 @@ def normalizeToExpt(exptQ, exptInts, q, ints):
     
     intsMax, qAtIntsMax, maxIndex, intsMin = getNormVals(exptQ, exptInts)
     
+    qRange = [qAtIntsMax-0.1, qAtIntsMax+0.1]
+    
+    normMax = 0
+    for i in range(len(q)):
+        if q[i] >= qRange[0] and q[i] <= qRange[1]:
+            if ints[i] > normMax:
+                normMax = ints[i]
+    
     normInts = []
     
     for i in range(len(ints)):
         if i !=0:
-            normInts.append((ints[i] - intsMin) / (intsMax - intsMin))
+            normInts.append((ints[i] - intsMin) / (normMax - intsMin))
         elif i == 0:
             normInts.append(0)
             
@@ -43,11 +51,13 @@ def normalizeToCalc(nofaultQ, nofaultInts, q, ints):
     
     intsMax, qAtIntsMax, maxIndex, intsMin = getNormVals(nofaultQ, nofaultInts)
     
+    normMax = ints[maxIndex]
+    
     normInts = []
     
     for i in range(len(ints)):
         if i !=0:
-            normInts.append((ints[i] - intsMin) / (intsMax - intsMin))
+            normInts.append((ints[i] - intsMin) / (normMax - intsMin))
         elif i == 0:
             normInts.append(0)
             
