@@ -105,21 +105,6 @@ def tt_to_q(twotheta, wavelength):
     Q = 4 * np.pi * np.sin((twotheta * np.pi)/360) / wavelength
     return Q
 
-# imports atomic parameters from CSV file ----------     
-def importCSV(path, fn):
-    '''
-    Parameters
-    ----------
-    path (str) : CSV file path
-    fn (str) : CSV file name
-
-    Returns
-    -------
-    df (DataFrame) : DataFrame containing atomic parameter information
-    '''
-    df = pd.read_csv(path + fn + '.csv')
-    return df
-
 # imports text file with XRD data ----------
 def importFile(path, fn, ext=None, norm=True):
     '''
