@@ -17,6 +17,7 @@ def importCSV(path, fn, lattParams, lyrNames):
     unitcell (Unitcell) : new unit cell
     ''' 
     import pyfaults as pf
+    import pandas as pd
 
     csv = pd.read_csv(path + fn + '.csv')
     
