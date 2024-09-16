@@ -30,7 +30,7 @@ def importCSV(path, fn, lattParams, lyrNames):
     
     lyrs = pf.layer.getLayers(csv, latt, lyrNames)
     
-    unitcell = pf.unitcell.Unitcell(CSVName, lyrs, latt)
-    unitcell.toCif(CSVPath)
+    unitcell = pf.unitcell.Unitcell(fn, lyrs, latt)
+    unitcell.toCif(path)
     
     return unitcell
