@@ -36,7 +36,7 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
     
     for stackProb in prob:
         seq = []
-        seq.append(transMatrix['Start Layer'][0])
+        seq.append(transMatrix.iloc[0]['Start Layer'])
         
         numUCLyrs = len(lyrs)
         
@@ -70,8 +70,9 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
         transMatrix[currP] = numProb
         transMatrix[currP + '_min'] = numProbMin
         transMatrix[currP + '_max'] = numProbMax
-        
-        for n in range(numUCLyrs * numStacks):
+
+        total = int(numUCLyrs * numStacks)
+        for n in range(total):
             p = (r.randint(0,100) * 0.01)
 
             possibleTrans = []
@@ -110,30 +111,23 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
                 n = i/2
             elif i%2 != 0:
                 n = (i+1)/2
-            
-            adj = []
-            for j in range(len(transMatrix.index)-1):
-                if transMatrix['Start Layer'][j] == lyrName:
-                    if transMatrix['Next Layer'][j] == seq[i+1]:
-                        x = transMatrix['x'][j]
-                        y = transMatrix['y'][j]
-                        z = transMatrix['z'][j]
-                        adj = [x, y, z*n]
+
+            test = transMatrix[(transMatrix['Start Layer'] == lyrName) & (transMatrix['Next Layer'] == seq[i+1])]
+            adj = [test.iloc[0]['x'], test.iloc[0]['y'], test.iloc[0]['z']*n]
                         
             newLyrAtoms = []
-            for atom in lyrDict[lyrName]:
-                for a in atomDict:
-                    if a==atom:
-                        newAtom = pf.layerAtom.LayerAtom(lyrName, atom, atomDict[a][0],
+            for a in lyrDict[lyrName]:
+                newAtom = pf.layerAtom.LayerAtom(lyrName, a, atomDict[a][0],
                                                              [float(atomDict[a][1]) + adj[0], 
                                                               float(atomDict[a][2]) + adj[1], 
                                                               float(atomDict[a][3]) + adj[2]], 
                                                              float(atomDict[a][4]), 
                                                              float(atomDict[a][5]), latt)
-                        newLyrAtoms.append(newAtom) 
+                newLyrAtoms.append(newAtom) 
             newLyr = pf.layer.Layer(newLyrAtoms, latt, lyrName)
             newTMLyrs.append(newLyr)
-            
+
+        newTMLyrs.pop(0)
         cell = pf.unitcell.Unitcell(currP, newTMLyrs, latt)
         cells.append([cell, currP])
             
