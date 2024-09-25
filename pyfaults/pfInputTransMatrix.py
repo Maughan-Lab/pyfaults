@@ -1,7 +1,3 @@
-import random as r
-import pandas as pd
-import numpy as np
-
 def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, latt):
     import pyfaults as pf
     transMatrix = []
@@ -12,7 +8,7 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
     tmStartLyr = []
     tmNextLyr = []
     tmProb = []
-    tmXvec = []
+    tmXvec = []  
     tmYvec = []
     tmZvec = []
     
@@ -75,7 +71,7 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
         transMatrix[currP + '_max'] = numProbMax
 
         total = int(numUCLyrs * numStacks)
-        for n in range(total):
+        while len(seq) < total:
             p = (r.randint(0,100) * 0.01)
 
             possibleTrans = []
@@ -119,8 +115,6 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
         nCount = 0
         for i in range(1, len(seq)-1):
             lyrName = seq[i]
-            if lyrName == 'F':
-                lyrName = fltLyr
 
             counter = counter + 1
             if counter == numUCLyrs:
@@ -129,29 +123,37 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
 
             test = transMatrix[(transMatrix['Start Layer'] == lyrName) & (transMatrix['Next Layer'] == seq[i+1])]
             adj = [test.iloc[0]['x'], test.iloc[0]['y'], test.iloc[0]['z']]
-                        
+            print(adj)
+            
             newLyrAtoms = []
-            for a in lyrDict[lyrName]:
-                newX = float(atomDict[a][1]) + adj[0]
-                newY = float(atomDict[a][2]) + adj[1]
-                newZ = np.round(float((atomDict[a][3]+nCount)/numStacks + adj[2]), 2)
-
-                if newX > 1:
-                    newX = newX-1
-                if newY > 1:
-                    newY = newY-1
-                if newZ > 1:
-                    newZ = newZ-1
+            if lyrName == 'F':
+                for a in lyrDict[fltLyr]:
+                    newX = float(atomDict[a][1]) + adj[0]
+                    newY = float(atomDict[a][2]) + adj[1]
+                    newZ = np.round(float((atomDict[a][3]+nCount)/numStacks + adj[2]), 2)
+                    
+                    newAtom = pf.layerAtom.LayerAtom(lyrName, a, atomDict[a][0], [newX, newY, newZ], float(atomDict[a][4]), 
+                                                     float(atomDict[a][5]), newLatt)
+                    newLyrAtoms.append(newAtom)  
+                    
+                newLyr = pf.layer.Layer(newLyrAtoms, newLatt, lyrName)
+                newTMLyrs.append(newLyr)
                 
-                newAtom = pf.layerAtom.LayerAtom(lyrName, a, atomDict[a][0],
-                                                             [newX, newY, newZ], 
-                                                             float(atomDict[a][4]), 
-                                                             float(atomDict[a][5]), newLatt)
-                newLyrAtoms.append(newAtom) 
-            newLyr = pf.layer.Layer(newLyrAtoms, newLatt, lyrName)
-            newTMLyrs.append(newLyr)
+            else:    
+                for a in lyrDict[lyrName]:
+                    newX = float(atomDict[a][1]) + adj[0]
+                    newY = float(atomDict[a][2]) + adj[1]
+                    newZ = np.round(float((atomDict[a][3]+nCount)/numStacks + adj[2]), 2)
+                        
+                    newAtom = pf.layerAtom.LayerAtom(lyrName, a, atomDict[a][0], [newX, newY, newZ], float(atomDict[a][4]), 
+                                                     float(atomDict[a][5]), newLatt)
+                    newLyrAtoms.append(newAtom)     
+                
+                newLyr = pf.layer.Layer(newLyrAtoms, newLatt, lyrName)
+                newTMLyrs.append(newLyr)
 
         cell = pf.unitcell.Unitcell(currP, newTMLyrs, newLatt)
         cells.append([cell, currP])
-            
+    
+    print(seq)
     return cells
