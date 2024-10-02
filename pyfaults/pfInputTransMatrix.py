@@ -1,5 +1,10 @@
 def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, latt):
+    
+    import pandas as pd
+    import numpy as np
+    import random as r
     import pyfaults as pf
+    
     transMatrix = []
     
     f = open(path, 'r')
@@ -155,5 +160,4 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
         cell = pf.unitcell.Unitcell(currP, newTMLyrs, newLatt)
         cells.append([cell, currP])
     
-    print(seq)
     return cells
