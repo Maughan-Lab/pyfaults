@@ -109,7 +109,7 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
             newAtom = pf.layerAtom.LayerAtom(lyrs[0].layerName, a, atomDict[a][0],
                                                              [float(atomDict[a][1]), 
                                                               float(atomDict[a][2]), 
-                                                              float(atomDict[a][3]/numStacks)], 
+                                                              (float(atomDict[a][3])/numStacks)], 
                                                              float(atomDict[a][4]), 
                                                              float(atomDict[a][5]), newLatt)
             startLyrAtoms.append(newAtom)
