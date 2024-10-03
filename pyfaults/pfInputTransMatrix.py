@@ -128,7 +128,6 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
 
             test = transMatrix[(transMatrix['Start Layer'] == lyrName) & (transMatrix['Next Layer'] == seq[i+1])]
             adj = [test.iloc[0]['x'], test.iloc[0]['y'], test.iloc[0]['z']]
-            print(adj)
             
             newLyrAtoms = []
             if lyrName == 'F':
