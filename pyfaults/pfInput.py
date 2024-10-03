@@ -3,6 +3,7 @@
 ##################################################################################
 
 import pandas as pd
+import os
 
 # read PyFaults input file ----------
 def pfInput(path):
@@ -27,22 +28,24 @@ def pfInput(path):
     inputFile = f.readlines()
     
     for i in range(len(inputFile)):
-        # structure name
+        # get structure name
         if inputFile[i].startswith('NAME'):
             structName = inputFile[i].split(':')[1]
             structName = structName.replace('\n', '')
         
-        # type of stacking fault system: Displacement, Transition Matrix, or Intercalation
+        # get type of stacking fault system
+        # must be Displacement, Transition Matrix, or Intercalation
         if inputFile[i].startswith('TYPE'):
             simType = inputFile[i].split(':')[1]
             simType = simType.replace('\n', '')
             
-        # grid search function: None, Step, or Random
+        # get grid search function
+        # must be None, Step, or Random
         if inputFile[i].startswith('GRID SEARCH'):
             gridSearch = inputFile[i].split(':')[1]
             gridSearch = gridSearch.replace('\n', '')
         
-        # lattice parameters
+        # get lattice parameters
         if inputFile[i].startswith('LATTICE'):
             removeVar = inputFile[i].split(':')[1]
             strLatt= removeVar.split(',')
@@ -54,7 +57,7 @@ def pfInput(path):
                                       beta=float(strLatt[4]), 
                                       gamma=float(strLatt[5]))
         
-        # number of unique layers defined
+        # get number of unique layers
         if inputFile[i].startswith('NUM LAYERS'):
             numLyrs = inputFile[i].split(':')[1]
             numLyrs = numLyrs.replace('\n', '')
@@ -235,5 +238,18 @@ def pfInput(path):
     simData = [wl, maxTT, pw]
     simCols = ['wl', 'maxTT', 'pw']
     simDF = pd.DataFrame(data=[simData], columns=[simCols])
+    
+    # generate supercells
+    if simType == 'Displacement':
+        pf.genSupercells.genSupercells(unitcell, numStacks, fltLyr, prob, sVec)
+        
+    elif simType == 'Transition Matrix':
+        tmCells = pf.pfInputTransMatrix.pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, latt)
+        
+        if os.path.exists('./supercells/') == False:
+            os.mkdir('./supercells/')
+        
+        for i in range(len(tmCells)):
+            pf.toCif(tmCells[i][0], './supercells/', tmCells[i][1])
             
     return unitcell, ucDF, gsDF, scDF, simDF
