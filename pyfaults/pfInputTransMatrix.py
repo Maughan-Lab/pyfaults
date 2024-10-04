@@ -118,15 +118,18 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
 
         counter = 0
         nCount = 0
-        for i in range(1, len(seq)-1):
+        for i in range(1, len(seq)):
             lyrName = seq[i]
 
             counter = counter + 1
             if counter == numUCLyrs:
                 nCount = nCount + 1
                 counter = 0
-
-            test = transMatrix[(transMatrix['Start Layer'] == lyrName) & (transMatrix['Next Layer'] == seq[i+1])]
+                
+            if i < len(seq)-1:
+                test = transMatrix[(transMatrix['Start Layer'] == lyrName) & (transMatrix['Next Layer'] == seq[i+1])]
+            elif i == len(seq):
+                test = transMatrix[(transMatrix['Start Layer'] == lyrName) & (transMatrix['Next Layer'] == seq[0])]
             adj = [test.iloc[0]['x'], test.iloc[0]['y'], test.iloc[0]['z']]
             
             newLyrAtoms = []
@@ -158,5 +161,5 @@ def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, l
 
         cell = pf.unitcell.Unitcell(currP, newTMLyrs, newLatt)
         cells.append([cell, currP])
-    
+
     return cells
