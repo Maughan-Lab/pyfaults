@@ -129,6 +129,7 @@ def r2val(q1, q2, ints1, ints2):
 
     return r2
 
+# calculates a difference curve and and R^2 value between two sets of PXRD data ----------
 def diff_r2(q1, q2, ints1, ints2):
     import sklearn.metrics as skl
     
