@@ -1,11 +1,11 @@
 ### simulate.py
 
-Last updated: 08/14/2024
+Last updated: 10/05/2024
 
 ---
-`fullSim(path, cif, wl, tt_max, savePath, pw=None, bg=None)`
+`simulate(path)`
 
-&nbsp;&nbsp; Calculates powder X-ray diffraction patterns for multiple supercells in file directory
+&nbsp;&nbsp; Performs a full supercell generation and PXRD calculation routine from a PyFaults input file
 
 &nbsp;&nbsp; **Parameters:**
 
