@@ -11,7 +11,7 @@ GitHub: <https://github.com/Maughan-Lab/pyfaults>
 
 Citation DOI:
 
-Last Updated: 08/05/2024
+Last Updated: 10/05/2024
 
 ---
 **Installation:**
@@ -48,7 +48,9 @@ python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git
 
 [*pfInputTransMatrix* method](pfInputTransMatrix.md)
 
-[*simulate* methods](simulate.md)
+[*simulate* method](simulate.md)
+
+[*gridSearchPlot* method](gridSearchPlot.md)
 
 [*analyze* methods](analyze.md)
 
