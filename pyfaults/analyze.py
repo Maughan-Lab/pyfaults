@@ -129,6 +129,28 @@ def r2val(q1, q2, ints1, ints2):
 
     return r2
 
+def diff_r2(q1, q2, ints1, ints2):
+    import sklearn.metrics as skl
+    
+    q_list = []
+    ints1_list = []
+    ints2_list = []
+    for i in range(len(q1)):
+        q1_val = float('%.3f'%(q1[i]))
+        for j in range(len(q2)):
+            q2_val = float('%.3f'%(q2[j]))
+            if q1_val == q2_val:
+                q_list.append(q1_val)
+                ints1_list.append(ints1[i])
+                ints2_list.append(ints2[j])
+    ints1_arr = np.array(ints1_list)
+    ints2_arr = np.array(ints2_list)
+    diff_ints = np.subtract(ints1_arr, ints2_arr)
+
+    r2 = skl.r2_score(ints1_arr, ints2_arr)
+
+    return r2, q_list, diff_ints
+
 # calculates difference between two difference curves ----------
 def fitDiff(diff_ints1, diff_ints2):
     '''
