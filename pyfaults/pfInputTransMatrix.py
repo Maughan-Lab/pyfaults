@@ -1,3 +1,7 @@
+##################################################################################
+# Author: Sinclair R. Combs
+##################################################################################
+
 def pfInputTransMatrix(path, prob, lyrs, numStacks, fltLyr, lyrDict, atomDict, latt):
     
     import pandas as pd
