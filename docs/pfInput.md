@@ -5,7 +5,7 @@ Last updated: 08/09/2024
 ---
 `pfInput(path)`
 
-&nbsp;&nbsp; Reads PyFaults input file
+&nbsp;&nbsp; Reads PyFaults input file and generates supercells
 
 &nbsp;&nbsp; **Parameters:**
 
