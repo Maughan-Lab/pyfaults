@@ -1,7 +1,7 @@
 PyFaults is an open-source Python library designed to model stacking fault disorder in crystalline materials and qualitatively assess the characteristic selective broadening effects in powder X-ray diffraction (PXRD).
 
 ---
-Version 1.1.4
+Version 1.2.2
 
 Copyright 2023 Colorado School of Mines
 
