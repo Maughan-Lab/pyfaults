@@ -137,14 +137,21 @@ class Supercell(object):
                             fltXYZ = np.add(newXYZ, stackVec)
 
                         if zAdj is not None:
-                            fltXYZ = np.add(fltXYZ, [0,0,zAdj])
+                            fltXYZ = np.add(newXYZ, [0,0,zAdj])
                         
                         atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
                         
                     newLayers.append(newLyr)
 
                     if self.intLayer is not None:
-                        newLayers.append(intLayer)
+                        intLayerCopy = cp.deepcopy(intLayer)
+                        intLayer.setParam(lattice=self.lattice)
+                        for atom in intLayerCopy.atoms:
+                            alabel = atom.atomLabel.split('_')
+                            newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                            atom.setParam(atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
+                            
+                        newLayers.append(intLayerCopy)
                     
                     
                 if isFlt == False:
