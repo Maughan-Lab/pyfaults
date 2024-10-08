@@ -104,6 +104,7 @@ class Supercell(object):
         
         
         newLayers = []
+        zCount = 0
         for lyr in self.unitcell.layers:
             for n in range(self.nStacks):
                 tag = '_n' + str(n+1)
@@ -129,7 +130,7 @@ class Supercell(object):
                     
                     for atom in newLyr.atoms:
                         alabel = atom.atomLabel.split('_')
-                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks) + (zCount*zAdj)]
 
                         fltXYZ = [0, 0, 0]
 
@@ -152,6 +153,9 @@ class Supercell(object):
                             atom.setParam(atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
                             
                         newLayers.append(intLayerCopy)
+
+                    if zAdj is not None:
+                        zCount = zCount+1
                     
                     
                 if isFlt == False:
