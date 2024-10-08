@@ -150,7 +150,7 @@ class Supercell(object):
                         for atom in intLayerCopy.atoms:
                             alabel = atom.atomLabel.split('_')
                             newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
-                            atom.setParam(atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
+                            atom.setParam(layerName='I', atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
                             
                         newLayers.append(intLayerCopy)
 
