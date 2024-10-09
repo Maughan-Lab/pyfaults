@@ -115,7 +115,7 @@ class Supercell(object):
             self.lattice.c = self.lattice.c + (zAdj*fltCount)
         
         newLayers = []
-        for n in range(self.nStacks):
+        for n in range(self.nStacks + 1):
             for lyr in self.unitcell.layers:
                 tag = '_n' + str(n+1)
                 
