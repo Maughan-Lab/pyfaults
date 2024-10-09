@@ -102,63 +102,67 @@ class Supercell(object):
         if intLayer is not None:
             self._intLayer = intLayer
         
+        p = []
+        for i in range(self.nStacks):
+            p.append(r.randint(0,100))
+            
+        fltCount = 0
+        for i in range(len(p)):
+            if p[i] <= (stackProb * 100):
+                fltCount = fltCount + 1
+                
+        if zAdj is not None:
+            self.lattice.c = self.lattice.c + (zAdj*fltCount)
         
         newLayers = []
         for lyr in self.unitcell.layers:
             for n in range(self.nStacks):
                 tag = '_n' + str(n+1)
-                p = r.randint(0,100)
                 
-                isFlt = False
-                
-                if fltLayer is not None:
-                    if lyr.layerName == fltLayer:
-                        if p <= (stackProb * 100):
-                            isFlt = True
-                
-                if isFlt == True:
-                    newFltLyr = cp.deepcopy(lyr)
-                    newLayerName = lyr.layerName + tag + '_fault'
+                for i in range(len(p)):
                     
-                    if zAdj is None:
-                        newFltLyr.setParam(layerName=newLayerName, lattice=self.lattice)
+                    if p[i] <= (stackProb * 100):
+                        newFltLyr = cp.deepcopy(lyr)
+                        newLayerName = lyr.layerName + tag + '_fault'
                         
-                        for atom in newFltLyr.atoms:
-                            alabel = atom.atomLabel.split('_')
-                            newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
-                            fltXYZ = np.add(newXYZ, stackVec)
-                            atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
-                        
-                        newLayers.append(newFltLyr)
-                        
-                    
-                    if zAdj is not None:
-                        self.lattice.c = self.lattice.c + zAdj
+                        if zAdj is None:
+                            newFltLyr.setParam(layerName=newLayerName, lattice=self.lattice)
                             
-                        newFltLyr.setParam(layerName=newLayerName, lattice=self.lattice)
+                            for atom in newFltLyr.atoms:
+                                alabel = atom.atomLabel.split('_')
+                                newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                                fltXYZ = np.add(newXYZ, stackVec)
+                                atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
+                            
+                            newLayers.append(newFltLyr)
+                            
+                        if zAdj is not None:
+                            self.lattice.c = self.lattice.c + zAdj
+                                
+                            newFltLyr.setParam(layerName=newLayerName, lattice=self.lattice)
+                            
+                            for atom in newFltLyr.atoms:
+                                alabel = atom.atomLabel.split('_')
+                                newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                                fltXYZ = np.add(newXYZ, [0,0,zAdj])
+                                atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
+                            
+                            newLayers.append(newFltLyr)
+
+                            if self.intLayer is not None:
+                                newIntLayer = self.addIntLayer(n, tag)
+                                newLayers.append(newIntLayer)
                         
-                        for atom in newFltLyr.atoms:
+                    
+                    else:
+                        newUFLyr = cp.deepcopy(lyr)
+                        
+                        newLayerName = lyr.layerName + tag
+                        newUFLyr.setParam(layerName=newLayerName, lattice=self.lattice)
+                        for atom in newUFLyr.atoms:
                             alabel = atom.atomLabel.split('_')
                             newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
-                            fltXYZ = np.add(newXYZ, [0,0,zAdj])
-                            atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
-                        
-                        newLayers.append(newFltLyr)
-
-                        if self.intLayer is not None:
-                            newIntLayer = self.addIntLayer(n, tag)
-                            newLayers.append(newIntLayer)
-                    
-                    
-                if isFlt == False:
-                    newUFLyr = cp.deepcopy(lyr)
-                    
-                    newLayerName = lyr.layerName + tag
-                    newUFLyr.setParam(layerName=newLayerName, lattice=self.lattice)
-                    for atom in newUFLyr.atoms:
-                        alabel = atom.atomLabel.split('_')
-                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
-                        atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
+                            atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
                 
                     newLayers.append(newUFLyr)
                     
