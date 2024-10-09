@@ -146,7 +146,7 @@ class Supercell(object):
 
                     if self.intLayer is not None:
                         intLayerCopy = cp.deepcopy(intLayer)
-                        intLayer.setParam(layerName='I' + tag, lattice=self.lattice)
+                        intLayerCopy.setParam(layerName='I' + tag, lattice=self.lattice)
                         for atom in intLayerCopy.atoms:
                             alabel = atom.atomLabel.split('_')
                             newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
