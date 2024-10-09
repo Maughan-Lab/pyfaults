@@ -118,9 +118,9 @@ class Supercell(object):
         for n in range(self.nStacks):
             tag = '_n' + str(n+1)
             for lyr in self.unitcell.layers:
-                    
-                if lyr.layerName == self.fltLayer:
-                    if p[n] <= (stackProb * 100):
+                
+                if p[n] <= (stackProb * 100):
+                    if lyr.layerName == self.fltLayer:
                         newFltLyr = cp.deepcopy(lyr)
                         newLayerName = lyr.layerName + tag + '_fault'
                         
@@ -164,6 +164,18 @@ class Supercell(object):
                             atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
                 
                     newLayers.append(newUFLyr)
+                    
+                elif p[n] > (stackProb * 100):
+                    newUFLyr = cp.deepcopy(lyr)
+                    
+                    newLayerName = lyr.layerName + tag
+                    newUFLyr.setParam(layerName=newLayerName, lattice=self.lattice)
+                    for atom in newUFLyr.atoms:
+                        alabel = atom.atomLabel.split('_')
+                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                        atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
+            
+                newLayers.append(newUFLyr)
                     
         self._layers = newLayers
         return
