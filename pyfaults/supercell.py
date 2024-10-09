@@ -110,16 +110,12 @@ class Supercell(object):
                 tag = '_n' + str(n+1)
                 p = r.randint(0,100)
                 
+                isFlt = False
+                
                 if fltLayer is not None:
                     if lyr.layerName == fltLayer:
                         if p <= (stackProb * 100):
                             isFlt = True
-                        elif p > (stackProb * 100):
-                            isFlt = False
-                    elif lyr.layerName != fltLayer:
-                        isFlt = False
-                elif fltLayer is None: 
-                    isFlt = False
                 
                 if isFlt == True:
                     newFltLyr = cp.deepcopy(lyr)
