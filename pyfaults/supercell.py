@@ -116,12 +116,11 @@ class Supercell(object):
         
         newLayers = []
         for n in range(self.nStacks + 1):
+            tag = '_n' + str(n+1)
             for lyr in self.unitcell.layers:
-                tag = '_n' + str(n+1)
-                
-                for i in range(len(p)):
                     
-                    if p[i] <= (stackProb * 100):
+                if lyr.layerName == self.fltLayer:
+                    if p[n] <= (stackProb * 100):
                         newFltLyr = cp.deepcopy(lyr)
                         newLayerName = lyr.layerName + tag + '_fault'
                         
