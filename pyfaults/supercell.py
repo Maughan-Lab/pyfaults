@@ -121,62 +121,61 @@ class Supercell(object):
                 elif fltLayer is None: 
                     isFlt = False
                 
-                newLyr = cp.deepcopy(lyr)
-                
                 if isFlt == True:
-                    newLayerName = lyr.layerName + tag + '_fault'
-                    newLyr.setParam(layerName=newLayerName, 
-                                    lattice=self.lattice)
+                    newFltLyr = cp.deepcopy(lyr)
                     
-                    for atom in newLyr.atoms:
+                    newLayerName = lyr.layerName + tag + '_fault'
+                    newFltLyr.setParam(layerName=newLayerName, lattice=self.lattice)
+                    
+                    for atom in newFltLyr.atoms:
                         alabel = atom.atomLabel.split('_')
                         newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks) + (zCount*zAdj)]
 
                         fltXYZ = [0, 0, 0]
-
                         if stackVec is not None:
                             fltXYZ = np.add(newXYZ, stackVec)
-
                         if zAdj is not None:
                             fltXYZ = np.add(newXYZ, [0,0,zAdj])
                         
                         atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
                         
-                    newLayers.append(newLyr)
+                    newLayers.append(newFltLyr)
 
                     if self.intLayer is not None:
-                        intLayerCopy = cp.deepcopy(intLayer)
-                        intLayerCopy.setParam(layerName='I' + tag, lattice=self.lattice)
-                        for atom in intLayerCopy.atoms:
-                            alabel = atom.atomLabel.split('_')
-                            newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
-                            
-                            atom.setParam(layerName='I' + tag, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
-                            
-                        newLayers.append(intLayerCopy)
+                        newIntLayer = self.addIntLayer(n, tag)
+                        newLayers.append(newIntLayer)
 
                     if zAdj is not None:
                         zCount = zCount+1
                     
                     
                 if isFlt == False:
+                    newUFLyr = cp.deepcopy(lyr)
+                    
                     newLayerName = lyr.layerName + tag
-                    newLyr.setParam(layerName=newLayerName, 
-                                    lattice=self.lattice)
-                    for atom in newLyr.atoms:
+                    newUFLyr.setParam(layerName=newLayerName, lattice=self.lattice)
+                    for atom in newUFLyr.atoms:
                         alabel = atom.atomLabel.split('_')
-                        newXYZ = [atom.x, 
-                                  atom.y, 
-                                  ((atom.z + n) / self.nStacks)]
-                        atom.setParam(layerName=newLayerName, 
-                                      atomLabel=alabel[0], 
-                                      xyz=newXYZ, 
-                                      lattice=self.lattice)
+                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                        atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
                 
-                    newLayers.append(newLyr)
+                    newLayers.append(newUFLyr)
                     
         self._layers = newLayers
         return
+    
+    # adds intercalation layer ----------
+    def addIntLayer(self, n, tag):
+        newLyr = cp.deepcopy(self.intLayer)
+        newLyr.setParam(layerName='I' + tag, lattice=self.lattice)
+        
+        for atom in newLyr.atoms:
+            alabel = atom.atomLabel.split('_')
+            newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+            
+            atom.setParam(layerName='I' + tag, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
+            
+        return newLyr
     
     # prints names of faulted layers ----------
     def show_faults(self):
