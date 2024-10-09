@@ -126,13 +126,14 @@ class Supercell(object):
                             
                     for atom in newFltLyr.atoms:
                         alabel = atom.atomLabel.split('_')
-                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
                             
                         if zAdj is None:
-                            fltXYZ = np.add(newXYZ, stackVec)
+                            newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                            newXYZ = np.add(newXYZ, stackVec)
                         if zAdj is not None:
-                            fltXYZ = np.add(newXYZ, [0,0, (zAdj+n) / self.nStacks])
-                        atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
+                            newXYZ = [atom.x, atom.y, ((atom.z + n + zAdj) / self.nStacks)]
+                            #fltXYZ = np.add(newXYZ, [0,0, (zAdj+n) / self.nStacks])
+                        atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
                             
                     newLayers.append(newFltLyr)
 
