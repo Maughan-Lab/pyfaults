@@ -119,18 +119,6 @@ class Supercell(object):
             tag = '_n' + str(n+1)
             for lyr in self.unitcell.layers:
                 
-                if lyr.layerName != self.fltLayer or p[n] > (stackProb * 100):
-                    newUFLyr = cp.deepcopy(lyr)
-                    
-                    newLayerName = lyr.layerName + tag
-                    newUFLyr.setParam(layerName=newLayerName, lattice=self.lattice)
-                    for atom in newUFLyr.atoms:
-                        alabel = atom.atomLabel.split('_')
-                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
-                        atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
-            
-                    newLayers.append(newUFLyr)
-                
                 if p[n] <= (stackProb * 100) and lyr.layerName == self.fltLayer:
                     newFltLyr = cp.deepcopy(lyr)
                     newLayerName = lyr.layerName + tag + '_fault'
@@ -143,7 +131,7 @@ class Supercell(object):
                         if zAdj is None:
                             fltXYZ = np.add(newXYZ, stackVec)
                         if zAdj is not None:
-                            fltXYZ = np.add(newXYZ, [0,0,zAdj])
+                            fltXYZ = np.add(newXYZ, [0,0, (zAdj+n) / self.nStacks])
                         atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=fltXYZ, lattice=self.lattice)
                             
                     newLayers.append(newFltLyr)
@@ -151,6 +139,18 @@ class Supercell(object):
                     if self.intLayer is not None:
                         newIntLayer = self.addIntLayer(n, tag)
                         newLayers.append(newIntLayer)
+                        
+                else:
+                    newUFLyr = cp.deepcopy(lyr)
+                    
+                    newLayerName = lyr.layerName + tag
+                    newUFLyr.setParam(layerName=newLayerName, lattice=self.lattice)
+                    for atom in newUFLyr.atoms:
+                        alabel = atom.atomLabel.split('_')
+                        newXYZ = [atom.x, atom.y, ((atom.z + n) / self.nStacks)]
+                        atom.setParam(layerName=newLayerName, atomLabel=alabel[0], xyz=newXYZ, lattice=self.lattice)
+            
+                    newLayers.append(newUFLyr)
                     
             self._layers = newLayers
         return
