@@ -35,7 +35,13 @@ def normalizeToExpt(exptQ, exptInts, q, ints):
             if ints[i] > normMax:
                 normMax = ints[i]
     
-    normInts = ints / normMax
+    normInts = []
+
+    for i in range(len(ints)):
+        if ints[i] > 0:
+            normInts.append(ints / normMax)
+        else:
+            normInts.append(0.0)
             
     return normInts
 
