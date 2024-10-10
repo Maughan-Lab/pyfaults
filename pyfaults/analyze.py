@@ -39,7 +39,7 @@ def normalizeToExpt(exptQ, exptInts, q, ints):
 
     for i in range(len(ints)):
         if ints[i] > 0:
-            normInts.append(ints / normMax)
+            normInts.append(ints[i] / normMax)
         else:
             normInts.append(0.0)
             
