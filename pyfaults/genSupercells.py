@@ -30,7 +30,7 @@ def genSupercells(unitcell, nStacks, fltLayer, probList, sVecList):
     # generate each faulted supercell
     for p in range(len(probList)):
         for s in range(len(sVecList)):
-            FLT = pf.supercell.Supercell(unitcell, nStacks, fltLayer, sVecList[s], probList[p])
+            FLT = pf.supercell.Supercell(unitcell, nStacks, fltLayer=fltLayer, stackVec=sVecList[s], stackProb=probList[p])
             cellTag = 'S' + str(s+1) + '_P' + str(int(probList[p]*100))
             cellList.append([FLT, cellTag])
     
