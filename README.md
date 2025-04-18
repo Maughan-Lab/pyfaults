@@ -12,6 +12,7 @@ Copyright 2023 Colorado School of Mines
 
 
 ## PyFaults GUI 
+UPDATE 03/28/2025: GUI application added, developed by Mimi Rai
 The PyFaults GUI allows you to plot simulation diffraction pattern data to observed data.
 1. Start the GUI by locating the `pyfaultsGUI.py` file and running the file.
 2. Upload a .txt file for the `Diffraction Pattern` field and an .xy file for the `Observed Data` field.
