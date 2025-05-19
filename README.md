@@ -8,7 +8,7 @@ DOI: 10.1107/S1600576724009956
 
 [*PyFaults*: a Python tool for stacking fault screening](https://journals.iucr.org/paper?S1600576724009956) published in the Journal of Applied Crystallography
 
-Copyright 2023 Colorado School of Mines
+Copyright 2023 Colorado School of Mines, see LICENSE.txt for redistribution information.
 
 
 ## PyFaults GUI 
