@@ -14,7 +14,7 @@ description = "An open-source Python library for identifying and screening poten
 
 authors = [
     { name = "Sinclair Combs", email = "sinclaircombs@mines.edu" },
-    { name = "Mimi Rai", email = "mimi_rai@mines.edu},
+    { name = "Mimi Rai", email = "mimi_rai@mines.edu"},
 ]
 maintainers = [
     { name = "Sinclair Combs", email = "sinclaircombs@mines.edu" },
