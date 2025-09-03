@@ -11,6 +11,11 @@ You can install this package into your preferred Python environment using pip:
 $ pip install pyfaults
 ```
 
+Or by git clone installation:
+```
+python -m pip install git+https://github.com/Maughan-Lab/pyfaults.git
+```
+
 Browse the [documentation](https://maughan-lab.github.io/pyfaults/).
 
 Read the Journal of Applied Crystallography article, [*PyFaults*: a Python tool for stacking fault screening](https://journals.iucr.org/paper?S1600576724009956).
