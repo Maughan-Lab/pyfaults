@@ -1,5 +1,7 @@
 **PyFaults** is an open-source Python package for identifying and screening potential stacking fault models in crystalline materials with planar disorder.
 
+Please cite this software if used in your research. Detailed citation information can be found in CITATION.cff
+
 DOI: 10.1107/S1600576724009956
 
 ## Get started
